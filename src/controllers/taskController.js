@@ -6,8 +6,9 @@ export const createTask = async (req, res) => {
   try {
     const userId = req.user.id;
     const createdFields = req.body;
+    console.log(createdFields);
 
-    if (!createdFields.listId || !createdFields.title) {
+    if (!createdFields.listId || !createdFields.name) {
       return res.status(400).json({
         message: "listId and title are required fields",
       });
