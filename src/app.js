@@ -15,7 +15,7 @@ app.use(
     origin: (origin, callback) => {
       const allowedOrigins = [
         "http://localhost:3000",
-        "https://click-up-clone-front-end.vercel.app",
+        "https://click-up-clone-two.vercel.app",
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
