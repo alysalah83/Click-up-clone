@@ -14,7 +14,7 @@ app.use(cors());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://localhost:5000"],
+    origin: ["http://localhost:3000", "https://your-frontend.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -30,5 +30,7 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+export default app;
