@@ -10,8 +10,6 @@ import cors from "cors";
 dotenv.config();
 const app = express();
 
-app.use(cors());
-
 app.use(
   cors({
     origin: ["http://localhost:3000", "https://your-frontend.vercel.app"],
@@ -23,7 +21,24 @@ app.use(
 
 app.use(express.json());
 
-await connectDB();
+let isConnected = false;
+
+const ensureConnection = async () => {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await ensureConnection();
+    next();
+  } catch (error) {
+    console.error("Database connection error:", error);
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/workspaces", workspaceRoutes);
