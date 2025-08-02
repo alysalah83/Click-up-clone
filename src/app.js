@@ -10,16 +10,6 @@ import cors from "cors";
 dotenv.config();
 const app = express();
 
-
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    "https://click-up-clone-two.vercel.app"
-  ],
-  credentials: true
-}))
-
-
 app.use(express.json());
 
 let isConnected = false;
@@ -30,6 +20,15 @@ const ensureConnection = async () => {
     isConnected = true;
   }
 };
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://click-up-clone-two.vercel.app"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(async (req, res, next) => {
   try {
