@@ -1,5 +1,6 @@
 import { List } from "../models/List.js";
 import { Workspace } from "../models/Workspace.js";
+import { Task } from "../models/Task.js";
 
 export const createList = async (req, res) => {
   try {
