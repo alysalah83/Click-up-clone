@@ -155,9 +155,7 @@ export const getLatestListId = async (req, res) => {
       .sort({ createdAt: -1 })
       .select("_id");
 
-    if (!latestList) {
-      return res.status(404).json({ message: "No lists found for this user" });
-    }
+    if (!latestList) return res.status(200).json(null);
 
     res.status(200).json(latestList._id);
   } catch (error) {
