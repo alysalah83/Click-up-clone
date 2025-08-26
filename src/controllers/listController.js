@@ -39,11 +39,9 @@ export const createList = async (req, res) => {
 export const getLists = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
 
     const lists = await List.find({ userId });
-    console.log(lists);
-    if (!lists) return res.status(404).json({ message: "cant find lists" });
+    // if (!lists) return res.status(404).json({ message: "cant find lists" });
 
     return res.status(201).json(lists);
   } catch (error) {
