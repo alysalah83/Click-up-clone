@@ -3,7 +3,7 @@ import { toJSONPlugin } from "../toJSONPlugin.js";
 
 const avatarSchema = new mongoose.Schema(
   {
-    letter: { type: String, required: [true, "avatar letter is required"] },
+    icon: { type: String, required: [true, "avatar icon is required"] },
     color: { type: String, required: [true, "avatar color is required"] },
   },
   { _id: false }
