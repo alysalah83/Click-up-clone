@@ -17,7 +17,7 @@ router.use(authMiddleware);
 router.get("/latest", getLatestListId);
 router.get("/:workspaceId", getListsByWorkspaceId);
 router.get("/", getLists);
-router.get(`/list/${listId}/workspace/${workspaceId}`, getIsListFromWorkspace);
+router.get(`/list/:listId/workspace/:workspaceId`, getIsListFromWorkspace);
 router.post("/", createList);
 router.patch("/:id", updateList);
 router.delete("/:id", deleteList);

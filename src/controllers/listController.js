@@ -174,10 +174,16 @@ export const getIsListFromWorkspace = async (req, res) => {
     const userId = req.user.id;
     const { listId, workspaceId } = req.params;
 
+    if (!listId || !workspaceId) {
+      return res.status(400).json({
+        message: "Missing required parameters: listId and workspaceId",
+      });
+    }
+
     const isListFromWorkspace = await List.findOne({
       userId,
       workspaceId,
-      listId,
+      _id: listId,
     });
 
     return res.status(200).json(!!isListFromWorkspace);
