@@ -168,3 +168,23 @@ export const getLatestListId = async (req, res) => {
     });
   }
 };
+
+export const getIsListFromWorkspace = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { listId, workspaceId } = req.params;
+
+    const isListFromWorkspace = await List.findOne({
+      userId,
+      workspaceId,
+      listId,
+    });
+
+    return res.status(200).json(!!isListFromWorkspace);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get list",
+      error: error.message,
+    });
+  }
+};
