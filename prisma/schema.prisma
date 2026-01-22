@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  workspaces Workspace[]
+  lists      List[]
+  tasks      Task[]
+}
+
+model Workspace {
+  id       String  @id @default(uuid())
+  name     String
+  userId   String
+  avatarId String?
+  lists    List[]
+  tasks    Task[]
+
+  user   User    @relation(fields: [userId], references: [id])
+  avatar Avatar? @relation(fields: [avatarId], references: [id])
+}
+
+model Avatar {
+  id        String      @id @default(uuid())
+  icon      String
+  color     String
+  workspace Workspace[]
+}
+
+model List {
+  id          String @id @default(uuid())
+  name        String
+  userId      String
+  workSpaceId String
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workSpaceId], references: [id])
+  tasks     Task[]
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  status      String    @default("toDo")
+  priority    String    @default("none")
+  startDate   DateTime?
+  endDate     DateTime?
+  workspaceId String
+  listId      String
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  list      List      @relation(fields: [listId], references: [id])
+}
