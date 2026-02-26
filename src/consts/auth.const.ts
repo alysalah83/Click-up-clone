@@ -1,5 +1,5 @@
 export const COOKIES_OPTIONS =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === "production" || !process.env.NODE_ENV
     ? ({
         httpOnly: true,
         secure: true,
