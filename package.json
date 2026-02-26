@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "tsx watch src/index.ts"
   },
   "keywords": [],
