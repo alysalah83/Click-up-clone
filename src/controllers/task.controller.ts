@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../../prisma/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { Orders } from "../types/task.dto.js";
 import { Priority } from "../generated/prisma/enums.js";
 import { Task } from "../generated/prisma/client.js";

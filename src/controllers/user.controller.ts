@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { generateToken } from "../lib/middlewares/auth.middleware.js";
-import { prisma } from "../../prisma/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import { COOKIES_OPTIONS } from "../consts/auth.const.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";

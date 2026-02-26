@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../../prisma/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";
 import { AppError } from "../lib/errors/appError.js";
 

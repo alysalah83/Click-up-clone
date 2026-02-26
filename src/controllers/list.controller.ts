@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CreateListDTO } from "../types/list.dto.js";
-import { prisma } from "../../prisma/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { List } from "../generated/prisma/client.js";
 import { DEFAULT_STATUS } from "../consts/status.const.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";
