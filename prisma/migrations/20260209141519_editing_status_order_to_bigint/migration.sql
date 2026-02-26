@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Status" ALTER COLUMN "order" SET DATA TYPE BIGINT;

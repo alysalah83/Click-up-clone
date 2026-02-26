@@ -1,136 +1,115 @@
-import { Workspace } from "../models/Workspace.js";
-import { List } from "../models/List.js";
-import { Task } from "../models/Task.js";
 import { Request, Response } from "express";
-import { CreateWorkspaceDTO } from "../types/workspace.dto.js";
-import { prisma } from "../../prisma/prisma.js";
+import { prisma } from "../../prisma/prisma";
+import { catchAsync } from "../lib/utils/catchAsync.js";
+import { AppError } from "../lib/errors/appError";
 
-export const createWorkspace = async (req:Request, res:Response) => {
-  try {
-    const {userId,guestId, name, avatar }:CreateWorkspaceDTO = req.body;
-    // const userId = req.user.id;
+export const createWorkspace = catchAsync(
+  async (
+    req: Request<
+      {},
+      {},
+      { name: string; avatar: { icon: string; color: string } }
+    >,
+    res: Response,
+  ) => {
+    const { userId } = req;
 
-    const workspace = await prisma.workspace.create({data:{ ...(userId && {userId}), ...(guestId && {guestId}) ,name,avatar:{create:avatar}  }});
+    const { name, avatar } = req.body;
+
+    const workspace = await prisma.workspace.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        name,
+        avatar: { create: { icon: avatar.icon, color: avatar.color } },
+      },
+    });
+
     res.status(201).json(workspace);
-  } catch (err) {
-    if (err.name === "ValidationError") {
-      const errors = Object.values(err.errors).map((e) => e.message);
-      return res.status(400).json({
-        message: "Validation failed",
-        errors: errors,
+  },
+);
+
+export const getWorkspaces = catchAsync(
+  async (
+    req: Request<{ id?: string }, {}, {}, { count?: string }>,
+    res: Response,
+  ) => {
+    const { userId } = req;
+
+    const { id: workspaceId } = req.params;
+    const { count } = req.query;
+
+    if (workspaceId) {
+      const workspace = await prisma.workspace.findFirst({
+        where: { userId, id: workspaceId },
+        include: { avatar: true },
       });
+      return res.status(200).json(workspace);
+    } else if (count === "true") {
+      const workspacesCount = await prisma.workspace.count({
+        where: { userId },
+      });
+      return res.status(200).json(workspacesCount);
+    } else {
+      const workspaces = await prisma.workspace.findMany({
+        where: { userId },
+        include: { avatar: true },
+      });
+      res.status(200).json(workspaces);
     }
+  },
+);
 
-    res.status(500).json({
-      message: "Failed to create workspace",
-      error: err.message,
-    });
-  }
-};
-
-export const getUserWorkspaces = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const workspaces = await Workspace.find({ userId });
-    res.status(200).json(workspaces);
-  } catch (err) {
-    res.status(500).json({
-      message: "Failed to fetch workspaces",
-      error: err.message,
-    });
-  }
-};
-
-export const getWorkspaceById = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { id } = req.params;
-
-    const workspace = await Workspace.findOne({
-      _id: id,
-      userId,
-    });
-
-    if (!workspace)
-      return res.status(404).json({ message: "Workspace not found" });
-
-    res.status(200).json(workspace);
-  } catch (err) {
-    if (err.name === "CastError")
-      return res.status(400).json({ message: "Invalid workspace ID format" });
-
-    res.status(500).json({
-      message: "Failed to get workspace",
-      error: err.message,
-    });
-  }
-};
-
-export const updateWorkspace = async (req, res) => {
-  try {
-    const userId = req.user.id;
+export const updateWorkspace = catchAsync(
+  async (
+    req: Request<
+      { id: string },
+      {},
+      { name: string; avatar?: { icon?: string; color?: string } }
+    >,
+    res: Response,
+  ) => {
+    const { userId } = req;
     const { id } = req.params;
     const updatedFields = req.body;
-    console.log(userId, id, req.body);
+    const { avatar, ...fieldWithoutAvatar } = updatedFields;
 
-    const workspace = await Workspace.findOneAndUpdate(
-      { _id: id, userId },
-      updatedFields,
-      { new: true, validator: true }
-    );
+    const workspace = await prisma.workspace.update({
+      where: { userId, id },
+      data: {
+        ...fieldWithoutAvatar,
+        ...(avatar && {
+          avatar: { update: { ...avatar } },
+        }),
+      },
+      include: { avatar: true },
+    });
 
     if (!workspace)
       return res.status(404).json({ message: "workspace not founded" });
 
     return res.status(200).json(workspace);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to update workspace", error: err.message });
-  }
-};
+  },
+);
 
-export const deleteWorkspace = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { id } = req.params;
+export const deleteWorkspace = catchAsync(
+  async (req: Request<{ id: string }>, res: Response) => {
+    const { userId } = req;
+    const { id: workspaceId } = req.params;
 
-    const workspace = await Workspace.findOne({ _id: id, userId });
-    if (!workspace)
-      return res.status(404).json({ message: "Workspace not found" });
-
-    const lists = await List.find({ workspaceId: id }, "_id");
-    const listIds = lists.map((list) => list._id);
+    const workspace = await prisma.workspace.findFirst({
+      where: { userId, id: workspaceId },
+    });
+    if (!workspace) throw new AppError("Workspace not found", 404);
 
     await Promise.all([
-      Workspace.findOneAndDelete({ _id: id, userId }),
-      List.deleteMany({ workspaceId: id }),
-      Task.deleteMany({ listId: { $in: listIds } }),
+      prisma.workspace.delete({ where: { userId, id: workspaceId } }),
+      prisma.avatar.delete({ where: { id: workspace.avatarId } }),
     ]);
 
-    res.status(200).json({ message: "Workspace deleted successfully" });
-  } catch (err) {
-    if (err.name === "CastError") {
-      return res.status(400).json({ message: "Invalid workspace ID format" });
-    }
-    res.status(500).json({
-      message: "Failed to delete workspace",
-      error: err.message,
-    });
-  }
-};
-
-export const getWorkspacesCount = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const workspacesCount = await Workspace.countDocuments({ userId });
-
-    res.status(201).json(workspacesCount);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to get workspaces Count",
-      error: err.message,
-    });
-  }
-};
+    res.status(204).send();
+  },
+);

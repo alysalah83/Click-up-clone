@@ -13,59 +13,101 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  user
+  guest
+}
+
 model User {
   id         String      @id @default(uuid())
-  name       String
-  email      String      @unique
-  password   String
+  role       Role
+  name       String?
+  email      String?     @unique
+  password   String?
   createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   workspaces Workspace[]
   lists      List[]
   tasks      Task[]
+  statuses   Status[]
 }
 
 model Workspace {
-  id       String  @id @default(uuid())
-  name     String
-  userId   String
-  avatarId String?
-  lists    List[]
-  tasks    Task[]
+  id        String   @id @default(uuid())
+  name      String
+  userId    String?
+  avatarId  String
+  lists     List[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id])
-  avatar Avatar? @relation(fields: [avatarId], references: [id])
+  user   User?  @relation(fields: [userId], references: [id])
+  avatar Avatar @relation(fields: [avatarId], references: [id])
 }
 
 model Avatar {
   id        String      @id @default(uuid())
   icon      String
   color     String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   workspace Workspace[]
 }
 
 model List {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   userId      String
-  workSpaceId String
+  workspaceId String
+  tasks       Task[]
+  status      Status[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user      User      @relation(fields: [userId], references: [id])
-  workspace Workspace @relation(fields: [workSpaceId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([id, userId])
+}
+
+enum Priority {
+  urgent
+  high
+  normal
+  low
+  none
+}
+
+model Status {
+  id        String @id @default(uuid())
+  name      String
+  icon      String
+  iconColor String
+  bgColor   String
+  order     Int
+  userId    String
+  listId    String
   tasks     Task[]
+
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([listId, name])
 }
 
 model Task {
-  id          String    @id @default(uuid())
-  userId      String
-  name        String
-  status      String    @default("toDo")
-  priority    String    @default("none")
-  startDate   DateTime?
-  endDate     DateTime?
-  workspaceId String
-  listId      String
+  id        String    @id @default(uuid())
+  userId    String
+  name      String
+  statusId  String
+  priority  Priority  @default(none)
+  startDate DateTime?
+  endDate   DateTime?
+  listId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  user      User      @relation(fields: [userId], references: [id])
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  list      List      @relation(fields: [listId], references: [id])
+  status Status @relation(fields: [statusId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
 }
