@@ -1,5 +1,5 @@
-import { User } from "../generated/prisma/client";
-import { UserRole } from "../lib/middlewares/auth.middleware";
+import { User } from "../generated/prisma/client.js";
+import { UserRole } from "../lib/middlewares/auth.middleware.js";
 
 declare global {
   namespace Express {

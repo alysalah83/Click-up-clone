@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import type { StringValue } from "ms";
-import { AppError } from "../errors/appError";
+import { AppError } from "../errors/appError.js";
 
 export type UserRole = "user" | "guest";
 

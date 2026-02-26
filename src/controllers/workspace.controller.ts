@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { prisma } from "../../prisma/prisma";
+import { prisma } from "../../prisma/prisma.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";
-import { AppError } from "../lib/errors/appError";
+import { AppError } from "../lib/errors/appError.js";
 
 export const createWorkspace = catchAsync(
   async (

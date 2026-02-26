@@ -1,6 +1,6 @@
-import { Prisma } from "../../generated/prisma/client";
-import { AppError } from "./appError";
-import { NotFoundError, ConflictError, ValidationError } from "./index";
+import { Prisma } from "../../generated/prisma/client.js";
+import { AppError } from "./appError.js";
+import { NotFoundError, ConflictError, ValidationError } from "./index.js";
 
 export function handlePrismaError(error: any): AppError {
   if (error instanceof Prisma.PrismaClientKnownRequestError)

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../errors/appError";
-import { handlePrismaError } from "../errors/prismaErrorHandler";
-import { Prisma } from "../../generated/prisma/client";
+import { AppError } from "../errors/appError.js";
+import { handlePrismaError } from "../errors/prismaErrorHandler.js";
+import { Prisma } from "../../generated/prisma/client.js";
 
 export interface ErrorResponse {
   success: false;

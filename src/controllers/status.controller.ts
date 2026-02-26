@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { prisma } from "../../prisma/prisma";
-import { HIGHEST_ORDER } from "../consts/status.const";
-import { catchAsync } from "../lib/utils/catchAsync";
-import { AppError } from "../lib/errors/appError";
+import { prisma } from "../../prisma/prisma.js";
+import { HIGHEST_ORDER } from "../consts/status.const.js";
+import { catchAsync } from "../lib/utils/catchAsync.js";
+import { AppError } from "../lib/errors/appError.js";
 
 export const createStatus = catchAsync(
   async (
