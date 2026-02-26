@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { Orders } from "../types/task.dto.js";
-import { Priority } from "../generated/prisma/enums.js";
-import { Task } from "../generated/prisma/client.js";
+import { Priority, Task } from "../generated/prisma/client.js";
 import { HIGHEST_ORDER } from "../consts/status.const.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";
 import { AppError } from "../lib/errors/appError.js";
