@@ -102,7 +102,9 @@ export const deleteStatus = catchAsync(
     const { userId } = req;
     const { id } = req.params;
 
-    const status = await prisma.status.delete({ where: { userId, id } });
+    const status = await prisma.status.delete({
+      where: { userId, id, order: { notIn: [100, 200, HIGHEST_ORDER] } },
+    });
 
     res.status(200).json(status);
   },
