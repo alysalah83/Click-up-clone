@@ -96,3 +96,14 @@ export const getStatusTasksCount = catchAsync(
     });
   },
 );
+
+export const deleteStatus = catchAsync(
+  async (req: Request<{ id: string }>, res: Response) => {
+    const { userId } = req;
+    const { id } = req.params;
+
+    const status = await prisma.status.delete({ where: { userId, id } });
+
+    res.status(200).json(status);
+  },
+);
