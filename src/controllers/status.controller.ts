@@ -102,10 +102,17 @@ export const deleteStatus = catchAsync(
     const { userId } = req;
     const { id } = req.params;
 
-    const status = await prisma.status.delete({
+    const status = await prisma.status.findUnique({ where: { id, userId } });
+
+    if (!status) throw new AppError("Status not found", 404);
+    if ([100, 200, HIGHEST_ORDER].includes(status.order)) {
+      throw new AppError("Cannot delete a default status", 403);
+    }
+
+    const deletedStatus = await prisma.status.delete({
       where: { userId, id, order: { notIn: [100, 200, HIGHEST_ORDER] } },
     });
 
-    res.status(200).json(status);
+    return res.status(200).json(deletedStatus);
   },
 );
