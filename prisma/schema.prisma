@@ -107,7 +107,7 @@ model Task {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  status Status @relation(fields: [statusId], references: [id])
+  status Status @relation(fields: [statusId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id])
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { catchAsync } from "../lib/utils/catchAsync.js";
 import { AppError } from "../lib/errors/appError.js";
+import { Task } from "../generated/prisma/index.js";
+import { DEFAULT_STATUS } from "../consts/status.const.js";
 
 export const createWorkspace = catchAsync(
   async (
@@ -111,5 +113,90 @@ export const deleteWorkspace = catchAsync(
     ]);
 
     res.status(204).send();
+  },
+);
+
+export const createWorkspaceFlow = catchAsync(
+  async (
+    req: Request<
+      {},
+      {},
+      {
+        data: {
+          workspace: { name: string; avatar: { icon: string; color: string } };
+          list: { name: string };
+          status: {
+            name: string;
+            bgColor: string;
+            iconColor: string;
+            icon: string;
+          };
+          task: {
+            name: string;
+            priority: Task["priority"];
+            startDate: Task["startDate"];
+            endDate: Task["endDate"];
+          };
+        };
+      }
+    >,
+    res: Response,
+  ) => {
+    const { userId } = req;
+    const {
+      data: { workspace, list, status, task },
+    } = req.body;
+
+    const statusWithUserId = DEFAULT_STATUS.map((status) => ({
+      ...status,
+      userId,
+    }));
+
+    const result = await prisma.$transaction(async (tx) => {
+      const createdAvatar = await tx.avatar.create({
+        data: { ...workspace.avatar },
+      });
+
+      const createdWorkspace = await tx.workspace.create({
+        data: { userId, name: workspace.name, avatarId: createdAvatar.id },
+        include: { avatar: true },
+      });
+
+      const createdList = await tx.list.create({
+        data: {
+          userId,
+          ...list,
+          workspaceId: createdWorkspace.id,
+          status: { createMany: { data: statusWithUserId } },
+        },
+      });
+
+      const createdStatus = await tx.status.create({
+        data: {
+          ...status,
+          userId,
+          order: 300,
+          listId: createdList.id,
+        },
+      });
+
+      const createdTask = await tx.task.create({
+        data: {
+          userId,
+          ...task,
+          listId: createdList.id,
+          statusId: createdStatus.id,
+        },
+        include: { status: true },
+      });
+
+      return {
+        workspace: createdWorkspace,
+        list: createdList,
+        status: createdStatus,
+        task: createdTask,
+      };
+    });
+    res.status(201).json(result);
   },
 );
