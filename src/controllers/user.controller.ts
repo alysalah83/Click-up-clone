@@ -122,6 +122,7 @@ export const updateUser = catchAsync(
     const user = await prisma.user.update({
       where: { id: userId },
       data: { hasOnBoarded },
+      omit: { password: true },
     });
     return res.status(200).json(user);
   },
