@@ -114,3 +114,15 @@ export const getUserById = catchAsync(async (req: Request, res: Response) => {
   });
   return res.status(200).json(user);
 });
+
+export const updateUser = catchAsync(
+  async (req: Request<{}, {}, { hasOnBoarded?: boolean }>, res: Response) => {
+    const { userId } = req;
+    const { hasOnBoarded } = req.body;
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { hasOnBoarded },
+    });
+    return res.status(200).json(user);
+  },
+);
