@@ -1,9 +1,9 @@
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.js";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
-const prisma = new PrismaClient({
-  accelerateUrl: process.env.DATABASE_URL,
-}).$extends(withAccelerate());
+const adapter = new PrismaNeon({
+  connectionString: process.env.DATABASE_URL!,
+});
 
-export { prisma };
+export const prisma = new PrismaClient({ adapter });
