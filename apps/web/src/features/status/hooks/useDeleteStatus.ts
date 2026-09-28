@@ -31,6 +31,11 @@ export function useDeleteStatus() {
       return { previousStatuses };
     },
 
+    onSuccess() {
+      // The API moves the deleted status's tasks to another status, so their statusId changed.
+      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+    },
+
     onError(error: ActionErrorResponse, variables, onMutateResult) {
       if (onMutateResult?.previousStatuses)
         queryClient.setQueryData(
