@@ -2,10 +2,10 @@ import axios from "axios";
 import { ApiError } from "../errors";
 import { UnwrappedAxiosInstance } from "./types";
 
-export const axiosClient: UnwrappedAxiosInstance = axios.create({
+export const axiosClient = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-});
+}) as UnwrappedAxiosInstance;
 
 axiosClient.interceptors.response.use(
   (response) => {
