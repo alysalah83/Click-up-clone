@@ -1,30 +1,46 @@
 import express from "express";
 import {
+  bulkDeleteTasksSchema,
+  bulkUpdateTasksSchema,
+  createTaskSchema,
+  idParamsSchema,
+  listIdParamsSchema,
+  priorityCountsQuerySchema,
+  tasksQuerySchema,
+  updateTaskSchema,
+} from "@clickup/shared";
+import {
   createTask,
-  deleteTask,
-  updateTask,
   deleteManyTasks,
-  updateManyTasks,
-  getTasksPriorityCounts,
+  deleteTask,
   getTasks,
+  getTasksPriorityCounts,
   getTotalAndCompleteTasksCount,
+  updateManyTasks,
+  updateTask,
 } from "../controllers/task.controller.js";
 import { authMiddleware } from "../lib/middlewares/auth.middleware.js";
+import { validate } from "../lib/middlewares/validate.middleware.js";
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
-router.post("/", createTask);
-router.get("/priorityCounts", getTasksPriorityCounts);
-router.get("/", getTasks);
+router.post("/", validate({ body: createTaskSchema }), createTask);
+router.get("/priorityCounts", validate({ query: priorityCountsQuerySchema }), getTasksPriorityCounts);
+router.get("/", validate({ query: tasksQuerySchema }), getTasks);
 router.get(
   "/:listId/completeAndTotalTasksCounts",
+  validate({ params: listIdParamsSchema }),
   getTotalAndCompleteTasksCount,
 );
-router.patch("/bulk", updateManyTasks);
-router.patch("/:id", updateTask);
-router.delete("/:id", deleteTask);
-router.delete("/:listId/bulk", deleteManyTasks);
+router.patch("/bulk", validate({ body: bulkUpdateTasksSchema }), updateManyTasks);
+router.patch("/:id", validate({ params: idParamsSchema, body: updateTaskSchema }), updateTask);
+router.delete("/:id", validate({ params: idParamsSchema }), deleteTask);
+router.delete(
+  "/:listId/bulk",
+  validate({ params: listIdParamsSchema, body: bulkDeleteTasksSchema }),
+  deleteManyTasks,
+);
 
 export default router;
