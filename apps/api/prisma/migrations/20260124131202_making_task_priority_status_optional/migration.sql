@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "priority" DROP NOT NULL;
