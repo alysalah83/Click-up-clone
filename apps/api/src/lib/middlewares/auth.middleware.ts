@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import type { StringValue } from "ms";
 import { AppError } from "../errors/appError.js";
+import { env } from "../../config/env.js";
 
 export type UserRole = "user" | "guest";
 
@@ -20,10 +21,7 @@ export const authMiddleware = (
   if (!token) return next(new AppError("No token provided", 401));
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string,
-    ) as AuthPayload;
+    const decoded = jwt.verify(token, env.JWT_SECRET) as AuthPayload;
 
     if (!decoded.id || !decoded.role)
       return next(new AppError("Invalid token payload", 401));
@@ -41,9 +39,8 @@ export const authMiddleware = (
 };
 
 export const generateToken = (id: string, role: UserRole) => {
-  const expiresIn: StringValue = (process.env.JWT_EXPIRES_IN ||
-    "90d") as StringValue;
-  return jwt.sign({ id, role }, process.env.JWT_SECRET as string, {
+  const expiresIn = env.JWT_EXPIRES_IN as StringValue;
+  return jwt.sign({ id, role }, env.JWT_SECRET, {
     expiresIn,
   });
 };
