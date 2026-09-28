@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @theme {
   --color-neutral-925: oklch(0.17 0 0);
@@ -6,6 +7,30 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic tokens (ADR 0002). Values mirror the original light/dark class pairs. */
+:root {
+  --popover: var(--color-neutral-300);
+  --popover-foreground: var(--color-neutral-800);
+  --tooltip: var(--color-neutral-300);
+  --surface: var(--color-neutral-100);
+  --ring: var(--color-violet-600);
+}
+
+.dark {
+  --popover: var(--color-neutral-800);
+  --popover-foreground: var(--color-neutral-200);
+  --tooltip: var(--color-neutral-700);
+  --surface: var(--color-neutral-925);
+}
+
+@theme inline {
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-tooltip: var(--tooltip);
+  --color-surface: var(--surface);
+  --color-ring: var(--ring);
+}
 
 .dark {
   scrollbar-width: thin;
