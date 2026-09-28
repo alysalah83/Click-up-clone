@@ -47,3 +47,15 @@ export async function seedWorkspace(cookie: string, name = "Engineering") {
     doneStatus: statuses.find((s) => s.type === "done")!,
   };
 }
+
+export async function createTask(
+  cookie: string,
+  input: { listId: string; statusId: string; name?: string; priority?: string },
+) {
+  const res = await api()
+    .post("/api/tasks")
+    .set("Cookie", cookie)
+    .send({ name: "Task", ...input })
+    .expect(201);
+  return res.body as { id: string; listId: string; statusId: string; name: string };
+}
