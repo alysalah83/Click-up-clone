@@ -9,6 +9,7 @@ import listsRoutes from "./routes/list.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import statusRoutes from "./routes/status.routes.js";
+import internalRoutes from "./routes/internal.routes.js";
 import { globalErrorHandler } from "./lib/middlewares/error.middleware.js";
 import { catchAsync } from "./lib/utils/catchAsync.js";
 import { prisma } from "./lib/prisma.js";
@@ -41,6 +42,7 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/statuses", statusRoutes);
+app.use("/internal", internalRoutes);
 app.use(globalErrorHandler);
 
 export default app;
