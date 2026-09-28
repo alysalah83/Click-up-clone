@@ -7,6 +7,8 @@ export const DEFAULT_STATUS = [
     iconColor: "neutral",
     bgColor: "neutral",
     order: 100,
+    type: "open",
+    isDefault: true,
   },
   {
     name: "in progress",
@@ -14,6 +16,8 @@ export const DEFAULT_STATUS = [
     iconColor: "violet",
     bgColor: "violet",
     order: 200,
+    type: "active",
+    isDefault: true,
   },
   {
     name: "complete",
@@ -21,5 +25,11 @@ export const DEFAULT_STATUS = [
     iconColor: "emerald",
     bgColor: "emerald",
     order: HIGHEST_ORDER,
+    type: "done",
+    isDefault: true,
   },
-];
+] as const;
+
+/** Rows for `status: { createMany: { data } }` when creating a list. */
+export const defaultStatusesFor = (userId: string) =>
+  DEFAULT_STATUS.map((status) => ({ ...status, userId }));
