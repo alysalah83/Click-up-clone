@@ -1,11 +1,18 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { loadEnv } from "../src/config/env.js";
 
-const original = process.env.JWT_SECRET;
+const originalSecret = process.env.JWT_SECRET;
+const originalExpiresIn = process.env.JWT_EXPIRES_IN;
+
+const restore = (key: string, value: string | undefined) => {
+  if (value === undefined) delete process.env[key];
+  else process.env[key] = value;
+};
 
 describe("loadEnv", () => {
   afterEach(() => {
-    process.env.JWT_SECRET = original;
+    restore("JWT_SECRET", originalSecret);
+    restore("JWT_EXPIRES_IN", originalExpiresIn);
   });
 
   it("throws a clear error when JWT_SECRET is missing", () => {
