@@ -24,3 +24,26 @@ export async function signUp(
     credentials,
   };
 }
+
+type StatusJson = { id: string; name: string; type: "open" | "active" | "done"; order: number };
+
+export async function seedWorkspace(cookie: string, name = "Engineering") {
+  const workspace = await api()
+    .post("/api/workspaces")
+    .set("Cookie", cookie)
+    .send({ name, avatar: { icon: "circleDotted", color: "violet" } })
+    .expect(201);
+  const list = await api()
+    .post("/api/lists")
+    .set("Cookie", cookie)
+    .send({ name: "Sprint 1", workspaceId: workspace.body.id })
+    .expect(201);
+  const statuses = list.body.status as StatusJson[];
+  return {
+    workspace: workspace.body as { id: string; avatarId: string },
+    list: list.body as { id: string; workspaceId: string },
+    statuses,
+    openStatus: statuses.find((s) => s.type === "open")!,
+    doneStatus: statuses.find((s) => s.type === "done")!,
+  };
+}
