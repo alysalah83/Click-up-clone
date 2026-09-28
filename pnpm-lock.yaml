@@ -24,6 +24,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@clickup/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@prisma/adapter-neon':
         specifier: ^7.5.0
         version: 7.10.0
@@ -260,6 +263,19 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.1.0(@edge-runtime/vm@3.2.0)(@types/node@20.19.43)(@vitest/ui@4.1.0)(jsdom@28.1.0(@noble/hashes@1.8.0))(vite@8.3.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
+  packages/shared:
+    dependencies:
+      zod:
+        specifier: ^4.0.0
+        version: 4.6.5
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.0.18
+        version: 4.1.0(@edge-runtime/vm@3.2.0)(@types/node@25.9.8)(@vitest/ui@4.1.0)(jsdom@28.1.0(@noble/hashes@1.8.0))(vite@8.3.1(@types/node@25.9.8)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
 packages:
 
