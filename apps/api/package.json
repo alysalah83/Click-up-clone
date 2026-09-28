@@ -8,6 +8,7 @@
     "postinstall": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "build": "prisma generate",
+    "vercel-build": "pnpm --filter @clickup/shared build && prisma generate",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

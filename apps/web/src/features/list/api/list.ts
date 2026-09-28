@@ -35,7 +35,7 @@ export async function getListsCount() {
 export async function getLatestCreatedListId() {
   const serverAxios = await createServerAxios();
   return await serverAxios.get<{ id: List["id"] } | undefined>(
-    "/lists/latest?select=id",
+    "/lists/latest",
   );
 }
 
