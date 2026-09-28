@@ -22,6 +22,17 @@ const isPrismaError = (error: unknown) =>
 const isMalformedJson = (error: unknown) =>
   error instanceof SyntaxError && "status" in error && error.status === 400;
 
+// body-parser/http-errors mark client errors (413 too large, 415 unsupported charset, ...) as safe to expose.
+const isExposedClientError = (error: unknown): error is { status: number; message: string } =>
+  typeof error === "object" &&
+  error !== null &&
+  "expose" in error &&
+  error.expose === true &&
+  "status" in error &&
+  typeof error.status === "number" &&
+  error.status >= 400 &&
+  error.status < 500;
+
 export function globalErrorHandler(
   error: unknown,
   _req: Request,
@@ -34,6 +45,12 @@ export function globalErrorHandler(
     return res.status(400).json({
       success: false,
       error: { message: "Malformed JSON body", statusCode: 400 },
+    });
+
+  if (isExposedClientError(error))
+    return res.status(error.status).json({
+      success: false,
+      error: { message: error.message, statusCode: error.status },
     });
 
   const appError =
