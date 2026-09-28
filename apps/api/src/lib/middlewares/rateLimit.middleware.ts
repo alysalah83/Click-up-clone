@@ -24,6 +24,8 @@ export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: env.LOGIN_ATTEMPTS_PER_15_MIN,
   keyGenerator: emailKey,
+  // Only failed attempts count, so a user who logs in often is never locked out.
+  skipSuccessfulRequests: true,
 });
 
 export const registerLimiter = rateLimit({

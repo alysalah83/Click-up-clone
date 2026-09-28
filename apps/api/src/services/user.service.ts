@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import type { LoginInput, RegisterInput, UpdateMeInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
-import { ConflictError, NotFoundError, UnauthorizedError } from "../lib/errors/index.js";
+import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
 
 const publicUser = {
   id: true,
@@ -40,7 +40,8 @@ export async function verifyCredentials({ email, password }: LoginInput) {
 
 export async function getMe(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId }, select: publicUser });
-  if (!user) throw new NotFoundError("User not found");
+  // A valid token for a deleted user (e.g. a cleaned-up guest) is a dead session, not a missing resource.
+  if (!user) throw new UnauthorizedError("Session is no longer valid");
   return user;
 }
 

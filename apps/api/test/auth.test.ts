@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
+import { prisma } from "../src/lib/prisma.js";
 import { api, signUp } from "./helpers.js";
 
 describe("auth", () => {
@@ -56,6 +57,22 @@ describe("auth", () => {
     expect(res.body.error.message).toBe("Too many attempts, please try again later");
   });
 
+  it("successful logins do not count toward the login rate limit", async () => {
+    const { credentials } = await signUp();
+    for (let i = 0; i < 12; i++)
+      await api()
+        .post("/api/users/login")
+        .send({ email: credentials.email, password: credentials.password })
+        .expect(200);
+  });
+
+  it("GET /api/users answers 401 when the token's user no longer exists", async () => {
+    const { user, cookie } = await signUp();
+    await prisma.user.delete({ where: { id: user.id } });
+    const res = await api().get("/api/users").set("Cookie", cookie).expect(401);
+    expect(res.body.error.message).toBe("Session is no longer valid");
+  });
+
   it("guest registration sets exactly one cookie", async () => {
     const res = await api().post("/api/users/register/guest").expect(201);
     expect(res.body.user.role).toBe("guest");
@@ -94,5 +111,13 @@ describe("auth", () => {
       .set("Content-Type", "application/json")
       .send("{bad json")
       .expect(400);
+  });
+
+  it("answers an oversized JSON body with 413, not 500", async () => {
+    const res = await api()
+      .post("/api/users/login")
+      .send({ email: "big@test.dev", password: "x".repeat(150 * 1024) })
+      .expect(413);
+    expect(res.body.error.statusCode).toBe(413);
   });
 });
