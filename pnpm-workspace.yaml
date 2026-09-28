@@ -3,6 +3,7 @@ packages:
   - "packages/*"
 
 onlyBuiltDependencies:
+  - "@embedded-postgres/windows-x64"
   - "@prisma/client"
   - "@prisma/engines"
   - "@tailwindcss/oxide"

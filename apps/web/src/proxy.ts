@@ -25,7 +25,13 @@ export async function proxy(request: NextRequest) {
       }
       return NextResponse.next();
     } catch {
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Expired/invalid token: clear it. Never redirect /login -> /login.
+      const isAuthPage = pathname === "/login" || pathname === "/signup";
+      const response = isAuthPage
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.delete("token");
+      return response;
     }
   } else if (!token) {
     const protectedPathnames = ["/home"];
