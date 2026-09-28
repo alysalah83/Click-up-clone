@@ -17,7 +17,7 @@ export function globalErrorHandler(
   error: any,
   req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction,
+  _next: NextFunction,
 ) {
   console.log(error);
 
