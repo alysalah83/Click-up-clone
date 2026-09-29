@@ -2,7 +2,6 @@ import { workspaceServices } from "./workspace.service";
 import { tasksService } from "@/features/task/services/task.service";
 import { listServices } from "@/features/list/services/list.service";
 import { CreateWorkspaceInputs } from "../types";
-import { STATUS_LOWEST_ORDER } from "@/features/status/consts";
 
 export async function createWorkspaceWithDefaults(
   createWorkspaceInputs: CreateWorkspaceInputs,
@@ -18,8 +17,7 @@ export async function createWorkspaceWithDefaults(
     listId: list.id,
     name: "Task 1",
     priority: "normal",
-    statusId: list.status.find((status) => status.order === STATUS_LOWEST_ORDER)
-      ?.id!,
+    statusId: list.status.find((status) => status.type === "open")?.id!,
   });
   return { listId: list.id };
 }

@@ -8,7 +8,7 @@ import { Task } from "@/features/task/types";
 import clsx from "clsx";
 import { StyleFor } from "./type";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
-import { STATUS_LOWEST_ORDER } from "@/features/status/consts";
+import { findOpenStatus } from "@/features/status/lib/statusByType";
 
 interface AddTaskRowProps {
   styleFor: StyleFor;
@@ -18,9 +18,7 @@ interface AddTaskRowProps {
 function AddTaskRow({ statusId, styleFor }: AddTaskRowProps) {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const { statuses } = useStatuses();
-  const toDoStatus = statuses?.find(
-    (status) => status.order === STATUS_LOWEST_ORDER,
-  );
+  const toDoStatus = findOpenStatus(statuses);
 
   const curStatusId = styleFor === "table" ? toDoStatus?.id : statusId;
 

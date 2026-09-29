@@ -37,13 +37,13 @@ export function useAddTask(taskStatusId: Task["statusId"]) {
       const currentStatuses = queryClient.getQueryData([
         "statuses",
         listId,
-      ]) as Status[];
-      const taskStatus = currentStatuses.find(
+      ]) as Status[] | undefined;
+      const taskStatus = currentStatuses?.find(
         (status) => status.id === taskStatusId,
       );
 
       const tempId = `temp-${Date.now()}-${Math.random()}-${Math.random()}`;
-      queryClient.setQueryData(queryKey, (oldTasks: Task[]) => [
+      queryClient.setQueryData(queryKey, (oldTasks: Task[] = []) => [
         ...oldTasks,
         {
           ...createTaskInputs,

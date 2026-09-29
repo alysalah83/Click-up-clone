@@ -20,10 +20,11 @@ import Link from "next/link";
 import { List } from "../types";
 import OptionsContent from "./OptionsContent";
 import { ICONS_SIZE } from "../consts";
-import { useAddTask } from "@/features/task";
 import NameField from "./NameField";
-import { useStatuses } from "@/features/status/hooks/useStatuses";
-import { STATUS_LOWEST_ORDER } from "@/features/status/consts";
+import { useQueryClient } from "@tanstack/react-query";
+import { startTransition } from "react";
+import { createTaskInListAction } from "@/features/task/actions";
+import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
 
 function Item({ list }: { list: List }) {
   const { listId } = useParams<{ listId: string }>();
@@ -69,12 +70,24 @@ export function Heading({
 }
 
 function FeatureBtns({ listId }: { listId: string }) {
-  const { addTask } = useAddTask(listId);
   const { isRenameOpen } = useList();
-  const { statuses } = useStatuses();
-  const toDoStatusId = statuses?.find(
-    (status) => status.order === STATUS_LOWEST_ORDER,
-  )?.id;
+  const queryClient = useQueryClient();
+
+  const handleCreateTask = () => {
+    startTransition(async () => {
+      const response = await createTaskInListAction(listId);
+      if (response.status === "error") {
+        window.toast?.error(formatErrorForToast(response.error), 7);
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      if (response.status === "success" && "payload" in response) {
+        window.toast?.success(
+          `Task (${response.payload.newTask.name}) has been added`,
+        );
+      }
+    });
+  };
 
   return (
     !isRenameOpen && (
@@ -101,13 +114,7 @@ function FeatureBtns({ listId }: { listId: string }) {
           <AddButton
             toolTipMessage="Create task"
             ariaLabel="Create task button"
-            onClick={() =>
-              addTask({
-                listId,
-                name: "Untitled",
-                statusId: toDoStatusId!,
-              })
-            }
+            onClick={handleCreateTask}
           />
         </div>
       </DropdownMenu>

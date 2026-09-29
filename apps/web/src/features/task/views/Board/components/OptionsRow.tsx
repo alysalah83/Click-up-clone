@@ -11,28 +11,23 @@ import OptionsContent from "../../../components/OptionsContent";
 import { useTask } from "@/features/task/context/TaskProvider";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
-import { STATUS_HIGHEST_ORDER } from "@/features/status/consts";
+import { findDoneStatus } from "@/features/status/lib/statusByType";
 import { TaskOptionsButton } from "@/features/task/components/TaskDetailPanel";
 
 function OptionsRow() {
   const { task, toggleIsRenameOpen } = useTask();
-  const {
-    id,
-    status: { name: statusName },
-  } = task;
+  const { id } = task;
   const { updateTask } = useUpdateTask();
   const { statuses } = useStatuses();
 
-  const completeStatus = statuses?.find(
-    (status) => status.order === STATUS_HIGHEST_ORDER,
-  );
+  const completeStatus = findDoneStatus(statuses);
 
   return (
     <div
       className="absolute top-0.5 right-0.5 z-10 flex rounded-lg border border-neutral-300 bg-neutral-200 p-0.5 dark:border-neutral-700 dark:bg-neutral-900"
       onClick={(e) => e.stopPropagation()}
     >
-      {statusName !== "complete" && (
+      {task.status.type !== "done" && (
         <ToolTip>
           <ToolTipTrigger>
             <ButtonIcon

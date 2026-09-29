@@ -1,4 +1,3 @@
-import { STATUS_ACTIVE_ORDER } from "@/features/status/consts";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
 import { Status } from "@/features/status/types";
 import PriorityMenu from "@/features/task/components/PriorityMenu";
@@ -19,7 +18,7 @@ function CreateTaskRow({
 }) {
   const { statuses } = useStatuses();
   const inProgress = statuses?.find(
-    (status) => status.order === STATUS_ACTIVE_ORDER,
+    (status) => status.type === "active" && status.isDefault,
   ) as Status;
   const { setValue, control, handleSubmit, isValid, errors, formRef } =
     useAddTaskForm({ statusId: inProgress?.id, onClose });
