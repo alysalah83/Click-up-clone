@@ -1,7 +1,9 @@
+import { randomUUID } from "node:crypto";
 import bcrypt from "bcrypt";
 import type { LoginInput, RegisterInput, UpdateMeInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
 import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
+import { DEMO_TEMPLATE, buildDemoWorkspace } from "../seed/demoWorkspace.js";
 
 const publicUser = {
   id: true,
@@ -24,8 +26,26 @@ export async function registerUser({ name, email, password }: RegisterInput) {
   });
 }
 
-export function registerGuest() {
-  return prisma.user.create({ data: { role: "guest" }, select: publicUser });
+/**
+ * Creates a guest together with the demo workspace, in one transaction: a failed seed leaves no
+ * guest behind. Ids are generated up front, so this is 8 round trips (BEGIN, 6 writes, COMMIT).
+ * Seeded guests skip the onboarding wizard.
+ */
+export async function registerGuest(template = DEMO_TEMPLATE) {
+  const userId = randomUUID();
+  const seed = buildDemoWorkspace(userId, new Date(), template);
+  const [user] = await prisma.$transaction([
+    prisma.user.create({
+      data: { id: userId, role: "guest", hasOnBoarded: true },
+      select: publicUser,
+    }),
+    prisma.avatar.createMany({ data: seed.avatars }),
+    prisma.workspace.createMany({ data: seed.workspaces }),
+    prisma.list.createMany({ data: seed.lists }),
+    prisma.status.createMany({ data: seed.statuses }),
+    prisma.task.createMany({ data: seed.tasks }),
+  ]);
+  return { user, landingListId: seed.landingListId };
 }
 
 export async function verifyCredentials({ email, password }: LoginInput) {

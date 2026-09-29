@@ -37,4 +37,24 @@ describe("GET /internal/cron/cleanup-guests", () => {
     expect(await prisma.user.findUnique({ where: { id: fresh.id } })).not.toBeNull();
     expect(await prisma.user.findUnique({ where: { id: member.user.id } })).not.toBeNull();
   });
+
+  it("removes every row of a stale seeded guest", async () => {
+    const res = await api().post("/api/users/register/guest").expect(201);
+    const id = res.body.user.id as string;
+    expect(await prisma.task.count({ where: { userId: id } })).toBeGreaterThan(0);
+    await prisma.user.update({ where: { id }, data: { createdAt: EIGHT_DAYS_AGO } });
+
+    const cleanup = await api()
+      .get("/internal/cron/cleanup-guests")
+      .set("Authorization", "Bearer test-cron-secret")
+      .expect(200);
+
+    expect(cleanup.body).toEqual({ deletedGuests: 1 });
+    expect(await prisma.user.count()).toBe(0);
+    expect(await prisma.workspace.count()).toBe(0);
+    expect(await prisma.avatar.count()).toBe(0);
+    expect(await prisma.list.count()).toBe(0);
+    expect(await prisma.status.count()).toBe(0);
+    expect(await prisma.task.count()).toBe(0);
+  });
 });
