@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it } from "vitest";
-import { Menu, MenuContent, MenuTrigger } from "./MenuCompound";
+import { Menu, MenuContent, MenuTrigger, useMenu } from "./MenuCompound";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
@@ -79,6 +79,60 @@ describe("Menu", () => {
     await user.click(screen.getByText(/open menu/i));
     await user.click(screen.getByText(/outside/i));
     expect(screen.queryByText(/^content$/i)).not.toBeInTheDocument();
+  });
+
+  it("keeps a controlled menu open when it's opened from another menu's item", async () => {
+    // Regression for the "Change avatar" flow: an item inside one menu
+    // (the options menu) opens a second, controlled menu (the avatar
+    // picker) and closes itself. The picker must survive the options
+    // menu's close-focus-return, not get dismissed by it.
+    const OptionsItem = ({ onOpenPicker }: { onOpenPicker: () => void }) => {
+      const { toggleMenu } = useMenu();
+      return (
+        <button
+          onClick={() => {
+            onOpenPicker();
+            toggleMenu();
+          }}
+        >
+          change avatar
+        </button>
+      );
+    };
+
+    const Harness = () => {
+      const [pickerOpen, setPickerOpen] = useState(false);
+      return (
+        <>
+          <Menu outerIsOpen={pickerOpen} outerSetIsOpen={setPickerOpen}>
+            <MenuTrigger>
+              <button>avatar</button>
+            </MenuTrigger>
+            <MenuContent>
+              <div>picker content</div>
+            </MenuContent>
+          </Menu>
+          <Menu>
+            <MenuTrigger>
+              <button>options</button>
+            </MenuTrigger>
+            <MenuContent>
+              <OptionsItem onOpenPicker={() => setPickerOpen(true)} />
+            </MenuContent>
+          </Menu>
+        </>
+      );
+    };
+
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    await user.click(screen.getByText(/^options$/i));
+    await user.click(screen.getByText(/change avatar/i));
+
+    await waitFor(() => {
+      expect(screen.getByText(/^picker content$/i)).toBeInTheDocument();
+    });
   });
 
   it("should be open when passing the open props", async () => {
