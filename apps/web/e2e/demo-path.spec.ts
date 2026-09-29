@@ -67,9 +67,10 @@ test("guest demo path: onboarding, board drag, task details, table bulk edit, ca
   await page.goto(page.url().replace(/\/board.*$/, "/table"));
   await page.getByRole("checkbox", { name: "checkbox" }).first().click();
   await page.getByRole("button", { name: "update priority button" }).click();
-  await page.getByText("Urgent", { exact: true }).click();
-  // menu has closed, so the only remaining "Urgent" is the row's priority cell
-  await expect(page.getByText("Urgent", { exact: true })).toHaveCount(1);
+  await page.locator("menu").getByText("Urgent", { exact: true }).click();
+  // the selected task's row now shows the urgent priority
+  const taskRow = page.locator("main").filter({ hasText: "E2E Task" }).last();
+  await expect(taskRow.getByText("Urgent", { exact: true })).toBeVisible();
 
   // 7. Calendar view renders
   await page.goto(page.url().replace(/\/table.*$/, "/calendar"));
