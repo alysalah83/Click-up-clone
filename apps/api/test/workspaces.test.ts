@@ -62,6 +62,28 @@ describe("workspaces", () => {
     expect(await prisma.list.count({ where: { id: list.id } })).toBe(0);
   });
 
+  it("GET ?include=lists returns each workspace with its lists ordered by createdAt asc", async () => {
+    const a = await signUp();
+    const { workspace, list: list1 } = await seedWorkspace(a.cookie, "Eng");
+    const list2 = await api()
+      .post("/api/lists")
+      .set("Cookie", a.cookie)
+      .send({ name: "Sprint 2", workspaceId: workspace.id })
+      .expect(201);
+
+    const res = await api().get("/api/workspaces?include=lists").set("Cookie", a.cookie).expect(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].id).toBe(workspace.id);
+    expect(res.body[0].lists.map((l: { id: string }) => l.id)).toEqual([list1.id, list2.body.id]);
+  });
+
+  it("GET without ?include= keeps the current shape (no lists key)", async () => {
+    const a = await signUp();
+    await seedWorkspace(a.cookie);
+    const res = await api().get("/api/workspaces").set("Cookie", a.cookie).expect(200);
+    expect(res.body[0].lists).toBeUndefined();
+  });
+
   it("POST /flow creates workspace, list, 3 defaults + 1 custom status and a task, owned by the caller", async () => {
     const a = await signUp();
     const b = await signUp();

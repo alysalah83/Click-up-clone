@@ -8,6 +8,29 @@ export function listLists(userId: string) {
   return prisma.list.findMany({ where: { userId }, orderBy: { createdAt: "asc" } });
 }
 
+export async function listListsWithCounts(userId: string) {
+  const [lists, doneGroups] = await Promise.all([
+    prisma.list.findMany({
+      where: { userId },
+      orderBy: { createdAt: "asc" },
+      include: { _count: { select: { tasks: true } } },
+    }),
+    prisma.task.groupBy({
+      by: ["listId"],
+      where: { userId, status: { type: "done" } },
+      _count: true,
+    }),
+  ]);
+
+  const completedByListId = new Map(doneGroups.map((g) => [g.listId, g._count]));
+
+  return lists.map(({ _count, ...list }) => ({
+    ...list,
+    totalTasksCount: _count.tasks,
+    completedTasksCount: completedByListId.get(list.id) ?? 0,
+  }));
+}
+
 export function countLists(userId: string) {
   return prisma.list.count({ where: { userId } });
 }

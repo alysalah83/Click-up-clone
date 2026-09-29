@@ -8,7 +8,10 @@ export const createList = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getLists = catchAsync(async (req: Request, res: Response) => {
-  if (req.query.count === "true") return res.status(200).json(await listService.countLists(req.userId));
+  const { count, withCounts } = req.query as { count?: string; withCounts?: string };
+  if (count === "true") return res.status(200).json(await listService.countLists(req.userId));
+  if (withCounts === "true")
+    return res.status(200).json(await listService.listListsWithCounts(req.userId));
   res.status(200).json(await listService.listLists(req.userId));
 });
 

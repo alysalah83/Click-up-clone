@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { prisma } from "../src/lib/prisma.js";
-import { api, seedWorkspace, signUp } from "./helpers.js";
+import { api, createTask, seedWorkspace, signUp } from "./helpers.js";
 
 describe("lists", () => {
   it("creates a list with open/active/done default statuses in order", async () => {
@@ -66,6 +66,26 @@ describe("lists", () => {
     const yes = await api().get(`/api/lists/${list.id}/belong-to/${workspace.id}`).set("Cookie", a.cookie);
     const no = await api().get(`/api/lists/${list.id}/belong-to/${other.workspace.id}`).set("Cookie", a.cookie);
     expect([yes.body, no.body]).toEqual([true, false]);
+  });
+
+  it("GET ?withCounts=true returns totalTasksCount and completedTasksCount per list", async () => {
+    const a = await signUp();
+    const { list, openStatus, doneStatus } = await seedWorkspace(a.cookie);
+    await createTask(a.cookie, { listId: list.id, statusId: openStatus.id });
+    await createTask(a.cookie, { listId: list.id, statusId: doneStatus.id });
+    await createTask(a.cookie, { listId: list.id, statusId: doneStatus.id });
+
+    const res = await api().get("/api/lists?withCounts=true").set("Cookie", a.cookie).expect(200);
+    const found = res.body.find((l: { id: string }) => l.id === list.id);
+    expect(found).toMatchObject({ totalTasksCount: 3, completedTasksCount: 2 });
+  });
+
+  it("GET without ?withCounts= keeps the current shape (no count keys)", async () => {
+    const a = await signUp();
+    await seedWorkspace(a.cookie);
+    const res = await api().get("/api/lists").set("Cookie", a.cookie).expect(200);
+    expect(res.body[0].totalTasksCount).toBeUndefined();
+    expect(res.body[0].completedTasksCount).toBeUndefined();
   });
 
   it("DELETE removes the list and its tasks", async () => {

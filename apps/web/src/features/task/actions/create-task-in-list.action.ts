@@ -27,6 +27,7 @@ export async function createTaskInListAction(
     });
 
     updateTag(`tasks-${listId}`);
+    updateTag("tasks");
 
     return { status: "success", payload: { newTask } };
   } catch (error) {

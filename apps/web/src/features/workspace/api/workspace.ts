@@ -3,6 +3,7 @@ import {
   CreateWorkspaceInputs,
   UpdateWorkspaceInput,
   Workspace,
+  WorkspaceWithLists,
 } from "../types";
 import { CreateListInput, List } from "@/features/list/types";
 import { CreateStatusInputs, Status } from "@/features/status/types";
@@ -45,6 +46,11 @@ export async function createWorkspaceFlow({
 export const getWorkspaces = async () => {
   const serverAxios = await createServerAxios();
   return await serverAxios.get<Workspace[]>("/workspaces");
+};
+
+export const getWorkspacesWithLists = async () => {
+  const serverAxios = await createServerAxios();
+  return await serverAxios.get<WorkspaceWithLists[]>("/workspaces?include=lists");
 };
 
 export async function getWorkspacesCount() {
