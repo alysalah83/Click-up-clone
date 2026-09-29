@@ -95,6 +95,14 @@ function MenuContent({ children }: { children: ReactNode }) {
         sideOffset={menuMargin}
         collisionPadding={8}
         onClick={(e) => e.stopPropagation()}
+        onOpenAutoFocus={() => {
+          // Reset for this open/close cycle. Without this, a stale `true`
+          // left over from a previous pointer-driven close would make a
+          // later keyboard/Escape close skip returning focus to the trigger.
+          // Radix's default open-focus behavior is left untouched (no
+          // preventDefault here).
+          wasPointerInteractionRef.current = false;
+        }}
         onPointerDown={() => {
           wasPointerInteractionRef.current = true;
         }}
