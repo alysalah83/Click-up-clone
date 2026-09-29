@@ -23,6 +23,8 @@ type ListWithStatuses = {
     bgColor: string;
     order: number;
     listId: string;
+    type: "open" | "active" | "done";
+    isDefault: boolean;
   }[];
 } & {
   name: string;

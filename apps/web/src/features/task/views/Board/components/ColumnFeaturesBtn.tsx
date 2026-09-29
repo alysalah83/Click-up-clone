@@ -1,8 +1,3 @@
-import {
-  STATUS_ACTIVE_ORDER,
-  STATUS_HIGHEST_ORDER,
-  STATUS_LOWEST_ORDER,
-} from "@/features/status/consts";
 import { useDeleteStatus } from "@/features/status/hooks/useDeleteStatus";
 import { Status } from "@/features/status/types";
 import AddButton from "@/shared/components/AddButton";
@@ -23,24 +18,16 @@ function ColumnFeaturesBtn({
   handleActiveColumn,
   statusId,
   statusName,
-  statusOrder,
+  isDefault,
 }: {
   handleActiveColumn: () => void;
   statusId: Status["id"];
   statusName: Status["name"];
-  statusOrder: Status["order"];
+  isDefault: Status["isDefault"];
 }) {
-  const baseStatusesOrder = [
-    STATUS_LOWEST_ORDER,
-    STATUS_ACTIVE_ORDER,
-    STATUS_HIGHEST_ORDER,
-  ];
-
   return (
     <div className="flex items-center gap-1">
-      {!baseStatusesOrder.some(
-        (baseStatusOrder) => baseStatusOrder === statusOrder,
-      ) && (
+      {!isDefault && (
         <Modal>
           <ModalTrigger>
             <ToolTip>
@@ -89,8 +76,7 @@ function DeleteConfirm({
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-medium">Delete: {statusName}</h3>
           <p className="text-sm font-medium text-neutral-500">
-            Are you sure you want to delete this status group, all it&apos;s
-            tasks will get deleted too.
+            Tasks in this status will move to the list&apos;s first status.
           </p>
         </div>
       </div>

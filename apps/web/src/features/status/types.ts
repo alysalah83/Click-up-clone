@@ -10,6 +10,8 @@ interface Status {
   id: string;
   order: number;
   userId: string;
+  type: "open" | "active" | "done";
+  isDefault: boolean;
 }
 
 type CreateStatusInputs = z.infer<typeof createStatusSchema>;

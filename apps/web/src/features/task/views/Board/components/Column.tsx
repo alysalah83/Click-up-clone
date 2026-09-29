@@ -19,7 +19,7 @@ interface ColumnProps {
 }
 
 function Column({ statusItem }: ColumnProps) {
-  const { id, icon, name: statusName, bgColor, order } = statusItem;
+  const { id, icon, name: statusName, bgColor, isDefault } = statusItem;
   const { tasks, isPending } = useTasks();
   const { activeStatusColumn, setActiveColumn } = useActiveColumnForm();
   const { isOver, setNodeRef } = useDroppable({ id });
@@ -48,7 +48,7 @@ function Column({ statusItem }: ColumnProps) {
         </div>
         <ColumnFeaturesBtn
           handleActiveColumn={handleActiveColumnForm}
-          statusOrder={order}
+          isDefault={isDefault}
           statusId={id}
           statusName={statusName}
         />

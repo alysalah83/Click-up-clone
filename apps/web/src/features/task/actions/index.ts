@@ -1,4 +1,5 @@
 export * from './create-task.action'
+export * from './create-task-in-list.action'
 export * from './delete-task.action'
 export * from './delete-tasks.action'
 export * from './update-task.action'

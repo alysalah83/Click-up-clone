@@ -3,7 +3,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateStatusInputs, Status } from "../types";
 import { createStatus } from "../actions/create-status.action";
-import { STATUS_HIGHEST_ORDER } from "../consts";
 import { useParams } from "next/navigation";
 import { ActionErrorResponse } from "@/shared/types/action.types";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
@@ -35,15 +34,15 @@ export function useAddStatus() {
       queryClient.setQueryData(queryKey, (oldStatuses: Status[] = []) => {
         const oldHighestActiveOrder = oldStatuses.reduce(
           (acc, curStatus) =>
-            curStatus.order === STATUS_HIGHEST_ORDER
-              ? acc
-              : Math.max(acc, curStatus.order),
+            curStatus.type === "done" ? acc : Math.max(acc, curStatus.order),
           0,
         );
         const newStatus = {
           ...createStatusInputs,
           id: tempId,
           order: oldHighestActiveOrder + 100,
+          type: "active" as const,
+          isDefault: false,
         };
         return [...oldStatuses, newStatus].toSorted(
           (a, b) => a.order - b.order,

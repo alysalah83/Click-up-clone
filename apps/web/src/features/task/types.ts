@@ -4,6 +4,7 @@ import {
   createTaskSchema,
   updateTaskSchema,
 } from "./schema/task-action.schema";
+import { Status } from "@/features/status/types";
 
 interface TaskDateRange {
   startDate: Task["startDate"];
@@ -31,16 +32,7 @@ type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 type SortOrder = "" | "asc" | "desc";
 
 type Task = {
-  status: {
-    name: string;
-    id: string;
-    userId: string;
-    listId: string;
-    icon: string;
-    iconColor: string;
-    bgColor: string;
-    order: number;
-  };
+  status: Status;
 } & {
   name: string;
   id: string;

@@ -5,11 +5,7 @@ import { COLORS_TOKENS } from "@/shared/ui/ColorPicker/colorTokens";
 import { ColorsToken } from "@/shared/ui/ColorPicker/types";
 import { hoverElementClasses } from "@/shared/constants/styles";
 import { useStatuses } from "../hooks/useStatuses";
-import {
-  STATUS_ACTIVE_ORDER,
-  STATUS_HIGHEST_ORDER,
-  STATUS_LOWEST_ORDER,
-} from "../consts";
+import { findOpenStatus, findDoneStatus } from "../lib/statusByType";
 
 function StatusesMenu({
   onStatusClick,
@@ -18,25 +14,16 @@ function StatusesMenu({
 }) {
   const { statuses } = useStatuses();
 
-  const toDoStatus = statuses?.find(
-    (status) => status.order === STATUS_LOWEST_ORDER,
-  );
-  const inProgressStatus = statuses?.find(
-    (status) => status.order === STATUS_ACTIVE_ORDER,
-  );
-  const completeStatus = statuses?.find(
-    (status) => status.order === STATUS_HIGHEST_ORDER,
-  );
+  const toDoStatus = findOpenStatus(statuses);
+  const completeStatus = findDoneStatus(statuses);
 
-  if (!toDoStatus || !inProgressStatus || !completeStatus) return;
+  if (!toDoStatus || !completeStatus) return;
 
   const ToDoIcon = ICONS_REGISTRY[toDoStatus.icon as IconsRegistry];
   const CompleteIcon = ICONS_REGISTRY[completeStatus.icon as IconsRegistry];
 
   const restStatus = statuses?.filter(
-    (status) =>
-      status.order !== toDoStatus.order &&
-      status.order !== completeStatus.order,
+    (status) => status.type === "active",
   );
 
   return (
