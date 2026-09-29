@@ -1,8 +1,10 @@
-import { after } from "next/server";
+import { after, connection } from "next/server";
 
 // Wakes the serverless API and its database ahead of login/signup.
 // /health lives at the API root (not under /api), so build it from API_URL's origin.
-export function GET() {
+export async function GET() {
+  // Opt out of build-time prerendering (cacheComponents) so the ping runs per request.
+  await connection();
   after(async () => {
     try {
       await fetch(new URL("/health", process.env.API_URL), {

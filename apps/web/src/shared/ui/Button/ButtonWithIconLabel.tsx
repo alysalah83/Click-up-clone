@@ -78,7 +78,7 @@ function ButtonWithIconLabel({
       aria-label={`${label} button`}
       aria-current={isActive ? "page" : undefined}
       onPointerOver={onHover}
-      className={`z-20 flex shrink-0 items-center gap-1 px-2 py-1 text-[11px] whitespace-nowrap sm:text-xs ${
+      className={`z-20 flex shrink-0 items-center gap-1 whitespace-nowrap px-2 py-1 text-[11px] sm:text-xs ${
         isActive
           ? "rounded-tl-lg rounded-tr-lg border-b-2 border-neutral-300 text-neutral-950 sm:rounded-tl-lg sm:rounded-tr-lg sm:border-x-0 sm:border-t-0 sm:pb-2 dark:text-neutral-50 dark:sm:border-neutral-50"
           : "text-neutral-500 sm:mb-2 dark:text-neutral-300"

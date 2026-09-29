@@ -24,14 +24,15 @@ function GlobalNotFound() {
               The page you&apos;re looking for doesn&apos;t exist or the URL may
               be incorrect.
             </p>
-            <ButtonLink href="/home/lists"
-                stretch={true}
-                type="colored"
-                size="large"
-                ariaLabel="go to lists overview page"
-              >
-                Go to home
-              </ButtonLink>
+            <ButtonLink
+              href="/home/lists"
+              stretch={true}
+              type="colored"
+              size="large"
+              ariaLabel="go to lists overview page"
+            >
+              Go to home
+            </ButtonLink>
           </div>
         </div>
       </body>
