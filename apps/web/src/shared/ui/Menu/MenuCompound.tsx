@@ -1,35 +1,22 @@
 "use client";
 
-import { MENU_MARGIN } from "./Menu.const";
+import { Popover } from "radix-ui";
 import {
   createContext,
-  Dispatch,
-  ReactNode,
-  RefObject,
-  SetStateAction,
-  use,
-  useEffect,
+  useContext,
   useRef,
   useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
 } from "react";
-import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "motion/react";
+import { MENU_MARGIN } from "./Menu.const";
+import { cn } from "@/shared/lib/utils/cn";
 
 interface MenuContextValues {
-  menuMargin: number;
-  positionCords: PositionCords;
-  setPositionCords: Dispatch<SetStateAction<PositionCords>>;
   isOpened: boolean;
-  mounted: boolean;
-  triggerRef: RefObject<HTMLDivElement | null>;
-  menuRef: RefObject<HTMLDivElement | null>;
   toggleMenu: () => void;
-  handleMounted: () => void;
-}
-
-interface PositionCords {
-  top: number | null;
-  left: number | null;
+  menuMargin: number;
 }
 
 interface MenuProps {
@@ -41,159 +28,82 @@ interface MenuProps {
 
 const MenuContext = createContext<MenuContextValues | null>(null);
 
-function Menu({
-  children,
-  menuMargin = MENU_MARGIN ?? 6,
-  outerIsOpen = false,
-  outerSetIsOpen,
-}: MenuProps) {
-  const [positionCords, setPositionCords] = useState<PositionCords>({
-    top: null,
-    left: null,
-  });
-  const [isOpened, setIsOpened] = useState(false);
-  const [mounted, setMounted] = useState(false);
+function Menu({ children, menuMargin = MENU_MARGIN, outerIsOpen = false, outerSetIsOpen }: MenuProps) {
+  const [innerIsOpen, setInnerIsOpen] = useState(outerIsOpen);
+  const isControlled = outerSetIsOpen !== undefined;
+  const isOpened = isControlled ? outerIsOpen : innerIsOpen;
 
-  const triggerRef = useRef<HTMLDivElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  const toggleMenu = () => {
-    outerSetIsOpen?.((cur) => !cur);
-    setIsOpened((cur) => !cur);
+  const setOpen = (open: boolean) => {
+    if (isControlled) outerSetIsOpen(open);
+    else setInnerIsOpen(open);
   };
-  const handleMounted = () => setMounted(true);
-
-  useEffect(() => {
-    setIsOpened(outerIsOpen);
-  }, [outerIsOpen]);
+  const toggleMenu = () => setOpen(!isOpened);
 
   return (
-    <MenuContext
-      value={{
-        menuMargin,
-        positionCords,
-        setPositionCords,
-        isOpened,
-        toggleMenu,
-        mounted,
-        triggerRef,
-        menuRef,
-        handleMounted,
-      }}
-    >
-      {children}
+    <MenuContext value={{ isOpened, toggleMenu, menuMargin }}>
+      <Popover.Root open={isOpened} onOpenChange={setOpen}>
+        {children}
+      </Popover.Root>
     </MenuContext>
   );
 }
 
-function useMenu() {
-  const values = use(MenuContext);
-  if (!values)
-    throw new Error("the menu context is being used out side of his scope");
-  return values;
-}
+function MenuTrigger({ children, containerClasses }: { children: ReactNode; containerClasses?: string }) {
+  // A wrapper div (not asChild on the child) because children are often
+  // components that do not forward refs (ButtonIcon, Avatar, StatusBadge).
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-function Overlay() {
-  const { toggleMenu } = useMenu();
-
+  // Radix restores focus by calling .focus() on the trigger element, which is
+  // this wrapper div. A plain div without a tabindex cannot receive focus (in
+  // real browsers, not just jsdom), so give it tabIndex={-1} (script-focusable,
+  // not tab-reachable — no double tab stop) and redirect that programmatic
+  // focus to the real interactive descendant (the button/link inside).
   return (
-    <div
-      className="absolute inset-0 z-40 overflow-x-hidden overflow-y-hidden"
-      onClick={(e) => {
-        e.stopPropagation();
-        if (e.target !== e.currentTarget) return;
-        toggleMenu();
-      }}
-    />
+    <Popover.Trigger asChild>
+      <div
+        ref={wrapperRef}
+        tabIndex={-1}
+        className={containerClasses}
+        onFocus={(e) => {
+          if (e.target !== wrapperRef.current) return;
+          wrapperRef.current
+            ?.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+            ?.focus();
+        }}
+      >
+        {children}
+      </div>
+    </Popover.Trigger>
   );
 }
 
 function MenuContent({ children }: { children: ReactNode }) {
-  const {
-    positionCords,
-    setPositionCords,
-    isOpened,
-    mounted,
-    triggerRef,
-    menuRef,
-    handleMounted,
-    menuMargin,
-  } = useMenu();
-
-  useEffect(() => handleMounted(), [handleMounted]);
-
-  useEffect(() => {
-    if (!triggerRef?.current || !menuRef?.current) return;
-
-    const triggerRect = triggerRef.current.getBoundingClientRect();
-    const menuRect = menuRef.current.getBoundingClientRect();
-
-    const pageHight = window.innerHeight + window.scrollY;
-    const pageWidth = window.innerWidth + window.scrollX;
-    let top = triggerRect.bottom + window.scrollY + menuMargin;
-    let left = triggerRect.left + window.scrollX;
-
-    if (pageHight - Math.abs(top) < menuRect.height)
-      top = triggerRect.top + window.scrollY - menuRect.height - menuMargin;
-
-    if (pageHight - Math.abs(top) < menuRect.height)
-      top = pageHight - menuRect.height + window.scrollY - menuMargin;
-
-    if (pageWidth - left < menuRect.width)
-      left = pageWidth - menuRect.width + window.scrollX - menuMargin;
-
-    setPositionCords({ top, left });
-  }, [triggerRef, menuRef, setPositionCords, isOpened, menuMargin]);
-
-  if (!mounted) return null;
-
-  const hasPosition =
-    positionCords.top !== null && positionCords.left !== null;
-
-  return createPortal(
-    <>
-      {isOpened && <Overlay />}
-      <AnimatePresence>
-        {isOpened && (
-          <motion.div
-            key="menu"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            style={{
-              top: positionCords.top ?? 0,
-              left: positionCords.left ?? 0,
-              visibility: hasPosition ? "visible" : "hidden",
-              transformOrigin: "top left",
-            }}
-            className="absolute z-50 rounded-lg bg-neutral-300 text-sm text-neutral-800 shadow-md shadow-neutral-900/10 dark:bg-neutral-800 dark:text-neutral-200"
-            ref={menuRef}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {children}
-          </motion.div>
+  const { menuMargin } = useMenu();
+  return (
+    <Popover.Portal>
+      <Popover.Content
+        side="bottom"
+        align="start"
+        sideOffset={menuMargin}
+        collisionPadding={8}
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "bg-popover text-popover-foreground z-50 rounded-lg text-sm shadow-md shadow-neutral-900/10",
+          "origin-(--radix-popover-content-transform-origin) outline-none",
+          "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
         )}
-      </AnimatePresence>
-    </>,
-    document.body,
+      >
+        {children}
+      </Popover.Content>
+    </Popover.Portal>
   );
 }
 
-function MenuTrigger({
-  children,
-  containerClasses,
-}: {
-  children: ReactNode;
-  containerClasses?: string;
-}) {
-  const { toggleMenu, triggerRef } = useMenu();
-
-  return (
-    <div className={containerClasses} onClick={toggleMenu} ref={triggerRef}>
-      {children}
-    </div>
-  );
+function useMenu() {
+  const context = useContext(MenuContext);
+  if (!context) throw new Error("the menu context is being used out side of his scope");
+  return context;
 }
 
 export { Menu, MenuTrigger, MenuContent, useMenu };
