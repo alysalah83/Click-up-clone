@@ -17,6 +17,8 @@ interface User {
 interface Session {
   user: UserWithoutPassword;
   token: string;
+  /** Guests only: the seeded demo list to land on. */
+  landingListId?: string;
 }
 
 type LoginInputs = z.infer<typeof loginSchema>;

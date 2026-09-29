@@ -20,42 +20,33 @@ async function dragTo(
   await page.mouse.up();
 }
 
-test("guest demo path: onboarding, board drag, task details, table bulk edit, calendar, sign out", async ({
+test("guest demo path: seeded board, drag, task details, table bulk edit, calendar, sign out", async ({
   page,
 }) => {
-  // 1. Continue as guest
+  // 1. Continue as guest: lands on the seeded Sprint Board, no onboarding wizard
   await page.goto("/login");
   await page.getByRole("button", { name: "signup as guest button" }).click();
-
-  // 2. Onboarding wizard: space, list, status, task
-  const wizard = page.getByRole("dialog");
-  await wizard.getByPlaceholder("Enter workspace name").fill("E2E Space");
-  await wizard.getByRole("button", { name: "go next button" }).click();
-  await wizard.getByPlaceholder("Enter List name").fill("E2E List");
-  await wizard.getByRole("button", { name: "go next button" }).click();
-  await wizard.getByPlaceholder("Status Name").fill("Backlog");
-  await wizard.getByRole("button", { name: "go next button" }).click();
-  await wizard.getByPlaceholder("Task Name").fill("E2E Task");
-  await wizard.getByRole("button", { name: "go next button" }).click();
-
-  // 3. Board shows the task
   await expect(page).toHaveURL(/\/home\/lists\/.+\/board/);
-  const card = page.getByRole("button", { name: /E2E Task/ });
+  await expect(page.getByPlaceholder("Enter workspace name")).toHaveCount(0);
+
+  // 2. Board shows seeded tasks
+  const card = page.getByRole("button", { name: /Export tasks to CSV/ });
   await expect(card).toBeVisible();
 
-  // 4. Drag to the "in progress" column
+  // 3. Drag to the "in progress" column
   const inProgressColumn = page
     .locator("div")
     .filter({ has: page.getByText("in progress", { exact: true }) })
     .filter({ has: page.getByText("Add Task") })
     .last();
   await expect(inProgressColumn).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
   await dragTo(page, card, inProgressColumn);
-  await expect(inProgressColumn.getByText("E2E Task")).toBeVisible();
+  await expect(inProgressColumn.getByText("Export tasks to CSV")).toBeVisible();
 
-  // 5. Card click opens the details dialog; Escape closes it
+  // 4. Card click opens the details dialog; Escape closes it
   await inProgressColumn
-    .getByRole("button", { name: /E2E Task/ })
+    .getByRole("button", { name: /Export tasks to CSV/ })
     .first()
     .click();
   const details = page.getByRole("dialog", { name: "Task details" });
@@ -63,16 +54,16 @@ test("guest demo path: onboarding, board drag, task details, table bulk edit, ca
   await page.keyboard.press("Escape");
   await expect(details).toBeHidden();
 
-  // 6. Table view: select all, bulk set priority to urgent
+  // 5. Table view: select all, bulk set priority to urgent
   await page.goto(page.url().replace(/\/board.*$/, "/table"));
   await page.getByRole("checkbox", { name: "checkbox" }).first().click();
   await page.getByRole("button", { name: "update priority button" }).click();
   await page.locator("menu").getByText("Urgent", { exact: true }).click();
   // the selected task's row now shows the urgent priority
-  const taskRow = page.locator("main").filter({ hasText: "E2E Task" }).last();
+  const taskRow = page.locator("main").filter({ hasText: "Export tasks to CSV" }).last();
   await expect(taskRow.getByText("Urgent", { exact: true })).toBeVisible();
 
-  // 7. Calendar view renders
+  // 6. Calendar view renders
   await page.goto(page.url().replace(/\/table.*$/, "/calendar"));
   await expect(
     page.getByRole("button", { name: "month", exact: true }),
@@ -81,7 +72,7 @@ test("guest demo path: onboarding, board drag, task details, table bulk edit, ca
     page.getByRole("button", { name: "Next", exact: true }),
   ).toBeVisible();
 
-  // 8. Sign out
+  // 7. Sign out
   await page.getByRole("button", { name: "sign out button" }).click();
   await expect(page).toHaveURL(/\/login/);
 });

@@ -5,11 +5,16 @@ import { generateToken, type UserRole } from "../lib/middlewares/auth.middleware
 import { COOKIES_OPTIONS } from "../consts/auth.const.js";
 import * as userService from "../services/user.service.js";
 
-function sendSession(res: Response, status: number, user: { id: string; role: UserRole }) {
+function sendSession(
+  res: Response,
+  status: number,
+  user: { id: string; role: UserRole },
+  extra: Record<string, unknown> = {},
+) {
   const token = generateToken(user.id, user.role);
   res.cookie("token", token, COOKIES_OPTIONS);
   // The web app's server reads the token from the body and sets its own cookie (spec §0.1).
-  res.status(status).json({ user, token });
+  res.status(status).json({ user, token, ...extra });
 }
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
@@ -18,8 +23,9 @@ export const registerUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const registerGuest = catchAsync(async (_req: Request, res: Response) => {
-  const user = await userService.registerGuest();
-  sendSession(res, 201, user);
+  const { user, landingListId } = await userService.registerGuest();
+  // The web app sends the new guest straight to the seeded Sprint Board.
+  sendSession(res, 201, user, { landingListId });
 });
 
 export const loginUser = catchAsync(async (req: Request, res: Response) => {
