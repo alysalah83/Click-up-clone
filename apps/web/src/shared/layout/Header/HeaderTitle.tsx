@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { LIST_ID_RESERVED_ROUTES } from "@/shared/constants/layout";
 import { List } from "@/features/list/types";
@@ -17,8 +17,10 @@ function HeaderTitle() {
 
   const { data: list } = useQuery<List>({
     queryKey: ["list", listId],
-    // Populated by hydration; never fetched from the client.
-    enabled: false,
+    // Populated by hydration; never fetched from the client. `skipToken` (rather
+    // than `enabled: false` alone) disables the query without tripping the
+    // dev-only "No queryFn was passed" warning.
+    queryFn: skipToken,
   });
 
   let title = "List";
