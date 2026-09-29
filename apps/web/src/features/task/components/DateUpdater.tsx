@@ -4,6 +4,7 @@ import { useUpdateTask } from "../hooks/useUpdateTask";
 import DateRangePicker from "@/shared/ui/DateRangePicker";
 import { useTask } from "../context/TaskProvider";
 import { TaskDateRange } from "../types";
+import { withDateDefaults } from "./withDateDefaults";
 
 function DateUpdater() {
   const { updateTask } = useUpdateTask();
@@ -27,7 +28,7 @@ function DateUpdater() {
 
   return (
     <DateRangePicker
-      dateRanges={{ startDate, endDate }}
+      dateRanges={withDateDefaults({ startDate, endDate })}
       onDateChange={handleUpdateDate}
     />
   );
