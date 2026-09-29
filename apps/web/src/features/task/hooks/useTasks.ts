@@ -1,29 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import { getSortedParamString } from "../../../shared/lib/utils/getSortedParamString";
-import { Task } from "../types";
 import { getTasksClient } from "../api/tasks.client";
 import { TASK_REVALIDATE_TIME } from "../constants/tasks.const";
+import { useTasksQueryKey } from "./useTasksQueryKey";
 
 export default function useTasks() {
-  const params = useSearchParams();
-  const sortedFilters = getSortedParamString(params);
-  const { listId } = useParams<{ listId: Task["listId"] }>();
+  const { listId, queryKey, sortedFilters } = useTasksQueryKey();
 
   const {
     data: tasks,
     isPending,
     error,
   } = useQuery({
-    queryKey: sortedFilters
-      ? ["tasks", listId, sortedFilters]
-      : ["tasks", listId],
+    queryKey,
     queryFn: () => getTasksClient(listId, sortedFilters),
     enabled: !!listId,
     staleTime: TASK_REVALIDATE_TIME,
   });
 
-  if (error) window.toast?.error(error.message);
-
-  return { tasks, isPending };
+  return { tasks, isPending, error };
 }

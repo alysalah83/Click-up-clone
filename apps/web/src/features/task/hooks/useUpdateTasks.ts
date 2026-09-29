@@ -1,20 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import { getSortedParamString } from "@/shared/lib/utils/getSortedParamString";
 import { updateTasksAction } from "../actions";
 import { Task, UpdateTaskInput } from "../types";
 import { Status } from "@/features/status/types";
 import { ActionErrorResponse } from "@/shared/types/action.types";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
+import { useTasksQueryKey } from "./useTasksQueryKey";
 
 export function useUpdateTasks() {
-  const { listId } = useParams<{ listId: string }>();
-
-  const params = useSearchParams();
-  const sortedFilters = getSortedParamString(params);
-  const queryKey = sortedFilters
-    ? ["tasks", listId, sortedFilters]
-    : ["tasks", listId];
+  const { listId, queryKey, baseKey } = useTasksQueryKey();
 
   const queryClient = useQueryClient();
   const {
@@ -45,7 +38,7 @@ export function useUpdateTasks() {
       tasksId: Set<Task["id"]>;
       updateTasksInput: UpdateTaskInput;
     }) {
-      await queryClient.cancelQueries({ queryKey: ["tasks", listId] });
+      await queryClient.cancelQueries({ queryKey: baseKey });
 
       const previousTasks = queryClient.getQueryData(queryKey);
       let updateTaskInputWithStatus: UpdateTaskInput & { status?: Status };
@@ -64,7 +57,7 @@ export function useUpdateTasks() {
         };
       } else updateTaskInputWithStatus = updateTasksInput;
 
-      queryClient.setQueryData(queryKey, (oldTasks: Task[]) => {
+      queryClient.setQueryData(queryKey, (oldTasks: Task[] = []) => {
         const newUpdatedTasks = oldTasks.map((task) =>
           tasksId.has(task.id)
             ? { ...task, ...updateTaskInputWithStatus }
@@ -83,7 +76,7 @@ export function useUpdateTasks() {
     },
 
     onSettled() {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: baseKey });
     },
   });
   return { updateTasks, status, error };

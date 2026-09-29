@@ -1,23 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
 import { CreateTaskInput, Task } from "../types";
 import { createTaskAction } from "../actions";
-import { getSortedParamString } from "@/shared/lib/utils/getSortedParamString";
 import { Status } from "@/features/status/types";
 import type {
   ActionErrorResponse,
   ActionResponse,
 } from "@/shared/types/action.types";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
+import { useTasksQueryKey } from "./useTasksQueryKey";
 
 export function useAddTask(taskStatusId: Task["statusId"]) {
-  const { listId } = useParams<{ listId: string }>();
-
-  const params = useSearchParams();
-  const sortedFilters = getSortedParamString(params);
-  const queryKey = sortedFilters
-    ? ["tasks", listId, sortedFilters]
-    : ["tasks", listId];
+  const { listId, queryKey, baseKey } = useTasksQueryKey();
 
   const queryClient = useQueryClient();
 
@@ -32,7 +25,7 @@ export function useAddTask(taskStatusId: Task["statusId"]) {
       return response;
     },
     async onMutate(createTaskInputs: CreateTaskInput) {
-      await queryClient.cancelQueries({ queryKey: ["tasks", listId] });
+      await queryClient.cancelQueries({ queryKey: baseKey });
       const previousTasks = queryClient.getQueryData(queryKey);
       const currentStatuses = queryClient.getQueryData([
         "statuses",
@@ -69,19 +62,17 @@ export function useAddTask(taskStatusId: Task["statusId"]) {
     ) {
       if (data.status === "success" && "payload" in data) {
         const { newTask } = data.payload;
-        queryClient.setQueryData(
-          ["tasks", listId],
-          (oldOptimisticTasks: Task[] = []) =>
-            oldOptimisticTasks.map((task) =>
-              task.id === context.tempId ? newTask : task,
-            ),
+        queryClient.setQueryData(queryKey, (oldOptimisticTasks: Task[] = []) =>
+          oldOptimisticTasks.map((task) =>
+            task.id === context.tempId ? newTask : task,
+          ),
         );
         window.toast?.success(`Task (${newTask.name}) has been added`);
       }
     },
 
     onSettled() {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: baseKey });
     },
   });
   return { addTask, error, status };

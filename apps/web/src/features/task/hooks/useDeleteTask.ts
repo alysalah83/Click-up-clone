@@ -1,6 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import { getSortedParamString } from "@/shared/lib/utils/getSortedParamString";
 import { deleteTaskAction } from "../actions";
 import { Task } from "../types";
 import type {
@@ -8,15 +6,10 @@ import type {
   ActionErrorResponse,
 } from "@/shared/types/action.types";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
+import { useTasksQueryKey } from "./useTasksQueryKey";
 
 export function useDeleteTask() {
-  const { listId } = useParams<{ listId: string }>();
-
-  const params = useSearchParams();
-  const sortedFilters = getSortedParamString(params);
-  const queryKey = sortedFilters
-    ? ["tasks", listId, sortedFilters]
-    : ["tasks", listId];
+  const { listId, queryKey, baseKey } = useTasksQueryKey();
 
   const queryClient = useQueryClient();
   const {
@@ -31,7 +24,7 @@ export function useDeleteTask() {
     },
 
     async onMutate({ taskId }: { taskId: string }) {
-      await queryClient.cancelQueries({ queryKey: ["tasks", listId] });
+      await queryClient.cancelQueries({ queryKey: baseKey });
 
       const previousTasks = queryClient.getQueryData(queryKey);
 
@@ -57,7 +50,7 @@ export function useDeleteTask() {
     },
 
     onSettled() {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: baseKey });
     },
   });
   return { deleteTask, status, error };
