@@ -50,6 +50,8 @@ model User {
   memberships    WorkspaceMember[]
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
+  activities     Activity[]
+  checklistItems ChecklistItem[]
 
   @@index([demoOwnerId])
 }
@@ -62,6 +64,7 @@ model Workspace {
   lists     List[]
   members   WorkspaceMember[]
   invites   WorkspaceInvite[]
+  tags      Tag[]
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
@@ -144,12 +147,22 @@ model Task {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   assignees TaskAssignee[]
+  /// Tiptap (ProseMirror) JSON document.
+  description  Json?
+  /// Set on subtasks: the parent task (same list). Subtasks are hidden from top-level views.
+  parentTaskId String?
+  subtasks     Task[]      @relation("Subtasks")
+  checklists   Checklist[]
+  tags         TaskTag[]
+  activities   Activity[]
 
-  status Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
-  user   User   @relation(fields: [userId], references: [id])
-  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  status     Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
+  user       User   @relation(fields: [userId], references: [id])
+  list       List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  parentTask Task?  @relation("Subtasks", fields: [parentTaskId], references: [id], onDelete: Cascade)
 
   @@index([listId])
+  @@index([parentTaskId])
   @@index([statusId])
   @@index([userId])
 }
@@ -194,4 +207,73 @@ model WorkspaceInvite {
 
   @@index([workspaceId])
   @@index([createdById])
+}
+
+model Checklist {
+  id        String          @id @default(uuid())
+  taskId    String
+  name      String
+  order     Int             @default(0)
+  createdAt DateTime        @default(now())
+  items     ChecklistItem[]
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+}
+
+model ChecklistItem {
+  id          String   @id @default(uuid())
+  checklistId String
+  text        String
+  done        Boolean  @default(false)
+  order       Int      @default(0)
+  assigneeId  String?
+  createdAt   DateTime @default(now())
+
+  checklist Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  assignee  User?     @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  @@index([checklistId])
+  @@index([assigneeId])
+}
+
+model Tag {
+  id          String    @id @default(uuid())
+  workspaceId String
+  name        String
+  color       String
+  createdAt   DateTime  @default(now())
+  tasks       TaskTag[]
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, name])
+}
+
+model TaskTag {
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+  @@index([tagId])
+}
+
+/// Who changed what on a task; written by the task services. `data` shape depends on `type`.
+model Activity {
+  id        String   @id @default(uuid())
+  taskId    String
+  actorId   String
+  type      String
+  data      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  task  Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+  @@index([actorId])
 }
