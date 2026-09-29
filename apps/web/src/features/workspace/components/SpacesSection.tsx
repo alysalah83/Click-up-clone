@@ -39,7 +39,7 @@ async function SpacesSection() {
         <ModalTrigger>
           <RowAddNew label="New Workspace" />
         </ModalTrigger>
-        <ModalContent contentYPosition="withTopMargin">
+        <ModalContent contentYPosition="withTopMargin" title="Create a Space">
           <CreateWorkspaceForm />
         </ModalContent>
       </Modal>

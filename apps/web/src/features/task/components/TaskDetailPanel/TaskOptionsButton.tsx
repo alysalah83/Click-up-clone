@@ -18,7 +18,7 @@ function TaskOptionsButton({ task, buttonSize = 3 }: TaskOptionsButton) {
           ariaLabel="open task panel"
         />
       </ModalTrigger>
-      <ModalContent contentYPosition="withTopMargin">
+      <ModalContent contentYPosition="withTopMargin" title="Task details">
         <TaskDetailPanel task={task} />
       </ModalContent>
     </Modal>
