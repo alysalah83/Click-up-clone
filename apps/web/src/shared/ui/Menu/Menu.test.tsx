@@ -283,4 +283,53 @@ describe("Menu", () => {
     await user.click(screen.getByText(/open menu/!));
     expect(mockFn).toHaveBeenCalledTimes(2);
   });
+
+  it("makes a non-focusable trigger keyboard-reachable and opens it with Enter and Space", async () => {
+    const user = userEvent.setup();
+    render(
+      <Menu>
+        <MenuTrigger>
+          <div>status badge</div>
+        </MenuTrigger>
+        <MenuContent>
+          <div>content</div>
+        </MenuContent>
+      </Menu>,
+    );
+    await user.tab();
+    const wrapper = screen.getByRole("button");
+    expect(wrapper).toHaveFocus();
+    expect(wrapper).toHaveTextContent("status badge");
+
+    await user.keyboard("{Enter}");
+    expect(screen.getByText(/^content$/i)).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText(/^content$/i)).not.toBeInTheDocument();
+    expect(wrapper).toHaveFocus();
+
+    await user.keyboard(" ");
+    expect(screen.getByText(/^content$/i)).toBeInTheDocument();
+  });
+
+  it("does not add a second tab stop when the trigger child is focusable", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Menu>
+          <MenuTrigger>
+            <button type="button">open menu</button>
+          </MenuTrigger>
+          <MenuContent>
+            <div>content</div>
+          </MenuContent>
+        </Menu>
+        <button type="button">after</button>
+      </>,
+    );
+    await user.tab();
+    expect(screen.getByText("open menu")).toHaveFocus();
+    await user.tab();
+    expect(screen.getByText("after")).toHaveFocus();
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+  });
 });

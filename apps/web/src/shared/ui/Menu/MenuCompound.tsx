@@ -4,6 +4,7 @@ import { Popover } from "radix-ui";
 import {
   createContext,
   useContext,
+  useLayoutEffect,
   useRef,
   useState,
   type Dispatch,
@@ -48,10 +49,20 @@ function Menu({ children, menuMargin = MENU_MARGIN, outerIsOpen = false, outerSe
   );
 }
 
+const FOCUSABLE_SELECTOR = 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 function MenuTrigger({ children, containerClasses }: { children: ReactNode; containerClasses?: string }) {
   // A wrapper div (not asChild on the child) because children are often
   // components that do not forward refs (ButtonIcon, Avatar, StatusBadge).
   const wrapperRef = useRef<HTMLDivElement>(null);
+  // Some triggers wrap a non-interactive child (e.g. StatusBadge's <div>).
+  // Those would be unreachable from the keyboard, so the wrapper itself
+  // becomes the tab stop (tabIndex 0 + role="button") — but only then, so a
+  // trigger with a focusable child doesn't get a second tab stop.
+  const [selfFocusable, setSelfFocusable] = useState(false);
+  useLayoutEffect(() => {
+    setSelfFocusable(!wrapperRef.current?.querySelector(FOCUSABLE_SELECTOR));
+  });
 
   // Radix restores focus by calling .focus() on the trigger element, which is
   // this wrapper div. A plain div without a tabindex cannot receive focus (in
@@ -62,13 +73,25 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
     <Popover.Trigger asChild>
       <div
         ref={wrapperRef}
-        tabIndex={-1}
-        className={cn(containerClasses, "outline-none")}
+        tabIndex={selfFocusable ? 0 : -1}
+        role={selfFocusable ? "button" : undefined}
+        className={cn(
+          containerClasses,
+          "outline-none",
+          selfFocusable && "focus-visible:ring-ring rounded-sm focus-visible:ring-2",
+        )}
         onFocus={(e) => {
           if (e.target !== wrapperRef.current) return;
-          wrapperRef.current
-            ?.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-            ?.focus();
+          wrapperRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
+        }}
+        onKeyDown={(e) => {
+          // A div has no native Enter/Space activation; emulate a button's
+          // so the Radix trigger's click handler toggles the menu.
+          if (!selfFocusable || e.target !== wrapperRef.current) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            wrapperRef.current?.click();
+          }
         }}
       >
         {children}
