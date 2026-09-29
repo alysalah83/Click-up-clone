@@ -21,15 +21,15 @@ function CreateTaskRow({
     (status) => status.type === "active" && status.isDefault,
   ) as Status;
   const { setValue, control, handleSubmit, isValid, errors, formRef } =
-    useAddTaskForm({ statusId: inProgress?.id, onClose });
-  const startDate = new Date(cellDate);
-  setValue("startDate", startDate);
+    useAddTaskForm({
+      statusId: inProgress?.id,
+      onClose,
+      defaultValues: { startDate: new Date(cellDate) },
+    });
   const priority = useWatch({ control, name: "priority" }) ?? "none";
   const priorityObj = TASK_PRIORITIES_LIST.find(
     (prio) => prio.label.toLowerCase() === priority,
   );
-
-  console.log(errors);
 
   return (
     <form

@@ -10,27 +10,30 @@ function HeaderFeatures() {
   const isInTaskView = TASK_VIEWS.some((taskView) =>
     pathname.endsWith(`/${taskView}`),
   );
+  const isInCalendarView = pathname.endsWith("/calendar");
   const isInTableView = pathname.includes("table");
 
   return (
     isInTaskView && (
       <div className="mb-1 flex flex-wrap items-center gap-2 sm:gap-4">
         <>
-          <Menu>
-            <MenuTrigger>
-              <Button
-                type="colored"
-                size="smallWithMidPadding"
-                rounded="large"
-                ariaLabel="add status button"
-              >
-                Add Status
-              </Button>
-            </MenuTrigger>
-            <MenuContent>
-              <AddStatus />
-            </MenuContent>
-          </Menu>
+          {!isInCalendarView && (
+            <Menu>
+              <MenuTrigger>
+                <Button
+                  type="colored"
+                  size="smallWithMidPadding"
+                  rounded="large"
+                  ariaLabel="add status button"
+                >
+                  Add Status
+                </Button>
+              </MenuTrigger>
+              <MenuContent>
+                <AddStatus />
+              </MenuContent>
+            </Menu>
+          )}
           <SortBtnWithMenu withSortStatusField={isInTableView} />{" "}
         </>
       </div>

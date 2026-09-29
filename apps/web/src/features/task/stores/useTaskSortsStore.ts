@@ -5,10 +5,12 @@ interface UseTaskSortsStore {
   tableSorts: NewSorts;
   boardSorts: NewSorts;
   listSorts: NewSorts;
+  calendarSorts: NewSorts;
 
   setTableSorts: (newSorts: NewSorts) => void;
   setBoardSorts: (newSorts: NewSorts) => void;
   setListSorts: (newSorts: NewSorts) => void;
+  setCalendarSorts: (newSorts: NewSorts) => void;
 }
 
 export interface NewSorts {
@@ -32,8 +34,10 @@ export const useTaskSortsStore = create<UseTaskSortsStore>((set) => ({
     createdAt: "",
   },
   listSorts: { status: "", priority: "", dueDate: "", createdAt: "" },
+  calendarSorts: { status: "", priority: "", dueDate: "", createdAt: "" },
 
   setTableSorts: (newSorts) => set({ tableSorts: newSorts }),
   setBoardSorts: (newSorts) => set({ boardSorts: newSorts }),
   setListSorts: (newSorts) => set({ listSorts: newSorts }),
+  setCalendarSorts: (newSorts) => set({ calendarSorts: newSorts }),
 }));
