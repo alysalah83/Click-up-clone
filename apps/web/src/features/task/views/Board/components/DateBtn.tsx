@@ -3,7 +3,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import ButtonIcon from "@/shared/ui/Button/ButtonIcon";
 import { useTask } from "../../../context/TaskProvider";
 import { ICON_SIZE } from "../board.const";

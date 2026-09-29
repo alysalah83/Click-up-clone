@@ -8,7 +8,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "../../ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import { IconsMap } from "@/shared/icons/icons.type";
 import { SIDE_NAV_ITEMS } from "./sideNav.const";
 import { signOutUser } from "@/features/auth/actions/signout-user.action";

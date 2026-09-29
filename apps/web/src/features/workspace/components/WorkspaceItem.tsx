@@ -10,7 +10,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import { useRename } from "../contexts/RenameProvider";
 import OptionsContent from "./OptionsContent";
 import { Workspace } from "../types";

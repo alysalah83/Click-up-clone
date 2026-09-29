@@ -5,7 +5,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "../../ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import UserLogo from "@/features/auth/components/UserLogo";
 import { useSideBarStore } from "../SideBar/useSideNavStore";
 import { UserWithoutPassword } from "@/features/auth/types";
