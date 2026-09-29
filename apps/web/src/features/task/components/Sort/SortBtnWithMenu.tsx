@@ -1,15 +1,28 @@
+"use client";
+
 import { Menu, MenuTrigger, MenuContent } from "@/shared/ui/Menu/MenuCompound";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Button } from "@/shared/ui/Button";
 import { hoverElementClasses } from "@/shared/constants/styles";
+import { usePathname } from "next/navigation";
 import { SORT_FIELDS } from "./sort.consts";
 import SortRowField from "./SortRowField";
+import { UsedFor } from "./sort.type";
 
-function SortBtn({
+function SortBtnWithMenu({
   withSortStatusField = false,
 }: {
   withSortStatusField?: boolean;
 }) {
+  const pathname = usePathname();
+  const usedFor: UsedFor = pathname.endsWith("/calendar")
+    ? "calendar"
+    : pathname.endsWith("/list")
+      ? "list"
+      : pathname.endsWith("/table")
+        ? "table"
+        : "board";
+
   return (
     <Menu>
       <MenuTrigger>
@@ -40,7 +53,7 @@ function SortBtn({
                   <SortRowField
                     sortField={sortField}
                     withLabel={true}
-                    usedFor="board"
+                    usedFor={usedFor}
                   />
                 </li>
               );
@@ -52,4 +65,4 @@ function SortBtn({
   );
 }
 
-export default SortBtn;
+export default SortBtnWithMenu;

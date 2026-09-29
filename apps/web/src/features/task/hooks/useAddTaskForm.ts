@@ -11,12 +11,24 @@ import { useEffect, useRef } from "react";
 interface UseClientAddTaskProps {
   statusId: Task["statusId"];
   onClose: () => void;
+  defaultValues?: Partial<CreateTaskInput>;
 }
 
-export function useAddTaskForm({ statusId, onClose }: UseClientAddTaskProps) {
+export function useAddTaskForm({
+  statusId,
+  onClose,
+  defaultValues: extraDefaultValues,
+}: UseClientAddTaskProps) {
   const { listId } = useParams<{ listId: string }>();
   const formRef = useRef<HTMLFormElement>(null);
   const { addTask } = useAddTask(statusId);
+  const baseDefaultValues: CreateTaskInput = {
+    name: "",
+    priority: "none",
+    statusId,
+    listId,
+    ...extraDefaultValues,
+  };
   const {
     register,
     handleSubmit,
@@ -27,13 +39,13 @@ export function useAddTaskForm({ statusId, onClose }: UseClientAddTaskProps) {
     formState: { errors, isValid },
   } = useForm<CreateTaskInput>({
     resolver: zodResolver(createTaskSchema) as Resolver<CreateTaskInput>,
-    defaultValues: { name: "", priority: "none", statusId, listId },
+    defaultValues: baseDefaultValues,
     mode: "onChange",
   });
 
   const onSubmit = (data: CreateTaskInput) => {
     addTask(data);
-    reset({ name: "", priority: "none", statusId, listId });
+    reset(baseDefaultValues);
   };
 
   useEffect(() => {
