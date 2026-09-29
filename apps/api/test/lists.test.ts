@@ -80,6 +80,20 @@ describe("lists", () => {
     expect(found).toMatchObject({ totalTasksCount: 3, completedTasksCount: 2 });
   });
 
+  it("withCounts=true never includes or counts another user's lists and tasks", async () => {
+    const a = await signUp();
+    const b = await signUp();
+    const seededA = await seedWorkspace(a.cookie);
+    const seededB = await seedWorkspace(b.cookie);
+    await createTask(a.cookie, { listId: seededA.list.id, statusId: seededA.openStatus.id });
+    await createTask(b.cookie, { listId: seededB.list.id, statusId: seededB.openStatus.id });
+    await createTask(b.cookie, { listId: seededB.list.id, statusId: seededB.doneStatus.id });
+
+    const res = await api().get("/api/lists?withCounts=true").set("Cookie", a.cookie).expect(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toMatchObject({ id: seededA.list.id, totalTasksCount: 1, completedTasksCount: 0 });
+  });
+
   it("GET without ?withCounts= keeps the current shape (no count keys)", async () => {
     const a = await signUp();
     await seedWorkspace(a.cookie);

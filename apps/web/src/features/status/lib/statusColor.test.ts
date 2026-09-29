@@ -36,7 +36,6 @@ describe("statusColorHex", () => {
     const a = statusColorHex("aaaaaaaa", {});
     const b = statusColorHex("zzzzzzzz", {});
 
-    expect(typeof a).toBe("string");
-    expect(typeof b).toBe("string");
+    expect(a).not.toBe(b);
   });
 });

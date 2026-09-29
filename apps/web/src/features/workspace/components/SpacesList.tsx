@@ -9,7 +9,7 @@ async function SpacesList() {
   return (
     <menu className="flex flex-col gap-4">
       {workspaces.map((workspace) => (
-        <SpaceItem workspace={workspace} lists={workspace.lists} key={workspace.id} />
+        <SpaceItem workspace={workspace} lists={workspace.lists ?? []} /* API may lag web during deploy */ key={workspace.id} />
       ))}
     </menu>
   );

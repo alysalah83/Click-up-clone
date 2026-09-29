@@ -37,7 +37,8 @@ async function ListsSummery() {
 }
 
 function ListItem({ list }: { list: ListWithCounts }) {
-  const { name, id, totalTasksCount, completedTasksCount } = list;
+  // counts default to 0: API may lag web during deploy
+  const { name, id, totalTasksCount = 0, completedTasksCount = 0 } = list;
   return (
     <div className="flex items-center justify-between gap-3 sm:gap-4">
       <Link href={`/home/lists/${id}/board`}>
