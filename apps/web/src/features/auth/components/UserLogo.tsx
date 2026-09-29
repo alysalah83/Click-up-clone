@@ -1,6 +1,6 @@
 import { use } from "react";
 import { UserWithoutPassword } from "../types";
-import Link from "next/link";
+import { ButtonLink } from "@/shared/ui/Button";
 
 function UserLogo({
   userPromise,
@@ -11,11 +11,16 @@ function UserLogo({
   if (!user) return null;
   if (user.role === "guest")
     return (
-      <Link href="/signup" className="ml-2">
-        <p className="text-xl font-bold tracking-wide text-neutral-700 capitalize underline transition duration-200 hover:text-neutral-500 hover:no-underline active:text-neutral-500 active:no-underline dark:text-neutral-400">
-          Sign in
-        </p>
-      </Link>
+      <ButtonLink
+        href="/signup"
+        type="colored"
+        size="small"
+        rounded="full"
+        ariaLabel="sign up to save your work"
+        extraClasses="ml-2 normal-case"
+      >
+        Sign up to save your work
+      </ButtonLink>
     );
   const { name } = user;
   const nameFirstLetters =

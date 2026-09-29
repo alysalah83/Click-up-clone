@@ -16,7 +16,6 @@ import {
 } from "@/shared/ui/DropDown/DropdownCompound";
 import { useParams } from "next/navigation";
 import { useList } from "./ListContext";
-import Link from "next/link";
 import { List } from "../types";
 import OptionsContent from "./OptionsContent";
 import { ICONS_SIZE } from "../consts";
@@ -56,14 +55,13 @@ export function Heading({
     <div
       className={`flex w-full items-center ${isRenameOpen ? "" : "max-w-3/4"} gap-1`}
     >
-      <Link href={`/home/lists/${list.id}/board`}>
-        <ButtonIcon
-          icon="list"
-          ariaLabel="project list item"
-          iconColor={isListIdActive ? "fill-green-600" : undefined}
-          size={ICONS_SIZE}
-        />
-      </Link>
+      <ButtonIcon
+        icon="list"
+        href={`/home/lists/${list.id}/board`}
+        ariaLabel={`open ${list.name}`}
+        iconColor={isListIdActive ? "fill-green-600" : undefined}
+        size={ICONS_SIZE}
+      />
       <NameField />
     </div>
   );
@@ -103,7 +101,7 @@ function FeatureBtns({ listId }: { listId: string }) {
                     size={ICONS_SIZE}
                   />
                 </ToolTipTrigger>
-                <ToolTipMessage>Space settings</ToolTipMessage>
+                <ToolTipMessage>List settings</ToolTipMessage>
               </ToolTip>
             </MenuTrigger>
             <MenuContent>

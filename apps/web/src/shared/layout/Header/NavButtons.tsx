@@ -2,7 +2,7 @@ import { ButtonWithIconLabel } from "@/shared/ui/Button";
 import { HEADER_MENU } from "./Header.const";
 import { usePathname } from "next/navigation";
 import { List } from "@/features/list/types";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 function NavButtons({
   latestListIdPromise,
@@ -10,14 +10,14 @@ function NavButtons({
   latestListIdPromise: Promise<{ id: List["id"] } | undefined>;
 }) {
   const pathname = usePathname();
-  const itemRefs = useRef<HTMLButtonElement[]>([]);
+  const itemRefs = useRef<HTMLAnchorElement[]>([]);
   const pillRef = useRef<HTMLSpanElement>(null);
 
   const activeItemIndex = HEADER_MENU.findIndex((item) =>
     pathname.endsWith(item.href),
   );
 
-  const movePill = (index: number, isActive: boolean) => {
+  const movePill = useCallback((index: number, isActive: boolean) => {
     const ele = itemRefs.current[index];
     const pill = pillRef.current;
     if (!ele || !pill) return;
@@ -27,15 +27,19 @@ function NavButtons({
     pill.style.height = isActive ? `calc(100% - 6px)` : `calc(100% - 8px)`;
     pill.classList.toggle("rounded-t-lg", isActive);
     pill.classList.toggle("rounded-lg", !isActive);
-  };
+  }, []);
 
   useEffect(() => {
     movePill(activeItemIndex, true);
-  }, [activeItemIndex]);
+    // The tabs scroll horizontally instead of wrapping, so re-measure on resize.
+    const handleResize = () => movePill(activeItemIndex, true);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeItemIndex, movePill]);
 
   return (
     <menu
-      className="relative flex flex-wrap gap-1 sm:gap-2"
+      className="relative flex max-w-full flex-nowrap gap-1 overflow-x-auto [scrollbar-width:none] sm:gap-2 [&::-webkit-scrollbar]:hidden"
       onPointerLeave={() => movePill(activeItemIndex, true)}
     >
       <span

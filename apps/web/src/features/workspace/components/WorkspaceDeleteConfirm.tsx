@@ -22,6 +22,7 @@ function WorkspaceDeleteConfirm() {
         })
       }
       deletedName={name}
+      entity="space"
     />
   );
 }

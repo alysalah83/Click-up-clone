@@ -13,6 +13,7 @@ import { List } from "@/features/list/types";
 import ThemeButton from "./ThemeButton";
 import HeaderFeatures from "./HeaderFeatures";
 import NavButtons from "./NavButtons";
+import HeaderTitle from "./HeaderTitle";
 
 function Header({
   userPromise,
@@ -48,12 +49,12 @@ function Header({
           )}
           <ButtonIcon
             icon="list"
-            ariaLabel="project list item"
+            ariaLabel="current page"
             size={4.5}
-            withBg={true}
             padding="large"
+            asDecoration
           />
-          <h4 className="truncate text-sm font-bold capitalize">Workload</h4>
+          <HeaderTitle />
         </div>
         <div className="ml-auto flex items-center gap-1">
           <ThemeButton />

@@ -8,9 +8,10 @@ import { ActionResponse } from "../types/action.types";
 interface DeleteConfirmProps {
   deleteAction: (...args: unknown[]) => Promise<ActionResponse>;
   deletedName: string;
+  entity: "space" | "list";
 }
 
-function DeleteConfirm({ deleteAction, deletedName }: DeleteConfirmProps) {
+function DeleteConfirm({ deleteAction, deletedName, entity }: DeleteConfirmProps) {
   const { closeModal } = useModal();
   const [state, action, isPending] = useActionState(deleteAction, {
     status: "idle",
@@ -25,8 +26,9 @@ function DeleteConfirm({ deleteAction, deletedName }: DeleteConfirmProps) {
         <div className="flex flex-col gap-2">
           <h3 className="text-xl font-medium">Delete: {deletedName}</h3>
           <p className="text-sm font-medium text-neutral-500">
-            All tasks and projects within this Space will be deleted.
-            Additionally, automations will become inactive.
+            {entity === "space"
+              ? "All lists and tasks within this Space will be deleted."
+              : "All tasks within this List will be deleted."}
           </p>
         </div>
         {state.status === "error" && (

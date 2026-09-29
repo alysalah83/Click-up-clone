@@ -1,7 +1,8 @@
 import SignupGuestBtn from "@/features/auth/components/SignupGuestBtn";
-import { Button } from "@/shared/ui/Button";
+import { ButtonLink } from "@/shared/ui/Button";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import Link from "next/link";
+import ApiWarmup from "@/shared/components/ApiWarmup";
 import Image from "next/image";
 import icon from "./icon.png";
 
@@ -69,6 +70,7 @@ const FEATURES = [
 function Page() {
   return (
     <div className="relative min-h-dvh w-full overflow-x-hidden bg-gray-50">
+      <ApiWarmup />
       <nav className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5 md:px-10">
         <Link href="/" className="flex items-center gap-2">
           <Image src={icon} alt="Click Up logo" width={30} height={30} />
@@ -77,26 +79,20 @@ function Page() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/login">
-            <Button
+          <ButtonLink href="/login"
               type="secondary"
               size="medium"
               ariaLabel="login button"
-              buttonFor="button"
             >
               Login
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button
+            </ButtonLink>
+          <ButtonLink href="/signup"
               type="colored"
               size="medium"
               ariaLabel="sign up button"
-              buttonFor="button"
             >
               Sign Up
-            </Button>
-          </Link>
+            </ButtonLink>
         </div>
       </nav>
 
@@ -138,17 +134,14 @@ function Page() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/signup">
-              <Button
+            <ButtonLink href="/signup"
                 type="primary"
                 size="large"
                 ariaLabel="get started button"
-                buttonFor="button"
                 extraClasses="shadow-lg shadow-black/20 !bg-white !text-indigo-700 hover:!bg-indigo-50"
               >
                 Get Started — Free
-              </Button>
-            </Link>
+              </ButtonLink>
             <SignupGuestBtn />
           </div>
         </div>
@@ -231,28 +224,22 @@ function Page() {
             productivity.
           </p>
           <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/signup">
-              <Button
+            <ButtonLink href="/signup"
                 type="primary"
                 size="large"
                 ariaLabel="sign up now button"
-                buttonFor="button"
                 extraClasses="!bg-white !text-indigo-700 hover:!bg-indigo-50 shadow-lg shadow-black/10"
               >
                 Sign Up Now
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button
+              </ButtonLink>
+            <ButtonLink href="/login"
                 type="secondary"
                 size="large"
                 ariaLabel="login button"
-                buttonFor="button"
                 extraClasses="!bg-transparent !border-white/30 !text-white hover:!bg-white/10"
               >
                 Login
-              </Button>
-            </Link>
+              </ButtonLink>
           </div>
         </div>
       </section>

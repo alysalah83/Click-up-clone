@@ -66,7 +66,7 @@ function SignupForm() {
           <FormInputWithLabel
             icon="lock"
             label="Choose Password"
-            placeholder="Minimum 8 charter"
+            placeholder="Minimum 6 characters"
             inputType="password"
             errorMessage={errors.password?.message}
             disabled={isPending}

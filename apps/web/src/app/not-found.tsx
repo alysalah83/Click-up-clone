@@ -1,8 +1,7 @@
 import { ICONS_MAP } from "@/shared/icons/icons-map";
-import Link from "next/link";
 import "@/styles/globals.css";
 import { Metadata } from "next";
-import { Button } from "@/shared/ui/Button";
+import { ButtonLink } from "@/shared/ui/Button";
 
 export const metadata: Metadata = {
   title: "Not Found",
@@ -17,21 +16,19 @@ function NotFound() {
         </div>
 
         <h2 className="text-xl font-semibold text-neutral-200">
-          List not found
+          Page not found
         </h2>
         <p className="text-center text-base font-medium text-neutral-400">
-          This list doesn&apos;t exist or may have been deleted.
+          The page you&apos;re looking for doesn&apos;t exist or may have been deleted.
         </p>
-        <Link href="/home/lists" className="w-full">
-          <Button
+        <ButtonLink href="/home/lists"
             stretch={true}
             type="colored"
             size="large"
             ariaLabel="go to lists overview page"
           >
             Go to home
-          </Button>
-        </Link>
+          </ButtonLink>
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
 import { ICONS_MAP } from "@/shared/icons/icons-map";
-import Link from "next/link";
 import "@/styles/globals.css";
 import { Metadata } from "next";
-import { Button } from "@/shared/ui/Button";
+import { ButtonLink } from "@/shared/ui/Button";
 
 export const metadata: Metadata = {
   title: "Not Found",
@@ -25,16 +24,14 @@ function GlobalNotFound() {
               The page you&apos;re looking for doesn&apos;t exist or the URL may
               be incorrect.
             </p>
-            <Link href="/home/lists" className="w-full">
-              <Button
+            <ButtonLink href="/home/lists"
                 stretch={true}
                 type="colored"
                 size="large"
                 ariaLabel="go to lists overview page"
               >
                 Go to home
-              </Button>
-            </Link>
+              </ButtonLink>
           </div>
         </div>
       </body>

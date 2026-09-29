@@ -21,7 +21,11 @@ function ListDeleteConfirm() {
   );
 
   return (
-    <OptionsDeleteConfirm deleteAction={deleteListWithIds} deletedName={name} />
+    <OptionsDeleteConfirm
+      deleteAction={deleteListWithIds}
+      deletedName={name}
+      entity="list"
+    />
   );
 }
 

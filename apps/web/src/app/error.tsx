@@ -1,9 +1,8 @@
 "use client";
 
 import { ICONS_MAP } from "@/shared/icons/icons-map";
-import { Button } from "@/shared/ui/Button";
+import { Button, ButtonLink } from "@/shared/ui/Button";
 import { ApiError } from "@/shared/lib/errors";
-import Link from "next/link";
 
 function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -38,16 +37,14 @@ function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
         )}
 
         {statusCode === 401 ? (
-          <Link href="/login">
-            <Button
+          <ButtonLink href="/login"
               stretch={true}
               type="colored"
               size="large"
               ariaLabel="go to login"
             >
               Go to Login
-            </Button>
-          </Link>
+            </ButtonLink>
         ) : statusCode === 0 ? (
           <Button
             onClick={() => reset()}

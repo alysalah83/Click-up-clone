@@ -6,6 +6,7 @@ import {
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import React, { memo } from "react";
 import clsx from "clsx";
+import Link from "next/link";
 import type { StylesSizes } from "@/shared/types/index.types";
 import { IconsMap } from "@/shared/icons/icons.type";
 
@@ -36,6 +37,10 @@ interface ButtonIconProps {
   btnType?: HTMLButtonElement["type"];
   disabled?: boolean;
   disabledIconColor?: string;
+  /** Renders a link (an anchor styled as the icon button) instead of a <button>. */
+  href?: string;
+  /** Renders a non-interactive icon (a span) for use inside a link or as decoration. */
+  asDecoration?: boolean;
 }
 
 function ButtonIcon({
@@ -55,6 +60,8 @@ function ButtonIcon({
   btnType = "button",
   disabled = false,
   disabledIconColor,
+  href,
+  asDecoration = false,
 }: ButtonIconProps) {
   if (type === "default" && isActive)
     throw new Error("buttonIcon with default type cannot be active");
@@ -110,6 +117,34 @@ function ButtonIcon({
     "text-base": labelSize === "large",
   });
 
+  const content = label ? (
+    <span className="flex items-center gap-1.5 px-1">
+      <Icon className={iconClasses} />
+      <span className={labelClasses}>{label}</span>
+    </span>
+  ) : (
+    <Icon className={iconClasses} />
+  );
+
+  if (asDecoration)
+    return (
+      <span className={clsx(buttonClasses, "inline-block")} aria-hidden="true">
+        {content}
+      </span>
+    );
+
+  if (href)
+    return (
+      <Link
+        href={href}
+        className={clsx(buttonClasses, "inline-block")}
+        aria-label={ariaLabel}
+        aria-current={isActive ? "page" : undefined}
+      >
+        {content}
+      </Link>
+    );
+
   return (
     <button
       onClick={onClick}
@@ -118,14 +153,7 @@ function ButtonIcon({
       type={btnType}
       disabled={disabled}
     >
-      {label ? (
-        <span className="flex items-center gap-1.5 px-1">
-          <Icon className={iconClasses} />
-          <span className={labelClasses}>{label}</span>
-        </span>
-      ) : (
-        <Icon className={iconClasses} />
-      )}
+      {content}
     </button>
   );
 }

@@ -21,6 +21,8 @@ async function ListIdDataLayer({
   if (!list) notFound();
 
   const queryClient = new QueryClient();
+  // Seed the client cache so the header can show the list name without a request.
+  queryClient.setQueryData(["list", listId], list);
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: ["tasks", listId],
