@@ -13,7 +13,9 @@ export function buildTasksQueryKey(
 
 export function useTasksQueryKey() {
   const { listId } = useParams<{ listId: Task["listId"] }>();
-  const params = useSearchParams();
+  const params = new URLSearchParams(useSearchParams());
+  // `?task=<id>` only opens the task panel; it is not a tasks filter.
+  params.delete("task");
   const sortedFilters = getSortedParamString(params);
 
   const baseKey = ["tasks", listId] as const;
