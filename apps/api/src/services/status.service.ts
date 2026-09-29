@@ -47,12 +47,14 @@ export async function deleteStatus(userId: string, id: string) {
 
 /**
  * Shape kept for the dashboard: `{ totalCount, "<status name>Count": n }`, plus an
- * additive `colors` map of status name -> bgColor (the first status found with that name).
+ * additive `colors` map of status name -> bgColor. When the same name exists on more
+ * than one list, the oldest status with that name wins (deterministic ordering below).
  */
 export async function taskCountsByStatusName(userId: string) {
   const statuses = await prisma.status.findMany({
     where: { userId },
     select: { name: true, bgColor: true, _count: { select: { tasks: true } } },
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   });
 
   const counts: Record<string, number> = {};

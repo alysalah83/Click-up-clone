@@ -99,6 +99,7 @@ model Status {
   isDefault Boolean    @default(false)
   userId    String
   listId    String
+  createdAt DateTime   @default(now())
   tasks     Task[]
 
   list List @relation(fields: [listId], references: [id], onDelete: Cascade)
