@@ -4,16 +4,12 @@ import { Task } from "@/features/task/types";
 import { useTask } from "@/features/task/context/TaskProvider";
 import { TaskDetailPanel } from "@/features/task/components/TaskDetailPanel";
 import Modal, { ModalContent } from "@/shared/ui/ModalCompound";
+import { shouldOpenTaskDetail } from "@/features/task/lib/shouldOpenTaskDetail";
 import TaskCardView from "./TaskCardView";
 
 interface TaskCardProps {
   task: Task;
 }
-
-// Clicks on these, or inside a portaled menu/dialog, must not open the
-// detail panel.
-const NO_CARD_CLICK_SELECTOR =
-  'button, a, input, textarea, select, [role="menu"], [role="dialog"], [data-no-card-click]';
 
 function TaskCard({ task }: TaskCardProps) {
   const { isRenameOpen, taskContainerRef, isTempTask } = useTask();
@@ -32,31 +28,32 @@ function TaskCard({ task }: TaskCardProps) {
     [setNodeRef, taskContainerRef],
   );
 
-  const canOpenDetail = () => !isRenameOpen && !isTempTask;
-
-  // Portaled content (Menu popovers, the Modal itself) is rendered outside
-  // this card's DOM subtree, but React re-dispatches its synthetic events
-  // through the React tree the portal was mounted from — which bubbles them
-  // to this onClick. `closest()` alone only catches elements still inside
-  // the card's actual DOM; the containment check below also catches those
-  // portal-originated bubbled clicks.
-  const isClickInsideCard = (e: MouseEvent<HTMLDivElement>) =>
-    e.currentTarget.contains(e.target as Node);
-
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (!canOpenDetail()) return;
-    const target = e.target as Element;
-    if (target.closest(NO_CARD_CLICK_SELECTOR)) return;
-    if (!isClickInsideCard(e)) return;
-    setIsDetailOpen(true);
+    if (
+      shouldOpenTaskDetail({
+        target: e.target as Element,
+        currentTarget: e.currentTarget,
+        isRenameOpen,
+        isTempTask,
+      })
+    ) {
+      setIsDetailOpen(true);
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (!canOpenDetail()) return;
-    if (e.target !== e.currentTarget) return;
-    if (e.key !== "Enter" && e.key !== " ") return;
-    e.preventDefault();
-    setIsDetailOpen(true);
+    if (
+      shouldOpenTaskDetail({
+        target: e.target as Element,
+        currentTarget: e.currentTarget,
+        isRenameOpen,
+        isTempTask,
+        key: e.key,
+      })
+    ) {
+      e.preventDefault();
+      setIsDetailOpen(true);
+    }
   };
 
   return (
@@ -69,6 +66,8 @@ function TaskCard({ task }: TaskCardProps) {
         onKeyDown={handleKeyDown}
         {...listeners}
         {...attributes}
+        role="button"
+        tabIndex={0}
       />
       <Modal open={isDetailOpen} onOpenChange={setIsDetailOpen}>
         <ModalContent contentYPosition="withTopMargin" title="Task details">
