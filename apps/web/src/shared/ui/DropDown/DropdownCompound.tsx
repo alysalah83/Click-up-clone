@@ -6,6 +6,8 @@ import {
   ReactNode,
   SetStateAction,
   use,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -42,16 +44,38 @@ function Dropdown({
 
 function DropdownTrigger({ children }: { children: ReactNode }) {
   const { setShowDropdown, toggleOnChildClick } = useDropdown();
+  // Blur is resolved on the next macrotask instead of immediately: content
+  // rendered inside the dropdown (Menu/Modal) is portaled to <body>, so a
+  // DOM-containment check on relatedTarget cannot tell "focus moved to an
+  // item of the open menu" from "focus left the dropdown". React bubbles
+  // focus events from portals through this div, so a focus landing anywhere
+  // in the React subtree (portals included) fires onFocus here and cancels
+  // the pending close.
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelPendingBlur = () => {
+    if (blurTimeoutRef.current !== null) {
+      clearTimeout(blurTimeoutRef.current);
+      blurTimeoutRef.current = null;
+    }
+  };
+  useEffect(() => cancelPendingBlur, []);
+
   return (
     <div
       onMouseEnter={() => setShowDropdown(true)}
       onPointerEnter={() => setShowDropdown(true)}
       onMouseLeave={() => setShowDropdown(false)}
       onPointerLeave={() => setShowDropdown(false)}
-      onFocus={() => setShowDropdown(true)}
-      onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node))
+      onFocus={() => {
+        cancelPendingBlur();
+        setShowDropdown(true);
+      }}
+      onBlur={() => {
+        cancelPendingBlur();
+        blurTimeoutRef.current = setTimeout(() => {
+          blurTimeoutRef.current = null;
           setShowDropdown(false);
+        }, 0);
       }}
       onClick={(e) => {
         if (!toggleOnChildClick && e.target !== e.currentTarget) return;
