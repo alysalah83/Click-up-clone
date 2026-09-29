@@ -39,6 +39,9 @@ export default function Toaster() {
       offset={{ bottom: 16, left: 128 }}
       theme={resolvedTheme === "light" ? "light" : "dark"}
       closeButton
+      // A Radix modal dialog sets pointer-events: none on <body>; keep toasts
+      // clickable (close button, hover-to-pause) while one is open.
+      style={{ pointerEvents: "auto" }}
       toastOptions={{ classNames: { toast: "!bg-neutral-950 !text-neutral-100 !border-neutral-800" } }}
     />
   );
