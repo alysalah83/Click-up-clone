@@ -16,6 +16,7 @@ export async function updateTaskAction(
     const taskInput = updateTaskSchema.parse(updateTaskInput);
     await tasksService.updateTask(taskId, taskInput);
     updateTag(`tasks-${listId}`);
+    updateTag("tasks");
     return { status: "success" };
   } catch (error) {
     return { status: "error", error: formatActionError(error) };

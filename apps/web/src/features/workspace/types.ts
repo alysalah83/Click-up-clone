@@ -18,12 +18,17 @@ type WorkspaceWithoutAvatar = {
 
 type Workspace = WorkspaceWithoutAvatar & { avatar: Avatar };
 
+type WorkspaceWithLists = Workspace & {
+  lists: { id: string; name: string; workspaceId: string; userId: string; createdAt: Date; updatedAt: Date }[];
+};
+
 type CreateWorkspaceInputs = z.infer<typeof createWorkspaceSchema>;
 type CreateAvatarInput = z.infer<typeof createAvatarSchema>;
 type UpdateWorkspaceInput = z.infer<typeof updateWorkSpaceSchema>;
 
 export type {
   Workspace,
+  WorkspaceWithLists,
   CreateWorkspaceInputs,
   UpdateWorkspaceInput,
   CreateAvatarInput,

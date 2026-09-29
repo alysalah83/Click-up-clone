@@ -19,6 +19,7 @@ export async function deleteTasksAction({
     await tasksService.deleteTasks(listId, [...tasksIdSet]);
 
     updateTag(`tasks-${listId}`);
+    updateTag("tasks");
 
     return { status: "success" };
   } catch (error) {

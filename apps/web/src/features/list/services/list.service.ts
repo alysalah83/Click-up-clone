@@ -5,6 +5,7 @@ import {
   createList,
   deleteList,
   getLatestCreatedListId,
+  getListsWithCounts,
   getWorkspaceLists,
   updateList,
   getListsCount,
@@ -28,6 +29,15 @@ export const listServices = {
     cacheTag(`list-${listId}`);
     cacheLife("max");
     return getList(listId);
+  },
+
+  /** One call returning each list with its task counts, so the lists overview avoids a per-list fetch. */
+  async getListsWithCounts() {
+    "use cache: private";
+    cacheTag("lists");
+    cacheTag("tasks");
+    cacheLife("max");
+    return getListsWithCounts();
   },
 
   async getListsCount() {

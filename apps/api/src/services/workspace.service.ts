@@ -10,10 +10,13 @@ import { assertCanAccess } from "./access.service.js";
 
 const withAvatar = { avatar: true } as const;
 
-export function listWorkspaces(userId: string) {
+export function listWorkspaces(userId: string, includeLists = false) {
   return prisma.workspace.findMany({
     where: { userId },
-    include: withAvatar,
+    include: {
+      ...withAvatar,
+      ...(includeLists && { lists: { orderBy: { createdAt: "asc" } } }),
+    },
     orderBy: { createdAt: "asc" },
   });
 }

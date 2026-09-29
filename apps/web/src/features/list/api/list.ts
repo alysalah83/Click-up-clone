@@ -2,6 +2,7 @@ import { createServerAxios } from "@/shared/lib/axios/server";
 import {
   CreateListInput,
   List,
+  ListWithCounts,
   ListWithStatuses,
   UpdateListInput,
 } from "../types";
@@ -20,6 +21,11 @@ export async function getWorkspaceLists(workspaceId: string) {
 export async function getLists() {
   const serverAxios = await createServerAxios();
   return await serverAxios.get<List[]>(`/lists`);
+}
+
+export async function getListsWithCounts() {
+  const serverAxios = await createServerAxios();
+  return await serverAxios.get<ListWithCounts[]>(`/lists?withCounts=true`);
 }
 
 export async function getList(listId: List["id"]) {

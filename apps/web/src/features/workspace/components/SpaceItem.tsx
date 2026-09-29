@@ -2,8 +2,8 @@ import WorkspaceItem from "./WorkspaceItem";
 import ListProvider from "@/features/list/components/ListContext";
 import WorkspaceProvider from "../contexts/WorkspaceProvider";
 import RenameProvider from "../contexts/RenameProvider";
-import { listServices } from "@/features/list/services/list.service";
 import { Workspace } from "../types";
+import { List } from "@/features/list/types";
 import { OpenAvatarPickerProvider } from "../contexts/OpenAvatarProvider";
 import { ListItem } from "@/features/list";
 import Modal, { ModalContent, ModalTrigger } from "@/shared/ui/ModalCompound";
@@ -12,11 +12,10 @@ import CreateListForm from "@/features/list/components/CreateListForm";
 
 interface SpaceItemProps {
   workspace: Workspace;
+  lists: List[];
 }
 
-async function SpaceItem({ workspace }: SpaceItemProps) {
-  const lists = await listServices.getWorkspaceLists(workspace.id);
-
+function SpaceItem({ workspace, lists }: SpaceItemProps) {
   const haveLists = lists.length > 0;
 
   return (

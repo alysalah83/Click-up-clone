@@ -1,6 +1,9 @@
-import { createServerAxios } from "@/shared/lib/axios/server";
+import { createServerAxios, getWithHeaders } from "@/shared/lib/axios/server";
 import { CreateTaskInput, Task, TasksPriorityCountResponse } from "../types";
 import { List } from "@/features/list/types";
+import { fetchAllPages } from "../lib/fetchAllPages";
+
+const TASKS_PAGE_LIMIT = 1000;
 
 export async function createTask(createdTaskInput: CreateTaskInput) {
   const serverAxios = await createServerAxios();
@@ -10,8 +13,17 @@ export async function createTask(createdTaskInput: CreateTaskInput) {
 export async function getTasks(listId: List["id"] | undefined) {
   if (!listId) throw new Error("ListId is required");
 
-  const serverAxios = await createServerAxios();
-  return await serverAxios.get<Task[]>(`/tasks?listId=${listId}&createdAt=asc`);
+  return fetchAllPages<Task>(async (cursor) => {
+    const params = new URLSearchParams({
+      listId,
+      createdAt: "asc",
+      limit: String(TASKS_PAGE_LIMIT),
+    });
+    if (cursor) params.set("cursor", cursor);
+
+    const { data, nextCursor } = await getWithHeaders<Task[]>(`/tasks?${params.toString()}`);
+    return { items: data, nextCursor };
+  });
 }
 
 export async function getTasksCount() {

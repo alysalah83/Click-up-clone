@@ -14,6 +14,7 @@ export async function deleteTaskAction(
     const task = await tasksService.deleteTask(taskId);
 
     updateTag(`tasks-${listId}`);
+    updateTag("tasks");
 
     return { status: "success", payload: { task } };
   } catch (error) {

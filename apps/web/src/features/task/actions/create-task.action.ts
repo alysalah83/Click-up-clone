@@ -15,6 +15,7 @@ export async function createTaskAction(
     const newTask = await tasksService.createTask(taskInput);
 
     updateTag(`tasks-${createTaskInput.listId}`);
+    updateTag("tasks");
 
     return { status: "success", payload: { newTask } };
   } catch (error) {

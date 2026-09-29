@@ -35,4 +35,15 @@ type ListWithStatuses = {
   updatedAt: Date;
 };
 
-export type { CreateListInput, UpdateListInput, ListWithStatuses, List };
+type ListWithCounts = List & {
+  totalTasksCount: number;
+  completedTasksCount: number;
+};
+
+export type {
+  CreateListInput,
+  UpdateListInput,
+  ListWithStatuses,
+  List,
+  ListWithCounts,
+};

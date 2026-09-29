@@ -1,16 +1,15 @@
-import { List } from "../../list/types";
+import { ListWithCounts } from "../../list/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import Link from "next/link";
 
 import { workspaceServices } from "@/features/workspace/services/workspace.service";
 import { listServices } from "@/features/list/services/list.service";
-import { tasksService } from "@/features/task/services/task.service";
 import EmptySpaces from "@/features/workspace/components/EmptySpaces";
 
 async function ListsSummery() {
   const [workspacesCount, lists] = await Promise.all([
     workspaceServices.getWorkspacesCount(),
-    listServices.getLists(),
+    listServices.getListsWithCounts(),
   ]);
 
   if (workspacesCount === 0) return <EmptySpaces />;
@@ -37,10 +36,8 @@ async function ListsSummery() {
   );
 }
 
-async function ListItem({ list }: { list: List }) {
-  const { name, id } = list;
-  const { totalTasksCount, completedTasksCount } =
-    await tasksService.getTasksCompleteAndTotalCounts(id);
+function ListItem({ list }: { list: ListWithCounts }) {
+  const { name, id, totalTasksCount, completedTasksCount } = list;
   return (
     <div className="flex items-center justify-between gap-3 sm:gap-4">
       <Link href={`/home/lists/${id}/board`}>

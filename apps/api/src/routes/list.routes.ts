@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  countQuerySchema,
   createListSchema,
   idParamsSchema,
   listIdParamsSchema,
   listInWorkspaceParamsSchema,
+  listsQuerySchema,
   updateListSchema,
   workspaceIdParamsSchema,
 } from "@clickup/shared";
@@ -25,7 +25,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get("/", validate({ query: countQuerySchema }), getLists);
+router.get("/", validate({ query: listsQuerySchema }), getLists);
 router.get("/latest", getLatestList);
 router.get("/workspace/:workspaceId", validate({ params: workspaceIdParamsSchema }), getListsByWorkspace);
 router.get("/:listId", validate({ params: listIdParamsSchema }), getList);

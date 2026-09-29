@@ -10,6 +10,16 @@ export const listInWorkspaceParamsSchema = z.object({ listId: idSchema, workspac
 export const booleanStringSchema = z.enum(["true", "false"]);
 export const countQuerySchema = z.object({ count: booleanStringSchema.optional() });
 
+export const workspacesQuerySchema = z.object({
+  count: booleanStringSchema.optional(),
+  include: z.enum(["lists"]).optional(),
+});
+
+export const listsQuerySchema = z.object({
+  count: booleanStringSchema.optional(),
+  withCounts: booleanStringSchema.optional(),
+});
+
 export const prioritySchema = z.enum(["urgent", "high", "normal", "low", "none"]);
 export const sortOrderSchema = z.enum(["asc", "desc"]);
 

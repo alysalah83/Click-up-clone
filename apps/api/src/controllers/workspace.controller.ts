@@ -20,9 +20,9 @@ export const createWorkspaceFlow = catchAsync(async (req: Request, res: Response
 });
 
 export const getWorkspaces = catchAsync(async (req: Request, res: Response) => {
-  if (req.query.count === "true")
-    return res.status(200).json(await workspaceService.countWorkspaces(req.userId));
-  res.status(200).json(await workspaceService.listWorkspaces(req.userId));
+  const { count, include } = req.query as { count?: string; include?: string };
+  if (count === "true") return res.status(200).json(await workspaceService.countWorkspaces(req.userId));
+  res.status(200).json(await workspaceService.listWorkspaces(req.userId, include === "lists"));
 });
 
 export const getWorkspace = catchAsync(async (req: Request, res: Response) => {
