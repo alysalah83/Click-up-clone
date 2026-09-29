@@ -1,6 +1,6 @@
 # Legacy UI (v1)
 
-These are the compound components this app shipped with before it moved to Radix primitives (see `docs/adr/0002-adopt-shadcn-ui.md`). They are kept unchanged as a record of the original design. The live app does not import them.
+These are the compound components this app shipped with before it moved to Radix primitives (see `docs/adr/0002-adopt-shadcn-ui.md`). They are kept as they were, as a record of the original design; only import paths and global typings were adjusted so they compile alongside the new components. The live app does not import them.
 
 | Component | Pattern it demonstrates |
 |---|---|
