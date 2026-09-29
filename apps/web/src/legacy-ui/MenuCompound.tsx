@@ -64,6 +64,9 @@ function Menu({
   const handleMounted = () => setMounted(true);
 
   useEffect(() => {
+    // Frozen v1 code kept as a showcase (see legacy-ui/README): syncing the
+    // controlled prop into state is a known anti-pattern, left as originally written.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpened(outerIsOpen);
   }, [outerIsOpen]);
 

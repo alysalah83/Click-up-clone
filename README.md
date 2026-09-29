@@ -1,300 +1,123 @@
-# ClickUp Clone — Full-Stack Project Management Application
+# ClickUp Clone
 
----
+A full-stack project management app inspired by ClickUp: workspaces, lists, custom statuses and tasks, viewable as a Board, List, Table or Calendar. Built as a pnpm + Turborepo monorepo with a Next.js front end, an Express + Prisma API and a shared zod schema package.
 
-## 🚀 Live Demo
+[![CI](https://github.com/alysalah83/Click-up-clone/actions/workflows/ci.yml/badge.svg)](https://github.com/alysalah83/Click-up-clone/actions/workflows/ci.yml)
 
-[**View Application**](https://click-up-clone-two.vercel.app/) • [**Frontend Repo**](https://github.com/alysalah83/Click-up-clone-front-end) • [**Backend Repo**](https://github.com/alysalah83/Click-up-clone-back-end)
+**[Try the guest demo](https://click-up-clone-two.vercel.app)** (no sign-up: "Continue as guest" gives you a private throwaway account).
 
----
-
-## 🖼️ Application Preview
+## Screenshots
 
 <div align="center">
   <table>
     <tr>
-      <td align="center">
-        <img src="assets/homePage1.png" alt="Home Page" width="300" />
-        <br>
-        <strong>Home Page</strong>
-      </td>
-      <td align="center">
-        <img src="assets/homePage2.png" alt="Home Page" width="300" />
-        <br>
-        <strong>Home Page</strong>
-      </td>
-      <td align="center">
-        <img src="assets/homePage3.png" alt="Home Page" width="300" />
-        <br>
-        <strong>Home Page</strong>
-      </td>
-      <td align="center">
-        <img src="assets/login.png" alt="Login" width="300" />
-        <br>
-        <strong>Login Page</strong>
-      </td>
-      <td align="center">
-        <img src="assets/list-overview.png" alt="Overview" width="300" />
-        <br>
-        <strong>Overview</strong>
-      </td>
+      <td align="center"><img src="assets/homePage1.png" alt="Home page" width="300" /><br><strong>Home</strong></td>
+      <td align="center"><img src="assets/login.png" alt="Login" width="300" /><br><strong>Login and guest entry</strong></td>
+      <td align="center"><img src="assets/multistep-form.png" alt="Onboarding wizard" width="300" /><br><strong>Onboarding wizard</strong></td>
+      <td align="center"><img src="assets/dashboard.png" alt="Dashboard" width="300" /><br><strong>Dashboard</strong></td>
     </tr>
     <tr>
-      <td align="center">
-        <img src="assets/dashboard.png" alt="Dashboard" width="300" />
-        <br>
-        <strong>Dashboard</strong>
-      </td>
-      <td align="center">
-        <img src="assets/board.png" alt="Board View" width="300" />
-        <br>
-        <strong>Board View</strong>
-      </td>
-      <td align="center">
-        <img src="assets/list.png" alt="List View" width="300" />
-        <br>
-        <strong>List View</strong>
-      </td>
-      <td align="center">
-        <img src="assets/table1.png" alt="Table View" width="300" />
-        <br>
-        <strong>Table View</strong>
-      </td>
+      <td align="center"><img src="assets/board.png" alt="Board view" width="300" /><br><strong>Board</strong></td>
+      <td align="center"><img src="assets/list.png" alt="List view" width="300" /><br><strong>List</strong></td>
+      <td align="center"><img src="assets/table1.png" alt="Table view" width="300" /><br><strong>Table</strong></td>
+      <td align="center"><img src="assets/calendar1.png" alt="Calendar month view" width="300" /><br><strong>Calendar (month)</strong></td>
     </tr>
     <tr>
-      <td align="center">
-        <img src="assets/table2.png" alt="Table View 2" width="300" />
-        <br>
-        <strong>Table View 2</strong>
-      </td>
-      <td align="center">
-        <img src="assets/calendar1.png" alt="Calendar Month View" width="300" />
-        <br>
-        <strong>Calendar — Month View</strong>
-      </td>
-      <td align="center">
-        <img src="assets/calendar2.png" alt="Calendar Week View" width="300" />
-        <br>
-        <strong>Calendar — Week View</strong>
-      </td>
-      <td align="center">
-        <img src="assets/calendar3.png" alt="Calendar Task Panel" width="300" />
-        <br>
-        <strong>Calendar — Task Detail Panel</strong>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <img src="assets/multistep-form.png" alt="Create Workspace" width="300" />
-        <br>
-        <strong>Create Workspace</strong>
-      </td>
-      <td align="center">
-        <img src="assets/whitebaord.png" alt="Whiteboard" width="300" />
-        <br>
-        <strong>Whiteboard Collaboration</strong>
-      </td>
-      <td align="center">
-        <img src="assets/white-theme.png" alt="Light Theme" width="300" />
-        <br>
-        <strong>Light Theme</strong>
-      </td>
-      <td align="center">
-        <img src="assets/iconPicker.png" alt="Icon Picker" width="300" />
-        <br>
-        <strong>Icon & Color Picker</strong>
-      </td>
+      <td align="center"><img src="assets/calendar2.png" alt="Calendar week view" width="300" /><br><strong>Calendar (week)</strong></td>
+      <td align="center"><img src="assets/whitebaord.png" alt="Whiteboard" width="300" /><br><strong>Whiteboard</strong></td>
+      <td align="center"><img src="assets/white-theme.png" alt="Light theme" width="300" /><br><strong>Light theme</strong></td>
+      <td align="center"><img src="assets/iconPicker.png" alt="Icon and color picker" width="300" /><br><strong>Icon and color picker</strong></td>
     </tr>
   </table>
 </div>
 
----
+## Features
 
-## 🚀 Overview
+| Feature | Status |
+| --- | --- |
+| Workspace, List, Status, Task hierarchy, with icon and color per workspace | Built |
+| Board, List, Table and Calendar views over the same task data | Built |
+| Drag and drop (Board columns, Calendar days) | Built |
+| Sorting by status, priority, due date or created date | Built |
+| Bulk edit in Table view (status, priority, dates, delete) | Built |
+| Onboarding wizard (workspace, list, status, first task) | Built |
+| Custom statuses: create with a color, delete (tasks move to the list's open status) | Built |
+| Dashboard with status and priority charts | Built |
+| Whiteboard (Excalidraw, saved in the browser's local storage) | Built |
+| Guest mode and email/password accounts (JWT in HTTP-only cookies) | Built |
+| Light and dark theme | Built |
+| Keyboard-accessible menus, dialogs and tooltips (Radix) | Built |
+| Rename and reorder statuses in the UI (the API endpoint exists) | Roadmap |
+| Workspace members, roles and invites | Roadmap |
+| Assignees, comments, subtasks, tags | Roadmap |
+| Real-time collaboration and presence | Roadmap |
+| AI features, automations | Roadmap |
 
-A full-stack project management SaaS inspired by ClickUp, built entirely solo with no external UI component libraries. It features a structured **Workspace → List → Status Group → Task** hierarchy, four distinct task views each with their own interaction model, optimistic updates on every mutation, real-time analytics, collaborative whiteboarding, and parallel guest and authenticated user flows — all powered by a 100% custom component system built with the compound component pattern in Tailwind CSS.
+## Architecture
 
----
+```mermaid
+flowchart LR
+  B[Browser] -->|pages, server actions| W["Next.js 16 (BFF)<br/>apps/web"]
+  W -->|REST, JWT cookie| A["Express 5 API<br/>apps/api"]
+  A -->|Prisma| D[(Postgres<br/>Neon)]
+  S["@clickup/shared<br/>zod schemas"] -.-> W
+  S -.-> A
+```
 
-## ✨ Features
+The browser talks only to Next.js. Server actions and server-side fetches forward requests to the Express API, which is the only thing that touches the database. Request schemas live in `@clickup/shared`, so client and server validation cannot drift apart.
 
-### 🏢 Workspace & Project Management
+```
+apps/web         Next.js 16 (App Router), React 19, Tailwind, Radix UI
+apps/api         Express 5, Prisma 7, PostgreSQL
+packages/shared  zod schemas and types shared by both apps
+docs/            roadmap and architecture decision records
+```
 
-- Unlimited workspaces with custom name, icon picker, and color picker
-- Advanced workspace avatar system with icon selection and custom color theming
-- Editable workspace properties with real-time preview
-- List organization within workspaces for structured project management
-- Complete CRUD operations with real-time UI updates
+Key technologies: TypeScript, TanStack Query, Zustand, React Hook Form + zod, dnd-kit, Recharts, Excalidraw, Vitest, Playwright, GitHub Actions, Vercel (web and API) and Neon (Postgres).
 
-### 📋 Status Group System
+## Engineering highlights
 
-- Create custom status groups per list to define your own workflow
-- Tasks are attached to status groups, not hardcoded statuses
-- Reorder, rename, and color-code status columns per project
-- Structured hierarchy: **Workspace → List → Status Group → Task**
+- **Layered API with validation and ownership checks.** Routes, `validate()` (zod), controllers, services. Unknown keys are stripped, and every ID in a request goes through a single `assertCanAccess()` that returns 404 for both missing and not-owned resources. See [ADR 0003](docs/adr/0003-api-layering-and-validation.md).
+- **Cross-account tests.** API integration tests run against a real Postgres and check that one user cannot read or modify another user's resources.
+- **Migrations applied on deploy.** The API's Vercel build runs Prisma migrations, so schema and code ship together.
+- **Guest hygiene.** Guest sign-ups are rate-limited, and a scheduled cron endpoint removes stale guest accounts.
+- **Accessible UI on Radix, behind stable APIs.** The original hand-built menu, modal and tooltip library lacked focus handling and Escape-to-close. They were re-implemented on Radix primitives with unchanged component APIs, so about 60 call sites did not change. The original implementations are kept as a showcase in `apps/web/src/legacy-ui` (dev-only `/legacy-ui` route). See [ADR 0002](docs/adr/0002-adopt-shadcn-ui.md).
+- **Monorepo.** One repo, one CI run, atomic cross-app changes. See [ADR 0001](docs/adr/0001-monorepo.md).
+- **Tests at three levels.** Web unit and component tests (Vitest, Testing Library), API integration tests (Vitest against Postgres), and a Playwright end-to-end test of the guest demo path: onboarding wizard, drag a card between board columns, open and close task details, bulk-set priority in the table, calendar view, sign out.
+- **CI.** GitHub Actions runs lint, typecheck, tests and build with a Postgres service container, then a separate job runs the Playwright test against production builds and uploads the report on failure.
 
----
+## Local development
 
-### 📝 Task Views
+Requires Node 22+ and pnpm.
 
-All four views share the same underlying task data and mutations, with **optimistic updates via TanStack Query on every action** — renames, priority changes, status moves, date edits, and deletions all reflect instantly without waiting for a server response. Each view has its own **sort menu** (by status, priority, due date, or created date — ascending or descending) with sort state persisted independently per view in Zustand, so switching views never resets your preferences.
+```bash
+pnpm install
+pnpm --filter @clickup/api db:local            # embedded Postgres on :54329 (no Docker needed)
+cp apps/api/.env.example apps/api/.env         # defaults point at the local database
+pnpm --filter @clickup/api exec prisma migrate deploy
+pnpm --filter @clickup/shared build
+pnpm --filter @clickup/api dev                 # API on http://localhost:5000
+```
 
----
+In a second terminal, set up and start the web app (`JWT_SECRET` must match the API's):
 
-#### 🗂️ Board View
+```bash
+cp apps/web/.env.example apps/web/.env.local   # API_URL=http://localhost:5000/api
+pnpm --filter @clickup/web dev                 # http://localhost:3000
+```
 
-The Board view organizes tasks into columns by status group, giving a clear Kanban-style overview of where every task stands.
+Checks:
 
-- **Drag and drop** tasks between status columns via `@dnd-kit/core` — status updates optimistically on drop
-- Each task card supports **inline editing directly on the card**: click the name to rename it in place, click the priority indicator to change priority, and click the date field to open a date range picker — no modal required
-- A **dropdown menu** on each card provides quick actions: rename, delete, and open the full Task Detail Panel
-- The **Task Detail Panel** opens as a modal with clean field-by-field editing for name, status, priority, and date range — shared with Calendar view
-- Each status column has an **Add Task** form that creates a new task scoped to that column's status, with fields for name, priority, and dates
-- A dedicated **Add Status** button at the end of the board creates a new status column inline
+```bash
+pnpm lint && pnpm typecheck && pnpm test       # API tests boot their own Postgres on :54330
+pnpm --filter @clickup/web test:e2e            # Playwright (needs a built web app, running API and database)
+```
 
----
+## Project evolution
 
-#### 📋 List View
+- **v1:** two repositories (Next.js front end, Express API), a hand-built UI component library, and a backend migration from MongoDB to PostgreSQL along the way.
+- **v2 (this repo):** a single monorepo, a hardened and tested API (validation, ownership checks, status types, rate limits), overlays rebuilt on Radix for accessibility, bug fixes across the four views, CI, and an end-to-end test.
 
-The List view groups tasks by status in a clean linear layout, optimized for scanning active work without the noise of completed items.
+## Roadmap
 
-- Tasks are grouped under their status heading with clear visual separation
-- **Completed status tasks are hidden** by default to keep the view focused on what's in progress
-- Same inline editing model as Board view — name, priority, and dates are all editable in place per task row
-- Sort menu in the header to reorder tasks within each status group
-- Add task button per status group for quick task creation scoped to that status
-
----
-
-#### 📊 Table View
-
-The Table view presents tasks as a spreadsheet-like grid, built for power users who need to scan and manage many tasks at once.
-
-- Each row is a task with dedicated slots for **name**, **priority**, **dates**, and **created at**
-- Clicking the **name slot** activates a smooth inline rename input directly in the cell
-- Clicking **priority, date, or status slots** opens a contextual dropdown menu to change the value — editing happens without leaving the table
-- Each row has a **checkbox** for individual selection; a **header checkbox** selects all tasks at once
-- Selecting one or more tasks reveals a floating **action bar** with bulk operations: update status, priority, or dates across all selected tasks simultaneously, or delete them all in one action
-- **Column headers double as sort triggers** — click any column header to sort the table by that field
-
----
-
-#### 📅 Calendar View
-
-The Calendar view maps tasks onto a time grid by their start and end dates, making scheduling and deadline management visual and intuitive — built from scratch without any calendar library.
-
-- **Month and week toggle** — switch between a full-month grid and a focused 7-day week layout; navigation steps by month or by week accordingly
-- **Date-range spanning** — tasks with a start and end date render as a continuous bar spanning every day they cover, with rounded edges marking the exact start and end boundaries
-- **Drag to reschedule** — drag any task to a new day cell; both start and end dates shift together, preserving the original duration; a dedicated drag handle keeps click and drag zones isolated
-- **Inline task creation** — click the `+` button on any day cell to open a creation form scoped to that date, with fields for name and priority
-- **Task Detail Panel** — click the settings button on any task to open the same detail panel used in Board view, with full inline editing for name, status, priority, and date range
-
----
-
-### 👤 User & Guest Flows
-
-- Full authenticated user flow with sign up, login, and protected routes
-- **Guest flow** — users can explore and use the full app without signing up
-- On login, guests are prompted to choose whether to transfer their existing workspace data into their new account
-- Guest session data is isolated in cookies and merged safely on login based on user choice — no data loss
-
-### 🖌️ Whiteboard Collaboration
-
-- Real-time collaborative whiteboard powered by **Excalidraw** (migrated from TLDraw)
-- Drawing tools, shapes, text, and annotations
-- Per-workspace whiteboard with export functionality
-- Integration with workspace context for project-specific brainstorming
-
-### 📊 Analytics & Dashboard
-
-- Task distribution charts built with Recharts
-- Progress tracking with visual progress bars
-- Priority breakdown visualization (urgent / high / normal / low counts)
-- Workspace-level and list-level task counts displayed as summary cards
-- Completion statistics across workspaces and lists
-
-### 🎨 Theme & Customization
-
-- System-wide dark/light mode toggle
-- Persistent theme preferences saved to user profile
-- Custom workspace branding with icon and color picker
-- Theme-aware components throughout
-
-### 🔐 Authentication & Security
-
-- JWT-based authentication with secure HTTP-only cookies
-- No sensitive data stored in localStorage
-- Protected routes with automatic redirects
-- Form validation using React Hook Form + Zod
-- Parallel guest flow with safe session isolation
-
-### 🧩 Custom UI System
-
-All components built from scratch in Tailwind CSS using the **compound component pattern** — parent controls shared state via context, keeping consumer APIs clean and prop drilling eliminated across all feature surfaces:
-
-- Collapsible sidebar navigation
-- Modal with both controlled and uncontrolled modes
-- Dropdown menus with keyboard navigation
-- Menu with self poistion in overflowing
-- Tooltip system
-- Icon Picker with searchable icon library
-- Color Picker for workspace and status customization
-- Date range picker
-- Toast notification system
-- Skeleton loaders for smooth loading states
-- Theme toggle with smooth transitions
-- Fully responsive across all devices
-
-### 🧪 Testing
-
-- Integration and unit tests with **Vitest** and **React Testing Library**
-- Tests cover task mutations, guest/auth state persistence, and interaction flows
-- Added after a full architectural refactor to validate correctness
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-| Layer              | Technology                                       |
-| ------------------ | ------------------------------------------------ |
-| Framework          | Next.js (App Router) + React + TypeScript        |
-| State Management   | Zustand                                          |
-| Data Fetching      | TanStack React Query + Axios                     |
-| Forms & Validation | React Hook Form + Zod                            |
-| Drag & Drop        | @dnd-kit/core                                    |
-| Whiteboard         | Excalidraw                                       |
-| Charts             | Recharts                                         |
-| Date Handling      | react-date-range + date-fns                      |
-| UI & Styling       | Tailwind CSS (100% custom, no component library) |
-| Icons              | React Icons + Lucide React                       |
-| Animation          | Motion (Framer Motion)                           |
-| Testing            | Vitest + React Testing Library                   |
-
-### Backend
-
-| Layer               | Technology                                 |
-| ------------------- | ------------------------------------------ |
-| Runtime & Framework | Node.js + Express.js + TypeScript          |
-| Database & ORM      | Prisma ORM + PostgreSQL                    |
-| Validation          | Zod (server-side)                          |
-| Authentication      | JWT with HTTP-only cookies                 |
-| API                 | RESTful API with structured error handling |
-| Security            | CORS configuration + request validation    |
-
----
-
-## 📌 What This Project Demonstrates
-
-- **Scalable architecture** — Workspace → List → Status Group → Task hierarchy with fully user-defined workflows and flexible data modeling
-- **Full-stack ownership** — sole developer across frontend, backend, database schema, and deployment
-- **Production-ready patterns** — optimistic updates on every mutation, per-view sort state persistence, guest/auth session isolation, and a fully typed backend with Prisma
-- **View engineering** — four independently designed task views (Board, List, Table, Calendar) each with its own interaction model, editing surface, and sort state, all sharing a single data layer
-- **Component engineering** — compound component system built entirely from scratch with no external UI library; includes a calendar grid engine built without any calendar library, a controlled/uncontrolled Modal, drag-and-drop with isolated click zones, and a reusable Task Detail Panel shared across views
-- **Testing discipline** — Vitest + RTL coverage added post-refactor to ensure behavioral correctness across guest and auth flows
-- **Stack evolution** — migrated whiteboard from TLDraw to Excalidraw and backend from MongoDB/Mongoose to Prisma ORM + PostgreSQL based on project requirements
-
-**[🚀 Live Demo](https://click-up-clone-two.vercel.app/)** | **[📚 Repository](https://github.com/alysalah83/Click-up-clone-front-end)**
-
-_A comprehensive demonstration of modern full-stack development — four task views with distinct interaction models, a fully custom UI system, optimistic updates throughout, and collaborative whiteboarding._
+Next up is a collaboration core (workspace members and roles, invites, assignees, richer tasks, activity log), followed by power views, automations and AI. Real-time features are deliberately deferred while the project stays on free hosting. Details in [docs/roadmap.md](docs/roadmap.md).
