@@ -5,7 +5,6 @@ import { Task } from "@/features/task/types";
 import { CALENDER_PRIORITY_COLORS } from "../calendar.consts";
 import { isSameDay } from "date-fns";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
-import { TaskOptionsButton } from "@/features/task/components/TaskDetailPanel";
 import { cn } from "@/shared/lib/utils/cn";
 
 interface CalendarTaskRowViewProps
@@ -68,10 +67,6 @@ function CalendarTaskRowView({
       <span className="flex-1 truncate">
         {isStart ? task.name : <span className="opacity-0 select-none">·</span>}
       </span>
-
-      <div className="ml-auto shrink-0">
-        <TaskOptionsButton task={task} />
-      </div>
     </div>
   );
 }
