@@ -29,7 +29,7 @@ async function SpacesSection() {
               <ToolTipMessage>Add Space</ToolTipMessage>
             </ToolTip>
           </ModalTrigger>
-          <ModalContent contentYPosition="withTopMargin">
+          <ModalContent contentYPosition="withTopMargin" title="Create space">
             <CreateSpaceFlow />
           </ModalContent>
         </Modal>

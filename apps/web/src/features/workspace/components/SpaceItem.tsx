@@ -40,7 +40,7 @@ async function SpaceItem({ workspace }: SpaceItemProps) {
           <ModalTrigger>
             <RowAddNew label="New List" size="small" />
           </ModalTrigger>
-          <ModalContent>
+          <ModalContent title="Create list">
             <CreateListForm workspaceId={workspace.id} />
           </ModalContent>
         </Modal>

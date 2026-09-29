@@ -72,16 +72,24 @@ function ModalTrigger({ children }: { children: ReactNode }) {
 function ModalContent({
   children,
   contentYPosition = "center",
+  title = "Dialog",
 }: {
   children: ReactNode;
   contentYPosition?: ContentYPosition;
+  title?: string;
 }) {
   const { closeModal } = useModal();
   return (
     <Dialog.Portal>
       <Dialog.Overlay
         className={cn(
-          "fixed inset-0 z-40 bg-neutral-950/50",
+          // z-50 (not z-40): the dialog portal is appended after the
+          // Menu/Popover portal (see MenuCompound.tsx), so an equal z-index
+          // still stacks the overlay above an already-open menu — a lower
+          // z-index would leave that menu rendered undimmed above the
+          // backdrop when a Modal is opened from inside it (see
+          // OptionsMenuItem's "modal" branch).
+          "fixed inset-0 z-50 bg-neutral-950/50",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
         )}
@@ -95,7 +103,7 @@ function ModalContent({
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
         )}
       >
-        <Dialog.Title className="sr-only">Dialog</Dialog.Title>
+        <Dialog.Title className="sr-only">{title}</Dialog.Title>
         {children}
         <span className="absolute top-6 right-6 z-50">
           <ButtonIcon icon="close" ariaLabel="modal close button" padding="small" onClick={closeModal} />

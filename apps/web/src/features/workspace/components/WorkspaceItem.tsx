@@ -73,7 +73,7 @@ function ItemFeatureBtns({ workspaceId }: { workspaceId: string }) {
               ariaLabel="Create list button"
             />
           </ModalTrigger>
-          <ModalContent contentYPosition="withTopMargin">
+          <ModalContent contentYPosition="withTopMargin" title="Create list">
             <CreateListForm workspaceId={workspaceId} />
           </ModalContent>
         </Modal>

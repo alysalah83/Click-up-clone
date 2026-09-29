@@ -58,6 +58,17 @@ describe("Modal", () => {
     expect(screen.getByRole("dialog")).toHaveTextContent("welcome");
   });
 
+  it("exposes a passed title as the dialog's accessible name", () => {
+    render(
+      <Modal initialOpen>
+        <ModalContent title="Create space">
+          <p>welcome</p>
+        </ModalContent>
+      </Modal>,
+    );
+    expect(screen.getByRole("dialog", { name: "Create space" })).toBeInTheDocument();
+  });
+
   it("stays open while a Modal nested inside a Menu's content is open, and closes the menu when the dialog closes", async () => {
     function MenuItemWithModal() {
       const { toggleMenu } = useMenu();
