@@ -238,3 +238,83 @@ body.dark *::-webkit-scrollbar-thumb {
   fill-neutral-600 => fill-neutral-400
   fill-neutral-900 => fill-neutral-100
 */
+
+/* Task description (Tiptap). Tailwind resets list/heading styles, so restore them here. */
+.task-description {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-neutral-800);
+}
+.dark .task-description {
+  color: var(--color-neutral-200);
+}
+.task-description > * + * {
+  margin-top: 0.5rem;
+}
+.task-description h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+.task-description h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+.task-description ul:not([data-type="taskList"]) {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.task-description ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+.task-description li > p {
+  margin: 0;
+}
+.task-description ul[data-type="taskList"] {
+  padding-left: 0.125rem;
+}
+.task-description ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.task-description ul[data-type="taskList"] li > label {
+  margin-top: 0.3rem;
+  user-select: none;
+}
+.task-description ul[data-type="taskList"] li > div {
+  flex: 1;
+}
+.task-description ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: var(--color-neutral-400);
+  text-decoration: line-through;
+}
+.task-description input[type="checkbox"] {
+  accent-color: var(--color-violet-600);
+  cursor: pointer;
+}
+.task-description code {
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--color-neutral-500) 15%, transparent);
+  padding: 0.1rem 0.3rem;
+  font-size: 0.8125rem;
+}
+.task-description pre {
+  border-radius: 0.5rem;
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-100);
+  padding: 0.75rem 1rem;
+}
+.task-description pre code {
+  background: none;
+  padding: 0;
+}
+.task-description p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--color-neutral-400);
+}

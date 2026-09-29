@@ -47,10 +47,25 @@ type Task = {
   updatedAt: Date;
   /** Always sent by the API; missing only on optimistic temp tasks. */
   assignees?: Assignee[];
+  /** Step 3 fields, sent by the API (missing on optimistic temp tasks). */
+  parentTaskId?: string | null;
+  tags?: TaskTag[];
+  hasDescription?: boolean;
+  subtaskCount?: number;
+  subtaskDoneCount?: number;
+  checklistTotal?: number;
+  checklistDone?: number;
 };
+
+interface TaskTag {
+  id: string;
+  name: string;
+  color: string;
+}
 
 export type {
   Task,
+  TaskTag,
   CreateTaskInput,
   TaskStatusCountsResponse,
   TasksPriorityCountResponse,

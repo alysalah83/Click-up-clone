@@ -1,9 +1,8 @@
 import { useDraggable } from "@dnd-kit/core";
-import { useCallback, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { Task } from "@/features/task/types";
 import { useTask } from "@/features/task/context/TaskProvider";
-import { TaskDetailPanel } from "@/features/task/components/TaskDetailPanel";
-import Modal, { ModalContent } from "@/shared/ui/ModalCompound";
+import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { shouldOpenTaskDetail } from "@/features/task/lib/shouldOpenTaskDetail";
 import TaskCardView from "./TaskCardView";
 
@@ -14,7 +13,7 @@ interface TaskCardProps {
 function TaskCard({ task }: TaskCardProps) {
   const { isRenameOpen, taskContainerRef, isTempTask } = useTask();
   const { id, statusId } = task;
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const openTask = useOpenTask();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
     data: { statusId },
@@ -37,7 +36,7 @@ function TaskCard({ task }: TaskCardProps) {
         isTempTask,
       })
     ) {
-      setIsDetailOpen(true);
+      openTask(id);
     }
   };
 
@@ -52,7 +51,7 @@ function TaskCard({ task }: TaskCardProps) {
       })
     ) {
       e.preventDefault();
-      setIsDetailOpen(true);
+      openTask(id);
     }
   };
 
@@ -69,11 +68,6 @@ function TaskCard({ task }: TaskCardProps) {
         role="button"
         tabIndex={0}
       />
-      <Modal open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <ModalContent contentYPosition="withTopMargin" title="Task details">
-          <TaskDetailPanel task={task} />
-        </ModalContent>
-      </Modal>
     </>
   );
 }
