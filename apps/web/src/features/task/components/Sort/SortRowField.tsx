@@ -18,11 +18,9 @@ function SortRowField({
     tableSorts,
     boardSorts,
     listSorts,
-    calendarSorts,
     setTableSorts,
     setBoardSorts,
     setListSorts,
-    setCalendarSorts,
   } = useTaskSortsStore();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
@@ -39,8 +37,6 @@ function SortRowField({
       setBoardSorts({ ...boardSorts, [sortField]: sortValue });
     else if (usedFor === "list")
       setListSorts({ ...listSorts, [sortField]: sortValue });
-    else if (usedFor === "calendar")
-      setCalendarSorts({ ...calendarSorts, [sortField]: sortValue });
 
     replace(`${pathname}?${params.toString()}`);
   };

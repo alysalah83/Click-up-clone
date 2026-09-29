@@ -1,6 +1,7 @@
 import z from "zod";
 
 import { Avatar } from "@/shared/ui/AvatarPicker/avatarPicker.types";
+import type { List } from "@/features/list/types";
 import {
   createAvatarSchema,
   createWorkspaceSchema,
@@ -19,7 +20,7 @@ type WorkspaceWithoutAvatar = {
 type Workspace = WorkspaceWithoutAvatar & { avatar: Avatar };
 
 type WorkspaceWithLists = Workspace & {
-  lists: { id: string; name: string; workspaceId: string; userId: string; createdAt: Date; updatedAt: Date }[];
+  lists: List[];
 };
 
 type CreateWorkspaceInputs = z.infer<typeof createWorkspaceSchema>;
