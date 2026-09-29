@@ -13,6 +13,8 @@ export function loadEnv() {
     JWT_SECRET: required("JWT_SECRET"),
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "7d",
     CRON_SECRET: process.env.CRON_SECRET,
+    /** Public web origin, used to build invite links. */
+    WEB_URL: (process.env.WEB_URL ?? "https://click-up-clone-two.vercel.app").replace(/\/$/, ""),
     GUEST_SIGNUPS_PER_MINUTE: Number(process.env.GUEST_SIGNUPS_PER_MINUTE ?? 30),
     LOGIN_ATTEMPTS_PER_15_MIN: Number(process.env.LOGIN_ATTEMPTS_PER_15_MIN ?? 10),
   };

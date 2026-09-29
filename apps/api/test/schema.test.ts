@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { prisma } from "../src/lib/prisma.js";
 import { defaultStatusesFor } from "../src/consts/status.const.js";
@@ -46,5 +47,27 @@ describe("status model", () => {
     await prisma.list.delete({ where: { id: list.id } });
     expect(await prisma.status.count({ where: { listId: list.id } })).toBe(0);
     expect(await prisma.task.count({ where: { listId: list.id } })).toBe(0);
+  });
+});
+
+describe("workspace membership migration", () => {
+  it("backfills an owner membership for every workspace that has a creator", async () => {
+    const { list } = await seedTask();
+    const avatar = await prisma.avatar.create({ data: { icon: "circleDotted", color: "violet" } });
+    await prisma.workspace.create({ data: { name: "Orphan", avatarId: avatar.id } });
+    expect(await prisma.workspaceMember.count()).toBe(0);
+
+    const sql = readFileSync(
+      new URL("../prisma/migrations/20260930120000_workspace_members_assignees/migration.sql", import.meta.url),
+      "utf8",
+    );
+    const backfill = sql.slice(sql.indexOf("INSERT INTO \"WorkspaceMember\""));
+    await prisma.$executeRawUnsafe(backfill);
+    await prisma.$executeRawUnsafe(backfill); // idempotent
+
+    const members = await prisma.workspaceMember.findMany({ include: { workspace: true } });
+    expect(members.map((m) => [m.workspaceId, m.userId, m.role])).toEqual([
+      [list.workspaceId, members[0]!.workspace.userId, "owner"],
+    ]);
   });
 });

@@ -19,6 +19,13 @@ describe("guest demo workspace", () => {
     for (const task of tasks) expect(task.status.listId).toBe(task.listId);
     expect(new Set(tasks.map((t) => t.priority)).size).toBe(5);
 
+    // Fake teammates: members of both spaces (guest is owner) and assigned across most tasks.
+    expect(await prisma.user.count({ where: { role: "demo", demoOwnerId: guestId } })).toBe(6);
+    expect(await prisma.workspaceMember.count({ where: { userId: guestId, role: "owner" } })).toBe(2);
+    expect(await prisma.workspaceMember.count({ where: { workspace: where } })).toBe(14);
+    const assigned = await prisma.task.count({ where: { ...where, assignees: { some: {} } } });
+    expect(assigned / tasks.length).toBeGreaterThan(0.5);
+
     const landing = await prisma.list.findUnique({ where: { id: res.body.landingListId } });
     expect(landing).toMatchObject({ name: "Sprint Board", userId: guestId });
 
