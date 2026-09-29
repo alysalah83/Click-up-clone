@@ -4,7 +4,8 @@ import TaskProvider from "@/features/task/context/TaskProvider";
 import useTasks from "@/features/task/hooks/useTasks";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
 import { Task } from "@/features/task/types";
-import TaskCard from "@/features/task/views/Board/components/TaskCard";
+import { shouldMoveTask } from "@/features/task/lib/shouldMoveTask";
+import TaskCardView from "@/features/task/views/Board/components/TaskCardView";
 import {
   DndContext,
   DragEndEvent,
@@ -47,15 +48,17 @@ function DragProvider({ children }: DragProviderProps) {
   };
 
   const handleDragEnd = (e: DragEndEvent) => {
-    if (
-      e.over &&
-      e.active.data.current &&
-      e.over.id !== e.active.data.current.status
-    ) {
-      updateTask({
-        taskId: e.active.id as string,
-        updateTaskInput: { statusId: e.over.id as Task["statusId"] },
-      });
+    const activeStatusId = e.active.data.current?.statusId as
+      | string
+      | undefined;
+    if (activeStatusId) {
+      const destinationStatusId = shouldMoveTask(activeStatusId, e.over?.id);
+      if (destinationStatusId) {
+        updateTask({
+          taskId: e.active.id as string,
+          updateTaskInput: { statusId: destinationStatusId },
+        });
+      }
     }
     setActiveTask(null);
   };
@@ -70,7 +73,7 @@ function DragProvider({ children }: DragProviderProps) {
       <DragOverlay>
         {activeTask && (
           <TaskProvider task={activeTask}>
-            <TaskCard task={activeTask} />
+            <TaskCardView task={activeTask} />
           </TaskProvider>
         )}
       </DragOverlay>
