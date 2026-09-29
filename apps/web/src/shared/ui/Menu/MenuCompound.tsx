@@ -60,9 +60,10 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
   // becomes the tab stop (tabIndex 0 + role="button") — but only then, so a
   // trigger with a focusable child doesn't get a second tab stop.
   const [selfFocusable, setSelfFocusable] = useState(false);
+  // Re-checked whenever the trigger's children change.
   useLayoutEffect(() => {
     setSelfFocusable(!wrapperRef.current?.querySelector(FOCUSABLE_SELECTOR));
-  });
+  }, [children]);
 
   // Radix restores focus by calling .focus() on the trigger element, which is
   // this wrapper div. A plain div without a tabindex cannot receive focus (in
