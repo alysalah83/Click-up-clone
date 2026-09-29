@@ -39,6 +39,7 @@ export function useSetAssignees() {
     onSettled() {
       queryClient.invalidateQueries({ queryKey: baseKey });
       queryClient.invalidateQueries({ queryKey: ["members", "people"] });
+      queryClient.invalidateQueries({ queryKey: ["task"] });
     },
   });
 

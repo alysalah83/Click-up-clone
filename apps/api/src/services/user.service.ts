@@ -5,6 +5,7 @@ import { prisma } from "../lib/prisma.js";
 import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
 import { DEMO_TEMPLATE, buildDemoWorkspace } from "../seed/demoWorkspace.js";
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
+import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 
 const publicUser = {
   id: true,
@@ -30,8 +31,9 @@ export async function registerUser({ name, email, password }: RegisterInput) {
 
 /**
  * Creates a guest together with the demo workspace, in one transaction: a failed seed leaves no
- * guest behind. Ids are generated up front, so this is 11 round trips (BEGIN, 9 writes, COMMIT).
- * Fake teammates join both spaces and are assigned across the tasks.
+ * guest behind. Ids are generated up front, so every write is a batched createMany.
+ * Fake teammates join both spaces and are assigned across the tasks. The default template also
+ * gets rich descriptions, subtasks, checklists, tags and a backdated activity history.
  * Seeded guests skip the onboarding wizard.
  */
 export async function registerGuest(template = DEMO_TEMPLATE) {
@@ -42,6 +44,11 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     workspaceIds: seed.workspaces.map((w) => w.id),
     taskIds: seed.tasks.map((t) => t.id),
   });
+  // Sets descriptions on seed.tasks in place, so it runs before the tasks are written.
+  const rich =
+    template === DEMO_TEMPLATE
+      ? buildDemoRichTasks({ ownerUserId: userId, seed, teammates: team.users })
+      : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -55,6 +62,17 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     prisma.user.createMany({ data: team.users }),
     prisma.workspaceMember.createMany({ data: team.members }),
     prisma.taskAssignee.createMany({ data: team.assignees }),
+    ...(rich
+      ? [
+          prisma.task.createMany({ data: rich.subtasks }),
+          prisma.taskAssignee.createMany({ data: rich.subtaskAssignees }),
+          prisma.checklist.createMany({ data: rich.checklists }),
+          prisma.checklistItem.createMany({ data: rich.checklistItems }),
+          prisma.tag.createMany({ data: rich.tags }),
+          prisma.taskTag.createMany({ data: rich.taskTags }),
+          prisma.activity.createMany({ data: rich.activities }),
+        ]
+      : []),
   ]);
   return { user, landingListId: seed.landingListId };
 }

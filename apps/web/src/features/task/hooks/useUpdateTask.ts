@@ -74,6 +74,7 @@ export function useUpdateTask() {
 
     onSettled() {
       queryClient.invalidateQueries({ queryKey: baseKey });
+      queryClient.invalidateQueries({ queryKey: ["task"] });
     },
   });
   return { updateTask, status, error };

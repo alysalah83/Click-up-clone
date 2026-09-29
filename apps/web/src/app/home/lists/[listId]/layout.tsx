@@ -1,6 +1,7 @@
 import ListIdDataLayer from "@/features/list/components/ListIdDataLayer";
 import TasksLoadingSkeleton from "@/features/task/components/TasksLoadingSkeleton";
 import { Suspense } from "react";
+import { TaskDetailHost } from "@/features/task/components/TaskDetailPanel";
 
 function ListIdLayout({
   children,
@@ -11,7 +12,10 @@ function ListIdLayout({
 }) {
   return (
     <Suspense fallback={<TasksLoadingSkeleton />}>
-      <ListIdDataLayer paramsPromise={params}>{children}</ListIdDataLayer>
+      <ListIdDataLayer paramsPromise={params}>
+        {children}
+        <TaskDetailHost />
+      </ListIdDataLayer>
     </Suspense>
   );
 }
