@@ -16,15 +16,14 @@ import { ICONS_REGISTRY } from "@/shared/ui/IconPicker/IconRegistry";
 import { IconsRegistry } from "@/shared/ui/IconPicker/types";
 import { COLORS_TOKENS } from "@/shared/ui/ColorPicker/colorTokens";
 import { ColorsToken } from "@/shared/ui/ColorPicker/types";
+import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 
 function ListSlideRow() {
+  const { task, isTempTask } = useTask();
   const {
-    task: {
-      name,
-      status: { icon, iconColor },
-    },
-    isTempTask,
-  } = useTask();
+    name,
+    status: { icon, iconColor },
+  } = task;
 
   const Icon = ICONS_REGISTRY[icon as IconsRegistry];
   const iconColorClass = COLORS_TOKENS[iconColor as ColorsToken];
@@ -36,6 +35,9 @@ function ListSlideRow() {
       <div className="col-span-10 flex items-center gap-2 p-2">
         <Icon className={`${iconColorClass} size-4 shrink-0`} />
         <span className="line-clamp-1 truncate">{name}</span>
+      </div>
+      <div className={`col-span-2 flex items-center px-2 py-1 ${listSlotHover}`}>
+        <AssigneesButton task={task} size="sm" />
       </div>
       <ListSlotDueDate />
       <ListSlotPriority />

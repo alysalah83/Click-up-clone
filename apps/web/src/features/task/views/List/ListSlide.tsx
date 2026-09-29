@@ -35,6 +35,11 @@ function ListSlide({
               <span>Name</span>
             </div>
             <div
+              className={`col-span-2 flex items-center p-2 ${listBgHoverGradient}`}
+            >
+              <span>Assignee</span>
+            </div>
+            <div
               className={`col-span-3 flex items-center gap-2 p-2 ${listBgHoverGradient}`}
             >
               <span>Due date</span>
