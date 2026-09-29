@@ -48,6 +48,11 @@ function DropdownTrigger({ children }: { children: ReactNode }) {
       onPointerEnter={() => setShowDropdown(true)}
       onMouseLeave={() => setShowDropdown(false)}
       onPointerLeave={() => setShowDropdown(false)}
+      onFocus={() => setShowDropdown(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node))
+          setShowDropdown(false);
+      }}
       onClick={(e) => {
         if (!toggleOnChildClick && e.target !== e.currentTarget) return;
         setShowDropdown((cur) => !cur);

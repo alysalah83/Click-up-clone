@@ -1,34 +1,29 @@
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
-import { useState } from "react";
-import { useMenu } from "@/shared/ui/Menu/MenuCompound";
+import DateRangePicker from "@/shared/ui/DateRangePicker";
 import { useUpdateTasks } from "../../hooks/useUpdateTasks";
-import DatePicker from "../DatePicker";
 import { TaskDateRange } from "../../types";
 
 function DatesUpdater({ tasksId }: { tasksId: Set<string> }) {
   const { updateTasks } = useUpdateTasks();
-  const { toggleMenu } = useMenu();
-  const [date, setDate] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
 
-  const handleUpdateDates = function (datesRange?: TaskDateRange) {
-    const newDates = datesRange ?? { startDate: null, endDate: null };
+  const handleUpdateDates = function (datesRange: TaskDateRange) {
+    // DateRangePicker's Clear always sends { startDate: new Date(), endDate: null };
+    // the old DatePicker cleared both dates, so translate that shape back to a full clear.
+    const newDates =
+      datesRange.endDate === null
+        ? { startDate: null, endDate: null }
+        : datesRange;
 
     updateTasks({
       tasksId,
       updateTasksInput: newDates,
     });
-    toggleMenu();
   };
 
   return (
-    <DatePicker action={handleUpdateDates} date={date} setDate={setDate} />
+    <DateRangePicker
+      dateRanges={{ startDate: new Date(), endDate: new Date() }}
+      onDateChange={handleUpdateDates}
+    />
   );
 }
 export default DatesUpdater;
