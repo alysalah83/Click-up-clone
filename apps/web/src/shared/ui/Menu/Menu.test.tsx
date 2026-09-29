@@ -43,8 +43,7 @@ describe("Menu", () => {
     expect(contentEle).toBeInTheDocument();
   });
 
-  // Skipped during monorepo migration (plan A1); this component is replaced by shadcn/ui in plan A3.
-  it.skip("should be close when clicking outside content", async () => {
+  it("should close when the trigger is clicked again", async () => {
     renderMenu();
 
     const user = userEvent.setup();
@@ -53,6 +52,33 @@ describe("Menu", () => {
     await user.click(screen.getByText(/open menu/i));
 
     expect(screen.queryByText(/content/i)).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and returns focus to the trigger", async () => {
+    const user = userEvent.setup();
+    renderMenu();
+    await user.click(screen.getByText(/open menu/i));
+    expect(screen.getByText(/^content$/i)).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText(/^content$/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/open menu/i)).toHaveFocus();
+  });
+
+  it("opens from the keyboard", async () => {
+    const user = userEvent.setup();
+    renderMenu();
+    await user.tab();
+    expect(screen.getByText(/open menu/i)).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByText(/^content$/i)).toBeInTheDocument();
+  });
+
+  it("closes when clicking outside", async () => {
+    const user = userEvent.setup();
+    renderMenu();
+    await user.click(screen.getByText(/open menu/i));
+    await user.click(screen.getByText(/outside/i));
+    expect(screen.queryByText(/^content$/i)).not.toBeInTheDocument();
   });
 
   it("should be open when passing the open props", async () => {
