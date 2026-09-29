@@ -21,7 +21,7 @@ import OptionsContent from "./OptionsContent";
 import { ICONS_SIZE } from "../consts";
 import NameField from "./NameField";
 import { useQueryClient } from "@tanstack/react-query";
-import { startTransition } from "react";
+import { useRef, useTransition } from "react";
 import { createTaskInListAction } from "@/features/task/actions";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
 
@@ -70,10 +70,18 @@ export function Heading({
 function FeatureBtns({ listId }: { listId: string }) {
   const { isRenameOpen } = useList();
   const queryClient = useQueryClient();
+  const [isCreating, startTransition] = useTransition();
+  // Synchronous guard: a fast double-click can land before the re-render that
+  // disables the button, so `isCreating` alone isn't enough.
+  const isCreatingRef = useRef(false);
 
   const handleCreateTask = () => {
+    if (isCreatingRef.current) return;
+    isCreatingRef.current = true;
     startTransition(async () => {
-      const response = await createTaskInListAction(listId);
+      const response = await createTaskInListAction(listId).finally(() => {
+        isCreatingRef.current = false;
+      });
       if (response.status === "error") {
         window.toast?.error(formatErrorForToast(response.error), 7);
         return;
@@ -113,6 +121,7 @@ function FeatureBtns({ listId }: { listId: string }) {
             toolTipMessage="Create task"
             ariaLabel="Create task button"
             onClick={handleCreateTask}
+            disabled={isCreating}
           />
         </div>
       </DropdownMenu>
