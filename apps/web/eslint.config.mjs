@@ -4,8 +4,8 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 const eslintConfig = defineConfig([
   ...nextVitals,
   {
-    // TEMPORARY (plan A1): these fire in components replaced in plan A3/A4.
-    // Remove this block at the end of A4.
+    // TEMPORARY (plan A1, still needed after A3): src/legacy-ui/MenuCompound.tsx
+    files: ["src/legacy-ui/MenuCompound.tsx"],
     rules: {
       "react-hooks/set-state-in-effect": "warn",
     },

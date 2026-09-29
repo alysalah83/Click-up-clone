@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it } from "vitest";
 import { Menu, MenuContent, MenuTrigger, useMenu } from "./MenuCompound";
+import { ToolTip, ToolTipTrigger, ToolTipMessage } from "@/shared/ui/ToolTip/ToolTip";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
@@ -174,6 +175,40 @@ describe("Menu", () => {
     expect(screen.getByText(/opened/i)).toBeInTheDocument();
     await user.click(screen.getByText(/open menu/!));
     expect(screen.getByText(/not opened/i)).toBeInTheDocument();
+  });
+
+  it("does not reopen a tooltip on the trigger after picking a menu item by pointer", async () => {
+    // Regression: many menu triggers are wrapped in a ToolTip whose Radix
+    // trigger opens on focus. Radix's default close-auto-focus behavior
+    // refocuses the menu trigger after a pointer-driven selection, which
+    // would pop the tooltip open right after picking an option.
+    const PickItem = () => {
+      const { toggleMenu } = useMenu();
+      return <button onClick={() => toggleMenu()}>pick me</button>;
+    };
+
+    render(
+      <ToolTip>
+        <ToolTipTrigger>
+          <Menu>
+            <MenuTrigger>
+              <button>open menu</button>
+            </MenuTrigger>
+            <MenuContent>
+              <PickItem />
+            </MenuContent>
+          </Menu>
+        </ToolTipTrigger>
+        <ToolTipMessage>Space settings</ToolTipMessage>
+      </ToolTip>,
+    );
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText(/open menu/i));
+    await user.click(screen.getByText(/pick me/i));
+
+    expect(screen.queryByText(/^pick me$/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
   it("when menu open or close outerSetIsOpen should be called once", async () => {
