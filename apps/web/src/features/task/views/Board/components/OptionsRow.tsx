@@ -12,7 +12,6 @@ import { useTask } from "@/features/task/context/TaskProvider";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
 import { findDoneStatus } from "@/features/status/lib/statusByType";
-import { TaskOptionsButton } from "@/features/task/components/TaskDetailPanel";
 
 function OptionsRow() {
   const { task, toggleIsRenameOpen } = useTask();
@@ -56,8 +55,6 @@ function OptionsRow() {
         </ToolTipTrigger>
         <ToolTipMessage>Rename</ToolTipMessage>
       </ToolTip>
-
-      <TaskOptionsButton task={task} buttonSize={ICON_SIZE} />
 
       <Menu>
         <MenuTrigger>
