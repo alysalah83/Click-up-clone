@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import icon from "@/app/icon.png";
-import { Button } from "@/shared/ui/Button";
+import { ButtonLink } from "@/shared/ui/Button";
 
 function LogAndSignLayout({
   children,
@@ -83,17 +83,15 @@ function LogAndSignLayout({
                 ? "Don\u0027t have an account?"
                 : "Already have account?"}
             </span>
-            <Link href={`/${isLoginPage ? "signup" : "login"}`}>
-              <Button
-                size="large"
-                type="colored"
-                buttonFor="button"
-                ariaLabel="sign up button"
-                extraClasses="shadow-lg shadow-indigo-500/30"
-              >
-                {isLoginPage ? "sign up" : "login"}
-              </Button>
-            </Link>
+            <ButtonLink
+              href={`/${isLoginPage ? "signup" : "login"}`}
+              size="large"
+              type="colored"
+              ariaLabel={isLoginPage ? "sign up button" : "login button"}
+              extraClasses="shadow-lg shadow-indigo-500/30"
+            >
+              {isLoginPage ? "sign up" : "login"}
+            </ButtonLink>
           </div>
         </div>
 

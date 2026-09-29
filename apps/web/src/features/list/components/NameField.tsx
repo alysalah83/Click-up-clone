@@ -4,6 +4,8 @@ import RenameForm from "@/shared/components/RenameForm";
 import { memo, startTransition, useOptimistic } from "react";
 import { useList } from "./ListContext";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
+import { List } from "../types";
 import { updateList } from "../actions/update-list.action";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
 
@@ -15,6 +17,7 @@ function NameField() {
     handleToggleIsRenameOpen,
   } = useList();
 
+  const queryClient = useQueryClient();
   const [optimisticName, setOptimisticName] = useOptimistic(name);
 
   const handleRenameList = (newName: string) => {
@@ -24,6 +27,10 @@ function NameField() {
       setOptimisticName(newName);
 
       const state = await updateList(workspaceId, id, { name: newName });
+      if (state.status === "success")
+        queryClient.setQueryData<List>(["list", id], (old) =>
+          old ? { ...old, name: newName } : old,
+        );
       if (state.status === "error") {
         setOptimisticName(name);
         window.toast?.error(formatErrorForToast(state.error), 7);

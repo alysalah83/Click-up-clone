@@ -65,13 +65,19 @@ function SideMenuLink({ menuItem }: { menuItem: MenuItem }) {
 
   return (
     <li>
-      <Link href={href} className="flex flex-col items-center gap-1">
+      <Link
+        href={href}
+        aria-label={`${label} button`}
+        aria-current={isActive ? "page" : undefined}
+        className="flex flex-col items-center gap-1"
+      >
         <ButtonIcon
           icon={icon}
           size={6}
           type="primary"
           isActive={isActive}
           ariaLabel={`${label} button`}
+          asDecoration
         />
         <span className="text-xs font-medium capitalize md:font-bold">
           {label}

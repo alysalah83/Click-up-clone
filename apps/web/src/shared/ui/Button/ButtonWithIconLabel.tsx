@@ -19,7 +19,7 @@ interface ButtonWithIconLabelProps {
   isActive: boolean;
   latestListIdPromise: Promise<{ id: List["id"] } | undefined>;
   onHover: () => void;
-  ref: (ele: HTMLButtonElement) => void;
+  ref: (ele: HTMLAnchorElement) => void;
 }
 
 function ButtonWithIconLabel({
@@ -70,25 +70,24 @@ function ButtonWithIconLabel({
   else linkHref = `/home/lists/${newListId}${href}`;
 
   return (
-    <Link href={linkHref} className="z-20">
-      <button
-        ref={(ele) => {
-          if (ele) ref(ele);
-        }}
-        type="button"
-        aria-label={`${label} button`}
-        onPointerOver={onHover}
-        className={`flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs ${
-          isActive
-            ? "rounded-tl-lg rounded-tr-lg border-b-2 border-neutral-300 text-neutral-950 sm:rounded-tl-lg sm:rounded-tr-lg sm:border-x-0 sm:border-t-0 sm:pb-2 dark:text-neutral-50 dark:sm:border-neutral-50"
-            : "text-neutral-500 sm:mb-2 dark:text-neutral-300"
-        } cursor-pointer transition`}
-      >
-        <span className={`rounded-sm p-0.5 ${iconBgColor}`}>
-          <Icon className="h-3 w-3 fill-neutral-50" />
-        </span>
-        <span className="font-medium capitalize">{label}</span>
-      </button>
+    <Link
+      href={linkHref}
+      ref={(ele) => {
+        if (ele) ref(ele);
+      }}
+      aria-label={`${label} button`}
+      aria-current={isActive ? "page" : undefined}
+      onPointerOver={onHover}
+      className={`z-20 flex shrink-0 items-center gap-1 px-2 py-1 text-[11px] whitespace-nowrap sm:text-xs ${
+        isActive
+          ? "rounded-tl-lg rounded-tr-lg border-b-2 border-neutral-300 text-neutral-950 sm:rounded-tl-lg sm:rounded-tr-lg sm:border-x-0 sm:border-t-0 sm:pb-2 dark:text-neutral-50 dark:sm:border-neutral-50"
+          : "text-neutral-500 sm:mb-2 dark:text-neutral-300"
+      } cursor-pointer transition`}
+    >
+      <span className={`rounded-sm p-0.5 ${iconBgColor}`}>
+        <Icon className="h-3 w-3 fill-neutral-50" />
+      </span>
+      <span className="font-medium capitalize">{label}</span>
     </Link>
   );
 }

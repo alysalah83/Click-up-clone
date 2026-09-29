@@ -160,7 +160,7 @@ function CreateSpaceFlow() {
           <Button
             size="medium"
             type="primary"
-            ariaLabel="go next button"
+            ariaLabel="Go to previous step"
             onClick={() => {
               handleGoPrev();
               setIsTouched(false);
