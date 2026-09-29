@@ -9,7 +9,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import { Menu, MenuContent, MenuTrigger } from "@/shared/ui/Menu/MenuCompound";
 import StatusesUpdater from "../../../status/components/StatusesUpdater";
 import DatesUpdater from "./DatesUpdater";

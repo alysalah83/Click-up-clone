@@ -2,7 +2,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import ButtonIcon from "../ui/Button/ButtonIcon";
 import { memo } from "react";
 

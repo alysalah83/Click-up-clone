@@ -4,7 +4,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import { useTask } from "../../../context/TaskProvider";
 import { ICON_SIZE } from "../board.const";
 import { IconsMap } from "@/shared/icons/icons.type";

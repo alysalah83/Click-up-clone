@@ -8,7 +8,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import CreateSpaceFlow from "./CreateSpaceFlow";
 
 async function SpacesSection() {

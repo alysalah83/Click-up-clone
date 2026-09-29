@@ -4,7 +4,7 @@ import {
   ToolTip,
   ToolTipMessage,
   ToolTipTrigger,
-} from "@/shared/ui/ToolTip/ToolTipCompound ";
+} from "@/shared/ui/ToolTip/ToolTip";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
