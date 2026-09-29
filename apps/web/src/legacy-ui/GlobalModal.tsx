@@ -17,7 +17,17 @@ interface ModalState extends ModalOptions {
   isExiting: boolean;
 }
 
-// window typing lives in src/shared/ui/Toaster.tsx
+// Legacy, unused: kept for reference only. Self-contained window typing
+// since the real GlobalModal (and its global augmentation) was removed.
+declare global {
+  interface Window {
+    modal?: {
+      open: (options: ModalOptions) => string;
+      close: (id?: string) => void;
+      closeAll: () => void;
+    };
+  }
+}
 
 function GlobalModal() {
   const [modals, setModals] = useState<ModalState[]>([]);
