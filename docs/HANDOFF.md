@@ -1,6 +1,6 @@
 # Handoff: next steps for new chats
 
-Last updated: 2026-09-30. **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
+Last updated: 2026-09-30 (sprint chat: Steps 0–3 shipped). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
 
 ## Current state
 
@@ -9,14 +9,29 @@ Last updated: 2026-09-30. **Every new chat starts by reading this file.** At the
 | A1 | Monorepo, pnpm + Turborepo, CI | ✅ live |
 | A2 | API hardening: validation, ownership checks, auth, tests | ✅ live |
 | A3 | Overlays rebuilt on shadcn/Radix behind the old APIs | ✅ live |
-| A4 | Web bug fixes, Playwright E2E, honest README | ✅ done on branch `a4-web-fixes` (17 commits), **not merged or deployed yet** |
-| Spec B | Collaboration core (the visible features) | ⏳ next |
+| A4 | Web bug fixes, Playwright E2E, honest README (+ leftovers) | ✅ live |
+| B1 | Guest demo workspace seed (2 spaces, 4 lists, 80 tasks) | ✅ live |
+| B2 | Workspace members/roles, Teams page, assignees, invites, 6 demo teammates | ✅ live |
+| B3 | Rich task panel: Tiptap description, subtasks, checklists, tags, activity | ✅ live |
+| B4 | Comments + @mentions | ⏳ next |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
   - Web: https://click-up-clone-two.vercel.app
   - API: https://click-up-clone-back-end.vercel.app (`/health`)
 - **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
+
+## Where the sprint chat stopped (2026-09-30)
+
+- Steps 0–3 are merged to master and deployed. The owner asked for **less process**: skip spec/plan docs and manual browser runs, keep tests essential, ship features.
+- Seeds: `apps/api/src/seed/demoWorkspace.ts` (stable keys), `demoTeammates.ts`; all written in one transaction in `registerGuest` (`apps/api/src/services/user.service.ts`).
+- Known gaps to pick up:
+  - Table and List views don't open the task panel yet (Board and Calendar do).
+  - No UI for checklist-item assignees, renaming checklists, or renaming/deleting tags (API exists).
+  - Invites always grant `member` and are reusable for 7 days; guests joining by invite show as "Guest xxxx".
+  - Dashboard status pie groups by status name (~15 slices with the seed).
+  - Guest cleanup deletes real users' rows created inside a purged guest's workspace (by design).
+  - The new UI (Teams, picker, task panel) has not been eyeballed in a browser; do a quick visual pass first thing.
 
 ## Rules for every chat
 
@@ -36,7 +51,7 @@ Last updated: 2026-09-30. **Every new chat starts by reading this file.** At the
 
 ---
 
-## Step 0: Ship A4 (short chat) ☐
+## Step 0: Ship A4 (short chat) ✅
 
 **Prompt to paste:**
 > Read docs/HANDOFF.md. Do Step 0: fast-forward master to a4-web-fixes, push, then verify the live site and API.
@@ -65,7 +80,7 @@ Last updated: 2026-09-30. **Every new chat starts by reading this file.** At the
 
 The order is chosen so the demo improves visibly after every step.
 
-### Step 1: Demo workspace seeding ☐ (biggest recruiter impact)
+### Step 1: Demo workspace seeding ✅ (biggest recruiter impact)
 
 **Prompt:**
 > Read docs/HANDOFF.md. Do Step 1: brainstorm, spec, plan and build the guest demo workspace seeding.
@@ -81,7 +96,7 @@ The order is chosen so the demo improves visibly after every step.
 
 **Done when:** a new guest sees a full Board, Table, Calendar and Dashboard within a few seconds, with tests for the seed and the cleanup.
 
-### Step 2: Workspace membership, Teams page, assignees ☐
+### Step 2: Workspace membership, Teams page, assignees ✅
 
 **Prompt:**
 > Read docs/HANDOFF.md. Do Step 2: workspace members/roles, Teams page, task assignees.
@@ -102,7 +117,7 @@ The order is chosen so the demo improves visibly after every step.
   - An assignee picker (reusing the Menu facade).
   - Filter or group by assignee on the Board if cheap.
 
-### Step 3: Rich task page ☐
+### Step 3: Rich task page ✅
 
 **Prompt:**
 > Read docs/HANDOFF.md. Do Step 3: the ClickUp-style task page.
