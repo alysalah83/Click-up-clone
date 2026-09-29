@@ -18,23 +18,34 @@ const ModalContext = createContext<ModalContextTypes | null>(null);
 function Modal({
   children,
   initialOpen = false,
+  open: controlledOpen,
+  onOpenChange,
   onClose,
 }: {
   children: ReactNode;
   initialOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onClose?: () => void;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(initialOpen);
+  const isControlled = controlledOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(initialOpen);
+  const isModalOpen = isControlled ? controlledOpen : internalOpen;
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    if (!isControlled) setInternalOpen(false);
+    onOpenChange?.(false);
     onClose?.();
   };
-  const toggleModal = () => (isModalOpen ? closeModal() : setIsModalOpen(true));
+  const setOpen = (nextOpen: boolean) => {
+    if (!isControlled) setInternalOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
+  const toggleModal = () => (isModalOpen ? closeModal() : setOpen(true));
 
   return (
     <ModalContext value={{ isModalOpen, toggleModal, closeModal }}>
-      <Dialog.Root open={isModalOpen} onOpenChange={(open) => (open ? setIsModalOpen(true) : closeModal())}>
+      <Dialog.Root open={isModalOpen} onOpenChange={(open) => (open ? setOpen(true) : closeModal())}>
         {children}
       </Dialog.Root>
     </ModalContext>

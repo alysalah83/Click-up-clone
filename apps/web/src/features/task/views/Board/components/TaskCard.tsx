@@ -1,29 +1,27 @@
-import FeatureBtns from "./FeatureBtns";
 import { useDraggable } from "@dnd-kit/core";
-import { useCallback, useMemo } from "react";
-import {
-  Dropdown,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@/shared/ui/DropDown/DropdownCompound";
+import { useCallback, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Task } from "@/features/task/types";
 import { useTask } from "@/features/task/context/TaskProvider";
-import TaskRenameForm from "@/features/task/components/TaskRenameForm";
-import OptionsRow from "./OptionsRow";
-import SkeletonLoader from "@/shared/ui/SkeletonLoader";
-import { ICONS_MAP } from "@/shared/icons/icons-map";
-import { TASK_ICON_SIZE } from "@/features/task/constants/tasks.const";
+import { TaskDetailPanel } from "@/features/task/components/TaskDetailPanel";
+import Modal, { ModalContent } from "@/shared/ui/ModalCompound";
+import TaskCardView from "./TaskCardView";
 
 interface TaskCardProps {
   task: Task;
 }
 
+// Clicks on these, or inside a portaled menu/dialog, must not open the
+// detail panel.
+const NO_CARD_CLICK_SELECTOR =
+  'button, a, input, textarea, select, [role="menu"], [role="dialog"], [data-no-card-click]';
+
 function TaskCard({ task }: TaskCardProps) {
   const { isRenameOpen, taskContainerRef, isTempTask } = useTask();
-  const { name, id, status } = task;
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { id, statusId } = task;
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
-    data: { status },
+    data: { statusId },
   });
 
   const setRefs = useCallback(
@@ -34,49 +32,50 @@ function TaskCard({ task }: TaskCardProps) {
     [setNodeRef, taskContainerRef],
   );
 
-  const styles = useMemo(
-    () =>
-      transform
-        ? { transform: `transform3d(${transform.x}px, ${transform.y}px, 0)` }
-        : undefined,
-    [transform],
-  );
+  const canOpenDetail = () => !isRenameOpen && !isTempTask;
+
+  // Portaled content (Menu popovers, the Modal itself) is rendered outside
+  // this card's DOM subtree, but React re-dispatches its synthetic events
+  // through the React tree the portal was mounted from — which bubbles them
+  // to this onClick. `closest()` alone only catches elements still inside
+  // the card's actual DOM; the containment check below also catches those
+  // portal-originated bubbled clicks.
+  const isClickInsideCard = (e: MouseEvent<HTMLDivElement>) =>
+    e.currentTarget.contains(e.target as Node);
+
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (!canOpenDetail()) return;
+    const target = e.target as Element;
+    if (target.closest(NO_CARD_CLICK_SELECTOR)) return;
+    if (!isClickInsideCard(e)) return;
+    setIsDetailOpen(true);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!canOpenDetail()) return;
+    if (e.target !== e.currentTarget) return;
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    setIsDetailOpen(true);
+  };
 
   return (
-    <Dropdown toggleOnChildClick={true}>
-      <DropdownTrigger>
-        <div
-          ref={setRefs}
-          {...listeners}
-          {...attributes}
-          style={styles}
-          className={`${isTempTask ? "pointer-events-none opacity-75" : ""} group flex w-full cursor-pointer flex-col gap-3 rounded-lg border border-neutral-300 bg-neutral-100 px-3 py-2 transition duration-300 hover:border-neutral-100 active:border-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-500 dark:active:border-neutral-500`}
-        >
-          {isRenameOpen ? (
-            <TaskRenameForm />
-          ) : (
-            <div className="flex justify-between">
-              <div className="flex items-center gap-1">
-                <ICONS_MAP.dragHandle
-                  className="size-3.5 cursor-grab text-neutral-500"
-                  aria-label="drag handle"
-                />
-                <span className="line-clamp-2 grow-0 text-sm font-medium text-neutral-950 transition duration-300 dark:text-neutral-50 dark:group-hover:text-neutral-300 dark:group-active:text-neutral-300">
-                  {name}
-                </span>
-              </div>
-
-              <DropdownMenu>
-                <OptionsRow />
-              </DropdownMenu>
-            </div>
-          )}
-          <div className="flex items-center gap-1">
-            <FeatureBtns />
-          </div>
-        </div>
-      </DropdownTrigger>
-    </Dropdown>
+    <>
+      <TaskCardView
+        task={task}
+        ref={setRefs}
+        className={isDragging ? "opacity-40" : undefined}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        {...listeners}
+        {...attributes}
+      />
+      <Modal open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <ModalContent contentYPosition="withTopMargin" title="Task details">
+          <TaskDetailPanel task={task} />
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 

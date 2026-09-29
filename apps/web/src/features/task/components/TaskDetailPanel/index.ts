@@ -1,3 +1,4 @@
 import TaskOptionsButton from "./TaskOptionsButton";
+import TaskDetailPanel from "./TaskDetailPanel";
 
-export { TaskOptionsButton };
+export { TaskOptionsButton, TaskDetailPanel };

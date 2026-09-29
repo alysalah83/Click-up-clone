@@ -43,7 +43,7 @@ function CalendarTaskRow({ task, cellDate }: CalendarTaskRowProps) {
       ref={setNodeRef}
       style={{
         transform: transform
-          ? `transform3d(${transform.x}px, ${transform.y}px, 0)`
+          ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
           : undefined,
         opacity: isDragging ? 0.4 : 1,
       }}

@@ -185,6 +185,36 @@ describe("Modal", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("controlled mode: an open prop shows the dialog, and Escape calls onOpenChange(false)", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Modal open onOpenChange={onOpenChange}>
+        <ModalContent>
+          <p>controlled body</p>
+        </ModalContent>
+      </Modal>,
+    );
+    expect(screen.getByRole("dialog")).toHaveTextContent("controlled body");
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("controlled mode: open=false keeps the dialog closed even after an internal toggle attempt", () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Modal open={false} onOpenChange={onOpenChange}>
+        <ModalTrigger>
+          <button type="button">open modal</button>
+        </ModalTrigger>
+        <ModalContent>
+          <p>controlled body</p>
+        </ModalContent>
+      </Modal>,
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("Escape from a keyboard-opened Menu within a dialog closes only the menu", async () => {
     const user = userEvent.setup();
     render(
