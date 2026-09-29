@@ -1,19 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import { getSortedParamString } from "@/shared/lib/utils/getSortedParamString";
 import { Task, UpdateTaskInput } from "../types";
 import { updateTaskAction } from "../actions";
 import { Status } from "@/features/status/types";
 import { ActionErrorResponse } from "@/shared/types/action.types";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
+import { useTasksQueryKey } from "./useTasksQueryKey";
 
 export function useUpdateTask() {
-  const { listId } = useParams<{ listId: string }>();
-  const params = useSearchParams();
-  const sortedFilters = getSortedParamString(params);
-  const queryKey = sortedFilters
-    ? ["tasks", listId, sortedFilters]
-    : ["tasks", listId];
+  const { listId, queryKey, baseKey } = useTasksQueryKey();
 
   const queryClient = useQueryClient();
   const {
@@ -40,7 +34,7 @@ export function useUpdateTask() {
       taskId: string;
       updateTaskInput: UpdateTaskInput;
     }) {
-      await queryClient.cancelQueries({ queryKey: ["tasks", listId] });
+      await queryClient.cancelQueries({ queryKey: baseKey });
 
       const previousTasks = queryClient.getQueryData<Task[]>(queryKey);
       let updateTaskInputWithStatus: UpdateTaskInput & { status?: Status };
@@ -58,7 +52,7 @@ export function useUpdateTask() {
           status: newUpdatedStatus,
         };
       } else updateTaskInputWithStatus = updateTaskInput;
-      queryClient.setQueryData(queryKey, (oldTasks: Task[]) => {
+      queryClient.setQueryData(queryKey, (oldTasks: Task[] = []) => {
         const updatedTaskIndex = oldTasks.findIndex(
           (task) => task.id === taskId,
         );
@@ -79,7 +73,7 @@ export function useUpdateTask() {
     },
 
     onSettled() {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: baseKey });
     },
   });
   return { updateTask, status, error };

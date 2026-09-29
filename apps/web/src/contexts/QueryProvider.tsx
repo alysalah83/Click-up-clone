@@ -2,6 +2,7 @@
 
 import {
   isServer,
+  QueryCache,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
@@ -14,6 +15,12 @@ function makeQueryClient() {
         staleTime: 60 * 1000,
       },
     },
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        const message = query.meta?.errorMessage ?? error.message;
+        window.toast?.error(message as string, 7);
+      },
+    }),
   });
 }
 
@@ -37,7 +44,9 @@ export default function QueryProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools />
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
       {children}
     </QueryClientProvider>
   );
