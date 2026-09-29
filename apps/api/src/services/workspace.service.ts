@@ -6,13 +6,14 @@ import type {
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError } from "../lib/errors/index.js";
 import { defaultStatusesFor } from "../consts/status.const.js";
-import { assertCanAccess } from "./access.service.js";
+import { assertCanAccess, memberOf } from "./access.service.js";
+import { taskInclude, toTaskDto } from "./task.dto.js";
 
 const withAvatar = { avatar: true } as const;
 
 export function listWorkspaces(userId: string, includeLists = false) {
   return prisma.workspace.findMany({
-    where: { userId },
+    where: memberOf(userId),
     include: {
       ...withAvatar,
       ...(includeLists && { lists: { orderBy: { createdAt: "asc" } } }),
@@ -22,24 +23,32 @@ export function listWorkspaces(userId: string, includeLists = false) {
 }
 
 export function countWorkspaces(userId: string) {
-  return prisma.workspace.count({ where: { userId } });
+  return prisma.workspace.count({ where: memberOf(userId) });
 }
 
 export async function getWorkspace(userId: string, id: string) {
-  const workspace = await prisma.workspace.findFirst({ where: { id, userId }, include: withAvatar });
+  const workspace = await prisma.workspace.findFirst({
+    where: { id, ...memberOf(userId) },
+    include: withAvatar,
+  });
   if (!workspace) throw new NotFoundError("Workspace not found");
   return workspace;
 }
 
 export function createWorkspace(userId: string, { name, avatar }: CreateWorkspaceInput) {
   return prisma.workspace.create({
-    data: { name, user: { connect: { id: userId } }, avatar: { create: avatar } },
+    data: {
+      name,
+      user: { connect: { id: userId } },
+      avatar: { create: avatar },
+      members: { create: { userId, role: "owner" } },
+    },
     include: withAvatar,
   });
 }
 
 export async function updateWorkspace(userId: string, id: string, { name, avatar }: UpdateWorkspaceInput) {
-  await assertCanAccess(userId, { workspaceId: id });
+  await assertCanAccess(userId, { workspaceId: id }, "admin");
   return prisma.workspace.update({
     where: { id },
     data: {
@@ -51,6 +60,7 @@ export async function updateWorkspace(userId: string, id: string, { name, avatar
 }
 
 export async function deleteWorkspace(userId: string, id: string) {
+  await assertCanAccess(userId, { workspaceId: id }, "owner");
   const workspace = await getWorkspace(userId, id);
   // Sequential: the workspace row references the avatar (ON DELETE RESTRICT).
   await prisma.$transaction([
@@ -59,14 +69,19 @@ export async function deleteWorkspace(userId: string, id: string) {
   ]);
 }
 
-export function createWorkspaceFlow(userId: string, { data }: CreateWorkspaceFlowInput) {
+export async function createWorkspaceFlow(userId: string, { data }: CreateWorkspaceFlowInput) {
   const { workspace, list, status, task } = data;
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const createdAvatar = await tx.avatar.create({ data: workspace.avatar });
 
     const createdWorkspace = await tx.workspace.create({
-      data: { name: workspace.name, userId, avatarId: createdAvatar.id },
+      data: {
+        name: workspace.name,
+        userId,
+        avatarId: createdAvatar.id,
+        members: { create: { userId, role: "owner" } },
+      },
       include: withAvatar,
     });
 
@@ -93,9 +108,10 @@ export function createWorkspaceFlow(userId: string, { data }: CreateWorkspaceFlo
         listId: createdList.id,
         statusId: createdStatus.id,
       },
-      include: { status: true },
+      include: taskInclude,
     });
 
     return { workspace: createdWorkspace, list: createdList, status: createdStatus, task: createdTask };
   });
+  return { ...result, task: toTaskDto(result.task) };
 }

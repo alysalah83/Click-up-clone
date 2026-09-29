@@ -2,7 +2,7 @@ import type { CreateStatusInput, UpdateStatusInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors/appError.js";
 import { ForbiddenError, NotFoundError } from "../lib/errors/index.js";
-import { assertCanAccess } from "./access.service.js";
+import { assertCanAccess, listInMyWorkspaces } from "./access.service.js";
 
 export async function listStatuses(userId: string, listId: string) {
   await assertCanAccess(userId, { listId });
@@ -27,7 +27,7 @@ export async function updateStatus(userId: string, id: string, data: UpdateStatu
 }
 
 export async function deleteStatus(userId: string, id: string) {
-  const status = await prisma.status.findFirst({ where: { id, userId } });
+  const status = await prisma.status.findFirst({ where: { id, list: listInMyWorkspaces(userId) } });
   if (!status) throw new NotFoundError("Status not found");
   if (status.isDefault) throw new ForbiddenError("Default statuses cannot be deleted");
 
@@ -52,7 +52,7 @@ export async function deleteStatus(userId: string, id: string) {
  */
 export async function taskCountsByStatusName(userId: string) {
   const statuses = await prisma.status.findMany({
-    where: { userId },
+    where: { list: listInMyWorkspaces(userId) },
     select: { name: true, bgColor: true, _count: { select: { tasks: true } } },
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   });

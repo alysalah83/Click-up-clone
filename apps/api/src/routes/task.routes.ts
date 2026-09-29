@@ -6,6 +6,7 @@ import {
   idParamsSchema,
   listIdParamsSchema,
   priorityCountsQuerySchema,
+  setAssigneesSchema,
   tasksQuerySchema,
   updateTaskSchema,
 } from "@clickup/shared";
@@ -16,6 +17,7 @@ import {
   getTasks,
   getTasksPriorityCounts,
   getTotalAndCompleteTasksCount,
+  setTaskAssignees,
   updateManyTasks,
   updateTask,
 } from "../controllers/task.controller.js";
@@ -33,9 +35,11 @@ router.get(
   "/:listId/completeAndTotalTasksCounts",
   validate({ params: listIdParamsSchema }),
   getTotalAndCompleteTasksCount,
+  setTaskAssignees,
 );
 router.patch("/bulk", validate({ body: bulkUpdateTasksSchema }), updateManyTasks);
 router.patch("/:id", validate({ params: idParamsSchema, body: updateTaskSchema }), updateTask);
+router.put("/:id/assignees", validate({ params: idParamsSchema, body: setAssigneesSchema }), setTaskAssignees);
 router.delete("/:id", validate({ params: idParamsSchema }), deleteTask);
 router.delete(
   "/:listId/bulk",

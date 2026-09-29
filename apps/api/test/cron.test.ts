@@ -25,6 +25,11 @@ describe("GET /internal/cron/cleanup-guests", () => {
     await prisma.user.update({ where: { id: stale.id }, data: { createdAt: EIGHT_DAYS_AGO } });
     await prisma.user.update({ where: { id: member.user.id }, data: { createdAt: EIGHT_DAYS_AGO } });
 
+    const staleTeam = await prisma.user.findMany({ where: { demoOwnerId: stale.id }, select: { id: true } });
+    const staleUserIds = [stale.id, ...staleTeam.map((u) => u.id)];
+    expect(staleTeam).toHaveLength(6);
+    expect(await prisma.taskAssignee.count({ where: { userId: { in: staleUserIds } } })).toBeGreaterThan(0);
+
     const res = await api()
       .get("/internal/cron/cleanup-guests")
       .set("Authorization", "Bearer test-cron-secret")
@@ -34,6 +39,12 @@ describe("GET /internal/cron/cleanup-guests", () => {
     expect(await prisma.user.findUnique({ where: { id: stale.id } })).toBeNull();
     expect(await prisma.task.count({ where: { userId: stale.id } })).toBe(0);
     expect(await prisma.avatar.count({ where: { id: stale.avatarId } })).toBe(0);
+    // The seeded fake teammates, their memberships and assignments go with the guest.
+    expect(await prisma.user.count({ where: { id: { in: staleUserIds } } })).toBe(0);
+    expect(await prisma.workspaceMember.count({ where: { userId: { in: staleUserIds } } })).toBe(0);
+    expect(await prisma.taskAssignee.count({ where: { userId: { in: staleUserIds } } })).toBe(0);
+    expect(await prisma.user.count({ where: { demoOwnerId: fresh.id } })).toBe(6);
+    expect(await prisma.taskAssignee.count({ where: { task: { userId: fresh.id } } })).toBeGreaterThan(0);
     expect(await prisma.user.findUnique({ where: { id: fresh.id } })).not.toBeNull();
     expect(await prisma.user.findUnique({ where: { id: member.user.id } })).not.toBeNull();
   });

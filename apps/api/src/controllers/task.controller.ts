@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import type {
   BulkUpdateTasksInput,
   CreateTaskInput,
+  SetAssigneesInput,
   TasksQuery,
   UpdateTaskInput,
 } from "@clickup/shared";
@@ -51,4 +52,9 @@ export const deleteManyTasks = catchAsync(async (req: Request, res: Response) =>
   const { listId } = req.params as { listId: string };
   const deletedCount = await taskService.deleteTasksInList(req.userId, listId, req.body as string[]);
   res.status(200).json({ message: `${deletedCount} tasks deleted successfully`, deletedCount });
+});
+
+export const setTaskAssignees = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
+  res.status(200).json(await taskService.setAssignees(req.userId, id, req.body as SetAssigneesInput));
 });

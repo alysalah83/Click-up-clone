@@ -4,12 +4,14 @@ import type { LoginInput, RegisterInput, UpdateMeInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
 import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
 import { DEMO_TEMPLATE, buildDemoWorkspace } from "../seed/demoWorkspace.js";
+import { buildDemoTeammates } from "../seed/demoTeammates.js";
 
 const publicUser = {
   id: true,
   role: true,
   name: true,
   email: true,
+  avatarColor: true,
   hasOnBoarded: true,
   createdAt: true,
   updatedAt: true,
@@ -28,12 +30,18 @@ export async function registerUser({ name, email, password }: RegisterInput) {
 
 /**
  * Creates a guest together with the demo workspace, in one transaction: a failed seed leaves no
- * guest behind. Ids are generated up front, so this is 8 round trips (BEGIN, 6 writes, COMMIT).
+ * guest behind. Ids are generated up front, so this is 11 round trips (BEGIN, 9 writes, COMMIT).
+ * Fake teammates join both spaces and are assigned across the tasks.
  * Seeded guests skip the onboarding wizard.
  */
 export async function registerGuest(template = DEMO_TEMPLATE) {
   const userId = randomUUID();
   const seed = buildDemoWorkspace(userId, new Date(), template);
+  const team = buildDemoTeammates({
+    ownerUserId: userId,
+    workspaceIds: seed.workspaces.map((w) => w.id),
+    taskIds: seed.tasks.map((t) => t.id),
+  });
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -44,6 +52,9 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     prisma.list.createMany({ data: seed.lists }),
     prisma.status.createMany({ data: seed.statuses }),
     prisma.task.createMany({ data: seed.tasks }),
+    prisma.user.createMany({ data: team.users }),
+    prisma.workspaceMember.createMany({ data: team.members }),
+    prisma.taskAssignee.createMany({ data: team.assignees }),
   ]);
   return { user, landingListId: seed.landingListId };
 }
@@ -54,7 +65,7 @@ export async function verifyCredentials({ email, password }: LoginInput) {
   // One message for both cases, so the endpoint does not reveal which emails exist.
   if (!user || !isValid) throw new UnauthorizedError("Invalid email or password");
 
-  const { password: _password, ...rest } = user;
+  const { password: _password, demoOwnerId: _demoOwnerId, ...rest } = user;
   return rest;
 }
 

@@ -2,15 +2,18 @@ import type { Request, Response } from "express";
 import type { LoginInput, RegisterInput, UpdateMeInput } from "@clickup/shared";
 import { catchAsync } from "../lib/utils/catchAsync.js";
 import { generateToken, type UserRole } from "../lib/middlewares/auth.middleware.js";
+import { UnauthorizedError } from "../lib/errors/index.js";
 import { COOKIES_OPTIONS } from "../consts/auth.const.js";
 import * as userService from "../services/user.service.js";
 
 function sendSession(
   res: Response,
   status: number,
-  user: { id: string; role: UserRole },
+  user: { id: string; role: UserRole | "demo" },
   extra: Record<string, unknown> = {},
 ) {
+  // Demo teammates have no password, so they can never reach this; guard anyway.
+  if (user.role === "demo") throw new UnauthorizedError("Demo teammates cannot sign in");
   const token = generateToken(user.id, user.role);
   res.cookie("token", token, COOKIES_OPTIONS);
   // The web app's server reads the token from the body and sets its own cookie (spec §0.1).

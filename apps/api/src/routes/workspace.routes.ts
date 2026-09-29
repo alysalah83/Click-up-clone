@@ -1,8 +1,11 @@
 import express from "express";
 import {
   createWorkspaceFlowSchema,
+  createInviteSchema,
   createWorkspaceSchema,
   idParamsSchema,
+  updateMemberRoleSchema,
+  workspaceMemberParamsSchema,
   updateWorkspaceSchema,
   workspacesQuerySchema,
 } from "@clickup/shared";
@@ -14,6 +17,12 @@ import {
   getWorkspaces,
   updateWorkspace,
 } from "../controllers/workspace.controller.js";
+import {
+  createInvite,
+  getWorkspaceMembers,
+  removeMember,
+  updateMemberRole,
+} from "../controllers/member.controller.js";
 import { authMiddleware } from "../lib/middlewares/auth.middleware.js";
 import { validate } from "../lib/middlewares/validate.middleware.js";
 
@@ -27,5 +36,13 @@ router.get("/", validate({ query: workspacesQuerySchema }), getWorkspaces);
 router.get("/:id", validate({ params: idParamsSchema }), getWorkspace);
 router.patch("/:id", validate({ params: idParamsSchema, body: updateWorkspaceSchema }), updateWorkspace);
 router.delete("/:id", validate({ params: idParamsSchema }), deleteWorkspace);
+router.get("/:id/members", validate({ params: idParamsSchema }), getWorkspaceMembers);
+router.patch(
+  "/:id/members/:userId",
+  validate({ params: workspaceMemberParamsSchema, body: updateMemberRoleSchema }),
+  updateMemberRole,
+);
+router.delete("/:id/members/:userId", validate({ params: workspaceMemberParamsSchema }), removeMember);
+router.post("/:id/invites", validate({ params: idParamsSchema, body: createInviteSchema }), createInvite);
 
 export default router;
