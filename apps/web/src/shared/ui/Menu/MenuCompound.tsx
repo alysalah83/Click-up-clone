@@ -79,6 +79,14 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
 
 function MenuContent({ children }: { children: ReactNode }) {
   const { menuMargin } = useMenu();
+  // Tracks whether the last interaction inside this content was a pointer
+  // (click/tap) rather than a keyboard action. Many menu triggers are
+  // wrapped in a ToolTip whose Radix trigger opens on focus, so refocusing
+  // the trigger after a pointer-driven selection would pop the tooltip open
+  // right after picking an option. Keyboard users still need focus
+  // returned to the trigger (e.g. after Escape), so only pointer-driven
+  // closes are suppressed.
+  const wasPointerInteractionRef = useRef(false);
   return (
     <Popover.Portal>
       <Popover.Content
@@ -87,6 +95,12 @@ function MenuContent({ children }: { children: ReactNode }) {
         sideOffset={menuMargin}
         collisionPadding={8}
         onClick={(e) => e.stopPropagation()}
+        onPointerDown={() => {
+          wasPointerInteractionRef.current = true;
+        }}
+        onKeyDown={() => {
+          wasPointerInteractionRef.current = false;
+        }}
         onCloseAutoFocus={(e) => {
           // Radix's default behavior focuses this menu's trigger when the
           // content unmounts. That's correct for Escape / item-removal, but
@@ -99,6 +113,9 @@ function MenuContent({ children }: { children: ReactNode }) {
           // our own trigger when nothing else already holds focus.
           const active = document.activeElement;
           if (active && active !== document.body) e.preventDefault();
+          // Also skip restoring focus when the close was triggered by a
+          // pointer interaction inside the content (see comment above).
+          if (wasPointerInteractionRef.current) e.preventDefault();
         }}
         className={cn(
           "bg-popover text-popover-foreground z-50 rounded-lg text-sm shadow-md shadow-neutral-900/10",
