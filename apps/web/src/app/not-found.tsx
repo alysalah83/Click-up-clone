@@ -19,16 +19,18 @@ function NotFound() {
           Page not found
         </h2>
         <p className="text-center text-base font-medium text-neutral-400">
-          The page you&apos;re looking for doesn&apos;t exist or may have been deleted.
+          The page you&apos;re looking for doesn&apos;t exist or may have been
+          deleted.
         </p>
-        <ButtonLink href="/home/lists"
-            stretch={true}
-            type="colored"
-            size="large"
-            ariaLabel="go to lists overview page"
-          >
-            Go to home
-          </ButtonLink>
+        <ButtonLink
+          href="/home/lists"
+          stretch={true}
+          type="colored"
+          size="large"
+          ariaLabel="go to lists overview page"
+        >
+          Go to home
+        </ButtonLink>
       </div>
     </div>
   );

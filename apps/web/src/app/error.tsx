@@ -19,7 +19,7 @@ function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-neutral-900">
-      <div className="flex max-w-96 min-w-82 flex-col items-center gap-4 rounded-xl bg-neutral-800 px-6 py-8">
+      <div className="min-w-82 flex max-w-96 flex-col items-center gap-4 rounded-xl bg-neutral-800 px-6 py-8">
         <div className="mb-4 w-fit rounded-xl bg-red-600/20 p-2 ring-2 ring-red-600 ring-offset-4 ring-offset-neutral-800">
           <ICONS_MAP.error className="size-8 fill-red-600 text-red-600" />
         </div>
@@ -37,14 +37,15 @@ function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
         )}
 
         {statusCode === 401 ? (
-          <ButtonLink href="/login"
-              stretch={true}
-              type="colored"
-              size="large"
-              ariaLabel="go to login"
-            >
-              Go to Login
-            </ButtonLink>
+          <ButtonLink
+            href="/login"
+            stretch={true}
+            type="colored"
+            size="large"
+            ariaLabel="go to login"
+          >
+            Go to Login
+          </ButtonLink>
         ) : statusCode === 0 ? (
           <Button
             onClick={() => reset()}

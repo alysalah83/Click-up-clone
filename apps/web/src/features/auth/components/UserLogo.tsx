@@ -33,7 +33,7 @@ function UserLogo({
       <div className="flex h-6 w-6 items-center justify-center truncate rounded-full bg-lime-300 text-xs font-medium sm:h-8 sm:w-8 sm:text-sm dark:bg-lime-700">
         {nameFirstLetters}
       </div>
-      <span className="truncate text-sm font-medium text-neutral-800 capitalize sm:text-base dark:text-neutral-200">
+      <span className="truncate text-sm font-medium capitalize text-neutral-800 sm:text-base dark:text-neutral-200">
         {name}
       </span>
     </div>

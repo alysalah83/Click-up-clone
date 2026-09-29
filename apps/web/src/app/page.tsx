@@ -79,32 +79,34 @@ function Page() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <ButtonLink href="/login"
-              type="secondary"
-              size="medium"
-              ariaLabel="login button"
-            >
-              Login
-            </ButtonLink>
-          <ButtonLink href="/signup"
-              type="colored"
-              size="medium"
-              ariaLabel="sign up button"
-            >
-              Sign Up
-            </ButtonLink>
+          <ButtonLink
+            href="/login"
+            type="secondary"
+            size="medium"
+            ariaLabel="login button"
+          >
+            Login
+          </ButtonLink>
+          <ButtonLink
+            href="/signup"
+            type="colored"
+            size="medium"
+            ariaLabel="sign up button"
+          >
+            Sign Up
+          </ButtonLink>
         </div>
       </nav>
 
       <section className="relative z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-indigo-600 via-violet-600 to-purple-700" />
+        <div className="bg-linear-to-br absolute inset-0 from-indigo-600 via-violet-600 to-purple-700" />
 
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full border border-white/10" />
-          <div className="absolute -top-12 -left-12 h-72 w-72 rounded-full border border-white/7" />
-          <div className="absolute right-20 bottom-10 h-56 w-56 rounded-full border border-white/10" />
-          <div className="absolute -right-20 -bottom-20 h-80 w-80 rounded-full border border-white/6" />
-          <div className="absolute top-1/3 left-1/2 h-32 w-32 rounded-full bg-white/5" />
+          <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full border border-white/10" />
+          <div className="border-white/7 absolute -left-12 -top-12 h-72 w-72 rounded-full border" />
+          <div className="absolute bottom-10 right-20 h-56 w-56 rounded-full border border-white/10" />
+          <div className="border-white/6 absolute -bottom-20 -right-20 h-80 w-80 rounded-full border" />
+          <div className="absolute left-1/2 top-1/3 h-32 w-32 rounded-full bg-white/5" />
         </div>
 
         <div
@@ -116,32 +118,33 @@ function Page() {
           }}
         />
 
-        <div className="relative z-10 flex flex-col items-center px-6 pt-20 pb-28 text-center md:pt-28 md:pb-36">
+        <div className="relative z-10 flex flex-col items-center px-6 pb-28 pt-20 text-center md:pb-36 md:pt-28">
           <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-indigo-100 backdrop-blur-sm">
             <IconBullseye className="size-3.5" />
             Your productivity, reimagined
           </span>
 
-          <h1 className="max-w-3xl text-4xl leading-tight font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+          <h1 className="max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
             Manage your workspaces
             <br />
             <span className="text-indigo-200">all in one place.</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-lg leading-relaxed font-medium text-indigo-100/80 sm:text-xl">
+          <p className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-indigo-100/80 sm:text-xl">
             Workspaces, Lists, Tasks, Boards, Calendars, Dashboards &mdash;
             everything your team needs to ship faster.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <ButtonLink href="/signup"
-                type="primary"
-                size="large"
-                ariaLabel="get started button"
-                extraClasses="shadow-lg shadow-black/20 !bg-white !text-indigo-700 hover:!bg-indigo-50"
-              >
-                Get Started — Free
-              </ButtonLink>
+            <ButtonLink
+              href="/signup"
+              type="primary"
+              size="large"
+              ariaLabel="get started button"
+              extraClasses="shadow-lg shadow-black/20 !bg-white !text-indigo-700 hover:!bg-indigo-50"
+            >
+              Get Started — Free
+            </ButtonLink>
             <SignupGuestBtn />
           </div>
         </div>
@@ -210,10 +213,10 @@ function Page() {
       </section>
 
       <section className="relative z-10 px-6 py-20 md:px-16">
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center overflow-hidden rounded-3xl bg-linear-to-br from-indigo-600 via-violet-600 to-purple-700 px-8 py-14 text-center shadow-xl shadow-indigo-200/40">
+        <div className="bg-linear-to-br relative mx-auto flex max-w-3xl flex-col items-center overflow-hidden rounded-3xl from-indigo-600 via-violet-600 to-purple-700 px-8 py-14 text-center shadow-xl shadow-indigo-200/40">
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
-            <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full border border-white/10" />
-            <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full border border-white/7" />
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/10" />
+            <div className="border-white/7 absolute -bottom-8 -left-8 h-32 w-32 rounded-full border" />
           </div>
 
           <h2 className="relative z-10 text-3xl font-bold text-white sm:text-4xl">
@@ -224,22 +227,24 @@ function Page() {
             productivity.
           </p>
           <div className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
-            <ButtonLink href="/signup"
-                type="primary"
-                size="large"
-                ariaLabel="sign up now button"
-                extraClasses="!bg-white !text-indigo-700 hover:!bg-indigo-50 shadow-lg shadow-black/10"
-              >
-                Sign Up Now
-              </ButtonLink>
-            <ButtonLink href="/login"
-                type="secondary"
-                size="large"
-                ariaLabel="login button"
-                extraClasses="!bg-transparent !border-white/30 !text-white hover:!bg-white/10"
-              >
-                Login
-              </ButtonLink>
+            <ButtonLink
+              href="/signup"
+              type="primary"
+              size="large"
+              ariaLabel="sign up now button"
+              extraClasses="!bg-white !text-indigo-700 hover:!bg-indigo-50 shadow-lg shadow-black/10"
+            >
+              Sign Up Now
+            </ButtonLink>
+            <ButtonLink
+              href="/login"
+              type="secondary"
+              size="large"
+              ariaLabel="login button"
+              extraClasses="!bg-transparent !border-white/30 !text-white hover:!bg-white/10"
+            >
+              Login
+            </ButtonLink>
           </div>
         </div>
       </section>

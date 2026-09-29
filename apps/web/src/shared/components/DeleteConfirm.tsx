@@ -11,7 +11,11 @@ interface DeleteConfirmProps {
   entity: "space" | "list";
 }
 
-function DeleteConfirm({ deleteAction, deletedName, entity }: DeleteConfirmProps) {
+function DeleteConfirm({
+  deleteAction,
+  deletedName,
+  entity,
+}: DeleteConfirmProps) {
   const { closeModal } = useModal();
   const [state, action, isPending] = useActionState(deleteAction, {
     status: "idle",
@@ -19,7 +23,7 @@ function DeleteConfirm({ deleteAction, deletedName, entity }: DeleteConfirmProps
 
   return (
     <section className="flex flex-col gap-5">
-      <div className="flex max-w-xs min-w-md flex-col gap-4 p-6 pb-0">
+      <div className="min-w-md flex max-w-xs flex-col gap-4 p-6 pb-0">
         <div className="w-fit rounded-xl border border-red-600 bg-red-500/30 p-2 dark:border-red-500 dark:bg-red-400/30">
           <ICONS_MAP.trash className="size-6 text-red-500 dark:text-red-400" />
         </div>
@@ -38,7 +42,7 @@ function DeleteConfirm({ deleteAction, deletedName, entity }: DeleteConfirmProps
           />
         )}
       </div>
-      <div className="flex w-full gap-2 rounded-br-xl rounded-bl-xl border-t border-neutral-300 bg-neutral-200 px-6 py-5 dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="flex w-full gap-2 rounded-bl-xl rounded-br-xl border-t border-neutral-300 bg-neutral-200 px-6 py-5 dark:border-neutral-700 dark:bg-neutral-900">
         <Button
           type="secondary"
           stretch={true}
