@@ -56,7 +56,7 @@ function OptionsMenuItem({ option }: { option: OptionItem }) {
               {itemContent}
             </button>
           </ModalTrigger>
-          <ModalContent contentYPosition="withTopMargin">
+          <ModalContent contentYPosition="withTopMargin" title={label}>
             <ActionComponent />
           </ModalContent>
         </Modal>
