@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef } from "react";
 function NavButtons({
   latestListIdPromise,
 }: {
-  latestListIdPromise: Promise<{ id: List["id"] } | undefined>;
+  latestListIdPromise: Promise<{ id: List["id"] } | null>;
 }) {
   const pathname = usePathname();
   const itemRefs = useRef<HTMLAnchorElement[]>([]);

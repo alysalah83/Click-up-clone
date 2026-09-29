@@ -20,7 +20,7 @@ function Header({
   latestListIdPromise,
 }: {
   userPromise: Promise<UserWithoutPassword | undefined>;
-  latestListIdPromise: Promise<{ id: List["id"] } | undefined>;
+  latestListIdPromise: Promise<{ id: List["id"] } | null>;
 }) {
   const { isSideBarOpened, setOpenSideBar } = useSideBarStore();
 
