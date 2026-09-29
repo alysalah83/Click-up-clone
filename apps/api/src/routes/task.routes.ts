@@ -35,7 +35,6 @@ router.get(
   "/:listId/completeAndTotalTasksCounts",
   validate({ params: listIdParamsSchema }),
   getTotalAndCompleteTasksCount,
-  setTaskAssignees,
 );
 router.patch("/bulk", validate({ body: bulkUpdateTasksSchema }), updateManyTasks);
 router.patch("/:id", validate({ params: idParamsSchema, body: updateTaskSchema }), updateTask);
