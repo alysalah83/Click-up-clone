@@ -28,7 +28,7 @@ function Content() {
   }, []);
 
   return (
-    <ModalContent>
+    <ModalContent contentYPosition="withTopMargin">
       <CreateSpaceFlow />
     </ModalContent>
   );

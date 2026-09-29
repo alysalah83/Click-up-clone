@@ -6,7 +6,7 @@ import {
   getRandomColor,
   getRandomLetter,
 } from "../../../shared/ui/AvatarPicker/helper";
-import { ModalContent, useModal } from "../../../shared/ui/ModalCompound";
+import { useModal } from "../../../shared/ui/ModalCompound";
 import CreateWorkspaceStep from "./CreateWorkspaceStep";
 import { Button } from "@/shared/ui/Button";
 import CreateListStep from "@/features/list/components/CreateListStep";
@@ -135,7 +135,7 @@ function CreateSpaceFlow() {
   };
 
   return (
-    <ModalContent contentYPosition="withTopMargin">
+    <>
       <div className="px-6 pt-6">
         <StepsProgressBar stepsLabel={stepsLabel} curActiveStep={curStep} />
       </div>
@@ -205,7 +205,7 @@ function CreateSpaceFlow() {
           </Button>
         </div>
       </footer>
-    </ModalContent>
+    </>
   );
 }
 

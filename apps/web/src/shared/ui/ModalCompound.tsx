@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, ReactNode, use, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { Dialog } from "radix-ui";
+import { createContext, useContext, useRef, useState, type ReactNode } from "react";
 import ButtonIcon from "./Button/ButtonIcon";
-import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/shared/lib/utils/cn";
 
 interface ModalContextTypes {
   isModalOpen: boolean;
@@ -18,29 +18,54 @@ const ModalContext = createContext<ModalContextTypes | null>(null);
 function Modal({
   children,
   initialOpen = false,
+  onClose,
 }: {
   children: ReactNode;
   initialOpen?: boolean;
+  onClose?: () => void;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(initialOpen);
 
-  const toggleModal = () => setIsModalOpen((cur) => !cur);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    onClose?.();
+  };
+  const toggleModal = () => (isModalOpen ? closeModal() : setIsModalOpen(true));
 
   return (
     <ModalContext value={{ isModalOpen, toggleModal, closeModal }}>
-      {children}
+      <Dialog.Root open={isModalOpen} onOpenChange={(open) => (open ? setIsModalOpen(true) : closeModal())}>
+        {children}
+      </Dialog.Root>
     </ModalContext>
   );
 }
 
 function ModalTrigger({ children }: { children: ReactNode }) {
-  const { toggleModal } = useModal();
+  // A wrapper span (not asChild on the child) because children are often
+  // components that do not forward refs (ButtonIcon, Avatar, StatusBadge).
+  // Radix restores focus by calling .focus() on the trigger element, which is
+  // this wrapper span. A plain span without a tabindex cannot receive focus,
+  // so give it tabIndex={-1} (script-focusable, not tab-reachable) and
+  // redirect that programmatic focus to the real interactive descendant.
+  const wrapperRef = useRef<HTMLSpanElement>(null);
 
   return (
-    <span onClick={toggleModal} aria-label="container for the modal trigger">
-      {children}
-    </span>
+    <Dialog.Trigger asChild>
+      <span
+        ref={wrapperRef}
+        tabIndex={-1}
+        className="outline-none"
+        onFocus={(e) => {
+          if (e.target !== wrapperRef.current) return;
+          wrapperRef.current
+            ?.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+            ?.focus();
+        }}
+      >
+        {children}
+      </span>
+    </Dialog.Trigger>
   );
 }
 
@@ -51,65 +76,40 @@ function ModalContent({
   children: ReactNode;
   contentYPosition?: ContentYPosition;
 }) {
-  const { isModalOpen, closeModal } = useModal();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;
-
-  return createPortal(
-    <AnimatePresence>
-      {isModalOpen && (
-        <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-40 bg-neutral-950/50"
-          onClick={closeModal}
-        />
-      )}
-      {isModalOpen && (
-        <motion.div
-          key="modal"
-          initial={{ scale: 0.96, opacity: 0, y: 8 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.96, opacity: 0, y: 8 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className={`fixed z-50 m-4 h-fit w-fit overflow-hidden rounded-lg bg-neutral-300 dark:bg-neutral-800 ${
-            contentYPosition === "withTopMargin"
-              ? "top-48 left-1/2 -translate-x-1/2"
-              : "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          }`}
-        >
-          <span className="absolute top-6 right-6 z-50">
-            <ButtonIcon
-              icon="close"
-              ariaLabel="modal close button"
-              padding="small"
-              onClick={closeModal}
-            />
-          </span>
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body,
+  const { closeModal } = useModal();
+  return (
+    <Dialog.Portal>
+      <Dialog.Overlay
+        className={cn(
+          "fixed inset-0 z-40 bg-neutral-950/50",
+          "data-[state=open]:animate-in data-[state=open]:fade-in-0",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
+        )}
+      />
+      <Dialog.Content
+        aria-describedby={undefined}
+        className={cn(
+          "bg-popover fixed left-1/2 z-50 m-4 h-fit w-fit -translate-x-1/2 overflow-hidden rounded-lg outline-none",
+          contentYPosition === "withTopMargin" ? "top-48" : "top-1/2 -translate-y-1/2",
+          "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        )}
+      >
+        <Dialog.Title className="sr-only">Dialog</Dialog.Title>
+        {children}
+        <span className="absolute top-6 right-6 z-50">
+          <ButtonIcon icon="close" ariaLabel="modal close button" padding="small" onClick={closeModal} />
+        </span>
+      </Dialog.Content>
+    </Dialog.Portal>
   );
 }
 
 export function useModal() {
-  const values = use(ModalContext);
-  if (!values)
-    throw new Error("the Modal context is being used outside of his scope");
-  return values;
+  const context = useContext(ModalContext);
+  if (!context) throw new Error("the Modal context is being used outside of his scope");
+  return context;
 }
 
 export { Modal, ModalTrigger, ModalContent };
-
 export default Modal;
