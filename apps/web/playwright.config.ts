@@ -15,13 +15,17 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: [
     {
-      command: "pnpm --filter @clickup/api dev",
+      command: process.env.CI
+        ? "pnpm --filter @clickup/api exec tsx src/index.ts"
+        : "pnpm --filter @clickup/api dev",
       url: "http://localhost:5000/health",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
     {
-      command: "pnpm --filter @clickup/web dev",
+      command: process.env.CI
+        ? "pnpm --filter @clickup/web start"
+        : "pnpm --filter @clickup/web dev",
       url: "http://localhost:3000/login",
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
