@@ -33,3 +33,4 @@ apps/api/src/generated/
 *.pem
 npm-debug.log*
 .pnpm-debug.log*
+.claude/worktrees/
