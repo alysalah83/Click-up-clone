@@ -63,7 +63,7 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
       <div
         ref={wrapperRef}
         tabIndex={-1}
-        className={containerClasses}
+        className={cn(containerClasses, "outline-none")}
         onFocus={(e) => {
           if (e.target !== wrapperRef.current) return;
           wrapperRef.current
@@ -87,6 +87,19 @@ function MenuContent({ children }: { children: ReactNode }) {
         sideOffset={menuMargin}
         collisionPadding={8}
         onClick={(e) => e.stopPropagation()}
+        onCloseAutoFocus={(e) => {
+          // Radix's default behavior focuses this menu's trigger when the
+          // content unmounts. That's correct for Escape / item-removal, but
+          // when an item inside this menu opens another menu (e.g. an
+          // "options" item that opens an "avatar picker" and then closes
+          // itself), focus has already moved into that other, newly-opened
+          // menu. Refocusing our trigger would steal focus away from it,
+          // and that other menu's onFocusOutside/onInteractOutside would
+          // then dismiss it as a click/focus outside. Only restore focus to
+          // our own trigger when nothing else already holds focus.
+          const active = document.activeElement;
+          if (active && active !== document.body) e.preventDefault();
+        }}
         className={cn(
           "bg-popover text-popover-foreground z-50 rounded-lg text-sm shadow-md shadow-neutral-900/10",
           "origin-(--radix-popover-content-transform-origin) outline-none",
