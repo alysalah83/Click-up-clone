@@ -45,19 +45,24 @@ export async function deleteStatus(userId: string, id: string) {
   });
 }
 
-/** Shape kept for the dashboard: `{ totalCount, "<status name>Count": n }`. */
+/**
+ * Shape kept for the dashboard: `{ totalCount, "<status name>Count": n }`, plus an
+ * additive `colors` map of status name -> bgColor (the first status found with that name).
+ */
 export async function taskCountsByStatusName(userId: string) {
   const statuses = await prisma.status.findMany({
     where: { userId },
-    select: { name: true, _count: { select: { tasks: true } } },
+    select: { name: true, bgColor: true, _count: { select: { tasks: true } } },
   });
 
   const counts: Record<string, number> = {};
+  const colors: Record<string, string> = {};
   let totalCount = 0;
   for (const status of statuses) {
     const key = `${status.name}Count`;
     counts[key] = (counts[key] ?? 0) + status._count.tasks;
     totalCount += status._count.tasks;
+    if (!(status.name in colors)) colors[status.name] = status.bgColor;
   }
-  return { totalCount, ...counts };
+  return { totalCount, ...counts, colors };
 }

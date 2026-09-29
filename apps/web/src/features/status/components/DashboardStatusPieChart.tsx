@@ -1,13 +1,11 @@
 "use client";
 
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
-import { COLORS_TOKENS } from "@/shared/ui/ColorPicker/colorTokens";
-import { getRandomColor } from "@/shared/ui/AvatarPicker/helper";
 
 function DashboardStatusPieChart({
   data,
 }: {
-  data: { name: string; value: number }[];
+  data: { name: string; value: number; fill: string }[];
 }) {
   return (
     <PieChart responsive className="h-full w-full">
@@ -22,7 +20,7 @@ function DashboardStatusPieChart({
         label
       >
         {data.map((entry, index) => (
-          <Cell key={index} fill={COLORS_TOKENS[getRandomColor()].hex} />
+          <Cell key={index} fill={entry.fill} />
         ))}
       </Pie>
       <Tooltip

@@ -1,15 +1,21 @@
 import { statusServices } from "../services/status.service";
 import DashboardStatusPieChart from "./DashboardStatusPieChart";
+import { statusColorHex } from "../lib/statusColor";
 
 async function DashboardStatusPie() {
-  const statusesSummery = await statusServices.getStatusesCountsSummery();
+  const { colors, ...statusesSummery } =
+    await statusServices.getStatusesCountsSummery();
 
   const statusesData = Object.entries(statusesSummery)
     .filter(([key]) => !key.toLocaleLowerCase().includes("total"))
-    .map(([key, value]) => ({
-      name: key.toLocaleLowerCase().replace("count", ""),
-      value,
-    }));
+    .map(([key, value]) => {
+      const name = key.replace(/Count$/, "");
+      return {
+        name,
+        value,
+        fill: statusColorHex(name, colors),
+      };
+    });
 
   return (
     <>
