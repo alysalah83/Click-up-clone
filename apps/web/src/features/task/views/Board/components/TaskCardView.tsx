@@ -12,6 +12,7 @@ import OptionsRow from "./OptionsRow";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { cn } from "@/shared/lib/utils/cn";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
+import TaskBadges from "@/features/taskDetail/components/TaskBadges";
 
 interface TaskCardViewProps extends Omit<ComponentPropsWithRef<"div">, "task"> {
   task: Task;
@@ -57,6 +58,7 @@ function TaskCardView({ task, className, ...rest }: TaskCardViewProps) {
               </DropdownMenu>
             </div>
           )}
+          <TaskBadges task={task} />
           <div className="flex items-center gap-1">
             <FeatureBtns />
             <span className="ml-auto">

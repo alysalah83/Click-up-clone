@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, type KeyboardEvent, type MouseEvent } from "react";
+import { type KeyboardEvent, type MouseEvent } from "react";
 import { Task } from "@/features/task/types";
 import { useDraggable } from "@dnd-kit/core";
-import { TaskDetailPanel } from "@/features/task/components/TaskDetailPanel";
-import Modal, { ModalContent } from "@/shared/ui/ModalCompound";
+import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { shouldOpenTaskDetail } from "@/features/task/lib/shouldOpenTaskDetail";
 import CalendarTaskRowView from "./CalendarTaskRowView";
 
@@ -14,7 +13,7 @@ interface CalendarTaskRowProps {
 }
 
 function CalendarTaskRow({ task, cellDate }: CalendarTaskRowProps) {
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const openTask = useOpenTask();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${task.id}-${cellDate.toISOString()}`,
     data: { task, cellDate },
@@ -31,7 +30,7 @@ function CalendarTaskRow({ task, cellDate }: CalendarTaskRowProps) {
         isTempTask: false,
       })
     )
-      setIsDetailOpen(true);
+      openTask(task.id);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -45,7 +44,7 @@ function CalendarTaskRow({ task, cellDate }: CalendarTaskRowProps) {
       })
     ) {
       e.preventDefault();
-      setIsDetailOpen(true);
+      openTask(task.id);
     }
   };
 
@@ -63,11 +62,6 @@ function CalendarTaskRow({ task, cellDate }: CalendarTaskRowProps) {
         onClick={handleClick}
         onKeyDown={handleKeyDown}
       />
-      <Modal open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <ModalContent contentYPosition="withTopMargin" title="Task details">
-          <TaskDetailPanel task={task} />
-        </ModalContent>
-      </Modal>
     </>
   );
 }
