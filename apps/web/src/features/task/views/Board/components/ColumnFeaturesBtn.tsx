@@ -55,7 +55,7 @@ function ColumnFeaturesBtn({
               <ToolTipMessage>Delete Status</ToolTipMessage>
             </ToolTip>
           </ModalTrigger>
-          <ModalContent>
+          <ModalContent title={`Delete ${statusName}`}>
             <DeleteConfirm statusName={statusName} statusId={statusId} />
           </ModalContent>
         </Modal>
