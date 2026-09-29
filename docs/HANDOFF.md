@@ -1,65 +1,178 @@
-# Handoff: where the flagship upgrade stands
+# Handoff: next steps for new chats
 
-Last updated: 2026-09-29. Read this first in a new chat.
+Last updated: 2026-09-30. **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
 
-## TL;DR
+## Current state
 
-- **Repo:** `D:\projects\click-up\click-up-clone`, a pnpm + Turborepo monorepo.
-  - GitHub: `alysalah83/Click-up-clone`
-  - Production branch: `master`
+| Plan | What | Status |
+|---|---|---|
+| A1 | Monorepo, pnpm + Turborepo, CI | ✅ live |
+| A2 | API hardening: validation, ownership checks, auth, tests | ✅ live |
+| A3 | Overlays rebuilt on shadcn/Radix behind the old APIs | ✅ live |
+| A4 | Web bug fixes, Playwright E2E, honest README | ✅ done on branch `a4-web-fixes` (17 commits), **not merged or deployed yet** |
+| Spec B | Collaboration core (the visible features) | ⏳ next |
+
+- **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
-  - Web: https://click-up-clone-two.vercel.app (Vercel root `apps/web`)
-  - API: https://click-up-clone-back-end.vercel.app (Vercel root `apps/api`, `/health` → `{"ok":true}`)
-- **Deploys:** pushing `master` deploys both apps. **The API build applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`, production builds only). Never run migrations by hand.
-- **Done and live:** Plan A1 (monorepo + CI), A2 (API hardening), A3 (shadcn/Radix overlays behind the old APIs).
-- **In progress:** Plan A4 on branch **`a4-web-fixes`** (not pushed). Tasks 1–6 are done and reviewed; **Tasks 7, 8 and 9 remain**.
-- **After A4:** start **Spec B: Collaboration core**. These are the visible features the owner is waiting for.
+  - Web: https://click-up-clone-two.vercel.app
+  - API: https://click-up-clone-back-end.vercel.app (`/health`)
+- **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
 
-## Owner preferences (important)
+## Rules for every chat
 
-- This is a **portfolio flagship**. Recruiters click the guest demo alone, so visible, impressive features matter most. The owner was frustrated that A1–A3 changed nothing visible, so **prioritise user-visible features after A4.**
-- Keep the ClickUp look (current dark/light theme); don't redesign.
-- **Hosting must stay free with no credit card:** Vercel + Neon. **No real-time/WebSockets for now.**
-- The owner prefers that I handle deploys: merge and push `master`, with migrations automatic. Confirm first when something is destructive.
-- Commits end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- **One step per chat.** Chats run out of context; small steps finish cleanly.
+- **Process:**
+  1. `superpowers:brainstorming`: short, and ask the owner only what matters.
+  2. Spec in `docs/superpowers/specs/`.
+  3. `superpowers:writing-plans`: plan in `docs/superpowers/plans/`.
+  4. `superpowers:subagent-driven-development`: one implementer and one reviewer per task, a final review, one fix wave.
+- **Owner preferences:**
+  - This is a portfolio flagship; recruiters click the **guest demo** alone, so **visible features first**.
+  - Keep the ClickUp look.
+  - Hosting stays free with no credit card: Vercel + Neon, **no WebSockets/real-time**.
+  - The owner wants me to merge and push `master` myself once a step's work is reviewed and green. Say it clearly in chat when doing it.
+- **Commits** end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- **Before finishing a chat:** update this file, and the memory note `flagship-roadmap.md` if the state changed.
 
-## Key documents
+---
+
+## Step 0: Ship A4 (short chat) ☐
+
+**Prompt to paste:**
+> Read docs/HANDOFF.md. Do Step 0: fast-forward master to a4-web-fixes, push, then verify the live site and API.
+
+**What to do:**
+1. `git checkout master && git merge --ff-only a4-web-fixes && git push origin master`
+2. Wait for the deploy. Poll `https://click-up-clone-back-end.vercel.app/health` and the web `/login` page.
+   - The API build applies the `Status.createdAt` migration, which is additive and safe.
+3. Verify on the live site as a guest:
+   - The header shows the real title.
+   - Clicking a board card opens the details.
+   - Calendar drag works.
+   - The dashboard pie has stable colors.
+   - The sidebar lists load.
+4. Check the GitHub Actions run, including the new `e2e` job; it has **never run on a real runner**. If it fails, fix it in this chat.
+5. Leftovers from A4 to fix if time allows, otherwise carry them to Step 1:
+   - The sidebar "Create task" can double-submit.
+   - The gear button opens a second detail modal; remove it, since card click is the main path now.
+   - The dead zustand `*Sorts` slots.
+   - `WorkspaceWithLists.lists` duplicates the `List` type.
+   - A dev-only "No queryFn" warning for the header title.
+
+---
+
+## Spec B: Collaboration core, split into chat-sized steps
+
+The order is chosen so the demo improves visibly after every step.
+
+### Step 1: Demo workspace seeding ☐ (biggest recruiter impact)
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 1: brainstorm, spec, plan and build the guest demo workspace seeding.
+
+**Goal:** "Continue as Guest" lands in a realistic, ready team workspace instead of an empty screen and a wizard.
+
+**Scope ideas to settle in brainstorming:**
+- A seed template in the API: 2 spaces (e.g. "Product", "Marketing"), 3–4 lists, custom statuses, and about 60–100 realistic tasks across statuses, priorities and dates (overdue, today, next week).
+- Seeding happens in one transaction when the guest registers. It must be fast: batched `createMany`, with a target under 1 s.
+- Skip the onboarding wizard for seeded guests. Keep the wizard for real sign-ups.
+- The daily guest cleanup (the cron) must still delete all seeded data. Test it.
+- Fake teammates come in Step 2. Design the seed so assignees can be added then.
+
+**Done when:** a new guest sees a full Board, Table, Calendar and Dashboard within a few seconds, with tests for the seed and the cleanup.
+
+### Step 2: Workspace membership, Teams page, assignees ☐
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 2: workspace members/roles, Teams page, task assignees.
+
+**Scope:**
+- **Data model:**
+  - `WorkspaceMember(userId, workspaceId, role: owner | admin | member | guest)`
+  - `TaskAssignee(taskId, userId)`
+  - A migration that backfills an owner membership from the current `Workspace.userId`.
+- **API authorization:** `assertCanAccess()` (`apps/api/src/services/access.service.ts`) moves from "owns the row" to "is a member with role X" (ADR 0003 anticipated this).
+  - Every list, status and task query must scope by membership, not `userId`.
+  - Keep the cross-account tests, and add member vs non-member tests.
+- **Invites:** an invite link with a token and expiry, and an accept flow. **Demo trick:** an "Open as teammate" button that creates an invite link to open in an incognito window, so a recruiter can test two accounts alone.
+- **Seeded teammates** (from Step 1): 5–6 fake members with avatars, assigned across tasks.
+- **UI:**
+  - A **Teams** sidebar item with members, roles and invite.
+  - Assignee avatars on cards, table and list rows.
+  - An assignee picker (reusing the Menu facade).
+  - Filter or group by assignee on the Board if cheap.
+
+### Step 3: Rich task page ☐
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 3: the ClickUp-style task page.
+
+**Scope:**
+- The existing card-click detail modal becomes a ClickUp-style split panel:
+  - title,
+  - status / priority / dates / assignees,
+  - **rich-text description** (e.g. Tiptap),
+  - **subtasks** (parent `taskId`),
+  - **checklists**,
+  - **tags** (per workspace, colored),
+  - an **activity log** (who changed what, stored in an `Activity` table written by the API services).
+- Optional: a deep-linkable URL `/home/lists/:listId/task/:taskId`.
+
+### Step 4: Comments and @mentions ☐
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 4: comments with @mentions and reactions on the task page.
+
+**Scope:**
+- A `Comment` table with threaded replies.
+- `@mention` parsing that feeds notifications.
+- Emoji reactions.
+- Seeded demo comments so the feature is visible immediately.
+
+### Step 5: Home / My Work ☐
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 5: Home / My Work page.
+
+**Scope:**
+- A sidebar **Home** page showing tasks assigned to me, grouped into Overdue, Today and Next 7 days, plus Recently updated.
+- Quick status and priority changes inline.
+- Uses the assignees from Step 2.
+
+### Step 6: Inbox notifications ☐
+
+**Prompt:**
+> Read docs/HANDOFF.md. Do Step 6: Inbox notifications (no real-time).
+
+**Scope:**
+- A `Notification` table, written by the API on assign, mention, and status change of tasks I follow.
+- A sidebar **Inbox** with an unread badge and mark-read or mark-all.
+- Updates by **polling every 30–60 s plus refetch-on-focus** (React Query `refetchInterval`), never WebSockets.
+- Seeded demo notifications.
+
+---
+
+## After Spec B: later phases (see `docs/roadmap.md`)
+
+Brainstorm each as its own spec when you get there:
+- **Ctrl+K command palette:** Postgres full-text search, keyboard shortcuts.
+- **Gantt / Timeline view:** dependency arrows, drag to reschedule.
+- **Filters, group-by and saved views;** a virtualized list for 10k tasks.
+- **Claude-powered AI** (use the `claude-api` skill): summarize a task or thread, generate subtasks, "ask my workspace".
+- **Automations:** a trigger → condition → action builder, using Vercel Cron or queued jobs, free-tier only.
+- **Docs;** whiteboards saved per workspace.
+- **Dashboards 2.0:** configurable cards, sprint burndown, Goals.
+
+## Reference
 
 | What | Where |
 |---|---|
-| Roadmap (all phases) | `docs/roadmap.md` |
-| Foundation spec (A1–A4), incl. §0 amendments | `docs/superpowers/specs/2026-09-28-foundation-design.md` |
-| Plans | `docs/superpowers/plans/2026-09-28-a1-monorepo.md`, `…-a2-api-hardening.md`, `2026-09-29-a3-shadcn-ui.md`, `2026-09-29-a4-web-fixes-e2e.md` |
+| Roadmap | `docs/roadmap.md` |
+| Foundation spec | `docs/superpowers/specs/2026-09-28-foundation-design.md` |
+| Plans A1–A4 | `docs/superpowers/plans/` |
 | Decisions | `docs/adr/0001-monorepo.md`, `0002-adopt-shadcn-ui.md`, `0003-api-layering-and-validation.md` |
 | API dev/test guide | `apps/api/README.md` |
-| A4 execution ledger (git-ignored, local only) | `.superpowers/sdd/2026-09-29-a4-web-fixes-e2e/progress.md` |
-| A4 findings: current code + fix direction per item, referenced by the plan (git-ignored) | `.superpowers/sdd/2026-09-29-a4-web-fixes-e2e/findings.md` |
-
-## How to resume A4
-
-1. `git checkout a4-web-fixes`
-2. Use **superpowers:subagent-driven-development** with plan `docs/superpowers/plans/2026-09-29-a4-web-fixes-e2e.md`.
-   - The ledger shows Tasks 1–6 complete; start at Task 7.
-   - Task briefs `task-7-brief.md`, `task-8-brief.md` and `task-9-brief.md` are already in the ledger folder.
-3. The remaining tasks:
-   - **Task 7:** header shows the real page/list title, a guest "Sign up to save your work" link, view tabs that don't wrap, copy/a11y fixes (findings §12), and an API warm-up ping (findings §13: `app/api/warmup/route.ts` plus an `ApiWarmup` client component).
-   - **Task 8:** Playwright end-to-end test of the guest demo path, plus a CI `e2e` job (findings §14). Chromium is already cached at `C:\Users\alysa\AppData\Local\ms-playwright`.
-   - **Task 9:** honest README rewrite (feature table Built/Roadmap, Mermaid architecture, highlights, local dev, project evolution), plus a cleanup of the legacy lint override.
-4. Then: a final whole-branch review on the most capable model, one fix wave, and a scoped re-review. After that, fast-forward `master`, push, and verify the live site.
-   - A4 includes a new migration, `Status.createdAt`, which is applied automatically on deploy.
-
-### A4 deferred minors (for the final review to triage)
-
-- Task 1: the "no open status" error in the create-task-in-list action is a plain `Error`, so it shows a generic toast.
-- Task 2: the gear button (`TaskOptionsButton`) still opens a second, redundant detail modal; card click is now the main path.
-- Task 3: the zustand `*Sorts` store slots are write-only dead state (URL params drive sorting).
-- Task 6: `WorkspaceWithLists.lists` duplicates the `List` type inline. `getWorkspaceLists` / `lists-${workspaceId}` is still used by the delete-workspace flow.
-
-### Known deferred items from A3 (not blocking)
-
-- ARIA attributes sit on the trigger wrapper span/div instead of the inner button. The fix: let `ButtonIcon`/`Avatar` accept `ref` (React 19) and use `asChild`.
-- Each tooltip has its own `Tooltip.Provider`, so adjacent tooltips don't get Radix's skip-delay.
-- In a dialog, if the user clicks inside with the mouse and then presses Escape, focus goes to `body`. This is the side effect of skipping focus-return after a pointer close.
+| Execution ledgers (git-ignored, local) | `.superpowers/sdd/<plan-name>/progress.md` |
 
 ## Local development
 
@@ -67,39 +180,20 @@ Last updated: 2026-09-29. Read this first in a new chat.
 pnpm install
 pnpm --filter @clickup/api db:local          # embedded Postgres :54329 (keep running)
 pnpm --filter @clickup/shared build
-pnpm --filter @clickup/api exec prisma migrate deploy   # with DATABASE_URL/DIRECT_URL of the local DB
+pnpm --filter @clickup/api exec prisma migrate deploy   # DATABASE_URL/DIRECT_URL = local DB
 pnpm --filter @clickup/api dev               # :5000
 pnpm --filter @clickup/web dev               # :3000
 ```
 
-- `apps/api/.env` and `apps/web/.env.local` already exist locally (git-ignored).
-- A local test account with sample data exists. Its credentials are in the session scratchpad file `local-demo-account.txt`; if that file is gone, register a new user through the API.
-- Tests:
-  - API: `pnpm --filter @clickup/api test`, which boots its own Postgres on :54330. **Run only one at a time.**
-  - On Windows, if Postgres won't start (EPERM or "shared memory"), run `taskkill //F //IM postgres.exe` and delete `apps/api/.tmp/pg-test*`. Never delete `.tmp/pg-dev`.
+- `apps/api/.env` and `apps/web/.env.local` exist locally (git-ignored).
+- **Tests:**
   - Everything: `pnpm lint && pnpm typecheck && pnpm test && API_URL=http://localhost:5000/api JWT_SECRET=x pnpm build`
-- The browser pane in Claude Desktop may not repaint when hidden, which gives stale screenshots and stalled CSS animations. For manual UI checks, inject `*{animation:none!important;transition:none!important}`, click via element refs, and read state from the DOM.
+  - API: its tests boot their own Postgres on :54330. **Run only one API test run at a time.**
+  - Web E2E: `pnpm --filter @clickup/web test:e2e`.
+- **Windows:** if Postgres won't start (EPERM or "shared memory"), run `taskkill //F //IM postgres.exe` and delete `apps/api/.tmp/pg-test*`. Never delete `.tmp/pg-dev`.
+- **Claude Desktop browser pane:** it can show stale screenshots and stall CSS animations while hidden. For UI checks, inject `*{animation:none!important;transition:none!important}`, click by element ref, and read state from the DOM.
 
 ## Owner's to-do
 
-- [ ] Add `CRON_SECRET` (any long random string) to the **API** Vercel project's environment variables, then redeploy. Until then, the daily cleanup of old guest accounts is off.
+- [ ] Vercel → API project → Environment Variables: add `CRON_SECRET` (any long random string), then redeploy. Until then, the daily cleanup of old guest accounts doesn't run.
 - [ ] Optional: archive the old `Click-up-clone-back-end` GitHub repo.
-
-## Next: Spec B, Collaboration core (visible features)
-
-This was agreed in brainstorming on 2026-09-28. Brainstorm the details, then write the spec and plans.
-
-1. **Demo workspace seeding (highest recruiter impact).**
-   - "Continue as Guest" lands in a realistic team workspace instead of an empty screen and a wizard.
-   - The workspace has 5–6 fake teammates with avatars and about 100 realistic tasks spread across statuses, priorities, dates, assignees and comments.
-2. **Workspace membership and Teams page.**
-   - Members and roles (Owner, Admin, Member, Guest).
-   - Invite by link, including an **"Open as teammate"** incognito demo link.
-   - User groups.
-   - `assertCanAccess()` in the API switches from ownership checks to membership plus role (see ADR 0003).
-3. **Richer tasks:** multiple assignees (avatars on cards), description (rich text), subtasks, checklists, tags, and an activity log.
-4. **ClickUp-style task page:** a split panel opened on card click, with comments, @mentions, reactions, attachments and activity.
-5. **Home / My Work:** Today, Overdue and Next, for tasks assigned to me.
-6. **Inbox:** notifications for assigned, mentioned and updated. Polling or refetch-on-focus only, no real-time.
-
-Sidebar target (ClickUp 4.0 style): Home/My Work · Inbox · Teams · Dashboards · Docs · Whiteboards · Goals · Automations · AI. See `docs/roadmap.md` for the later phases: Ctrl+K search, Gantt/Timeline, automations, Claude-powered AI, Docs, Dashboards 2.0.
