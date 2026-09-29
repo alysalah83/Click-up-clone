@@ -18,6 +18,7 @@ export default defineConfig({
       command: process.env.CI
         ? "pnpm --filter @clickup/api exec tsx src/index.ts"
         : "pnpm --filter @clickup/api dev",
+      env: { NODE_ENV: "development" },
       url: "http://localhost:5000/health",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,

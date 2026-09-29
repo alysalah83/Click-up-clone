@@ -19,6 +19,7 @@ export async function updateList(
 
     updateTag("lists");
     updateTag(`lists-${workspaceId}`);
+    updateTag(`list-${listId}`);
 
     return { status: "success" };
   } catch (error) {

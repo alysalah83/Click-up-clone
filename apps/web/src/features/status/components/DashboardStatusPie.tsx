@@ -3,7 +3,8 @@ import DashboardStatusPieChart from "./DashboardStatusPieChart";
 import { statusColorHex } from "../lib/statusColor";
 
 async function DashboardStatusPie() {
-  const { colors, ...statusesSummery } =
+  // colors defaults to {}: API may lag web during deploy
+  const { colors = {}, ...statusesSummery } =
     await statusServices.getStatusesCountsSummery();
 
   const statusesData = Object.entries(statusesSummery)

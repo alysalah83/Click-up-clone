@@ -16,7 +16,7 @@ interface SpaceItemProps {
 }
 
 function SpaceItem({ workspace, lists }: SpaceItemProps) {
-  const haveLists = lists.length > 0;
+  const haveLists = (lists?.length ?? 0) > 0; // API may lag web during deploy
 
   return (
     <li className="flex flex-col gap-2">
@@ -30,7 +30,7 @@ function SpaceItem({ workspace, lists }: SpaceItemProps) {
 
       <menu className="ml-auto flex w-[92%] flex-col gap-2 border-l border-neutral-300 pl-3 dark:border-neutral-700">
         {haveLists &&
-          lists.map((list) => (
+          lists?.map((list) => (
             <ListProvider workspaceId={workspace.id} list={list} key={list.id}>
               <ListItem list={list} />
             </ListProvider>

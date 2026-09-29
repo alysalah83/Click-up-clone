@@ -110,7 +110,7 @@ Checks:
 
 ```bash
 pnpm lint && pnpm typecheck && pnpm test       # API tests boot their own Postgres on :54330
-pnpm --filter @clickup/web test:e2e            # Playwright (needs a built web app, running API and database)
+pnpm --filter @clickup/web test:e2e            # Playwright starts the API + web dev servers itself (reuses running ones); needs the migrated DB (pnpm --filter @clickup/api db:local) and a one-time `playwright install chromium`
 ```
 
 ## Project evolution

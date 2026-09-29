@@ -77,6 +77,18 @@ describe("workspaces", () => {
     expect(res.body[0].lists.map((l: { id: string }) => l.id)).toEqual([list1.id, list2.body.id]);
   });
 
+  it("GET ?include=lists never includes another user's workspaces or lists", async () => {
+    const a = await signUp();
+    const b = await signUp();
+    const seededA = await seedWorkspace(a.cookie, "A-space");
+    await seedWorkspace(b.cookie, "B-space");
+
+    const res = await api().get("/api/workspaces?include=lists").set("Cookie", a.cookie).expect(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].name).toBe("A-space");
+    expect(res.body[0].lists.map((l: { id: string }) => l.id)).toEqual([seededA.list.id]);
+  });
+
   it("GET without ?include= keeps the current shape (no lists key)", async () => {
     const a = await signUp();
     await seedWorkspace(a.cookie);
