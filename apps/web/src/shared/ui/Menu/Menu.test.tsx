@@ -211,6 +211,53 @@ describe("Menu", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
+  it("still returns focus to the trigger on Escape after an earlier pointer-driven close", async () => {
+    // Regression: the "was this a pointer interaction" tracking ref must be
+    // reset on every open, not carried over from a previous open/close
+    // cycle. Otherwise a stale `true` left over from a pointer-driven close
+    // would make a later keyboard/Escape close wrongly skip the focus
+    // return to the trigger — specifically when focus has already left the
+    // content before Escape is pressed, so the content's own onKeyDown
+    // (which also clears the ref) never gets a chance to run first.
+    const PickItem = () => {
+      const { toggleMenu } = useMenu();
+      return <button onClick={() => toggleMenu()}>pick me</button>;
+    };
+
+    render(
+      <Menu>
+        <MenuTrigger>
+          <button>open menu</button>
+        </MenuTrigger>
+        <MenuContent>
+          <PickItem />
+        </MenuContent>
+      </Menu>,
+    );
+
+    const user = userEvent.setup();
+
+    // First cycle: open, then close via a pointer interaction inside the
+    // content (sets the ref to true).
+    await user.click(screen.getByText(/open menu/i));
+    await user.click(screen.getByText(/pick me/i));
+    expect(screen.queryByText(/^pick me$/i)).not.toBeInTheDocument();
+
+    // Second cycle: reopen via the trigger (a click on the trigger, not on
+    // the content, so it does not itself reset the ref).
+    await user.click(screen.getByText(/open menu/i));
+    expect(screen.getByText(/^pick me$/i)).toBeInTheDocument();
+
+    // Move focus off the (auto-focused) content without any keydown or
+    // pointerdown on it, so neither of the existing reset handlers fire —
+    // this isolates the case the open-reset fix is for.
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText(/^pick me$/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/open menu/i)).toHaveFocus();
+  });
+
   it("when menu open or close outerSetIsOpen should be called once", async () => {
     const mockFn = vi.fn();
 
