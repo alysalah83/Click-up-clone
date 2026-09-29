@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import Toaster from "./Toaster";
+import Toaster, { toMs } from "./Toaster";
 import Modal, { ModalContent } from "./ModalCompound";
 
 describe("Toaster", () => {
@@ -14,6 +14,12 @@ describe("Toaster", () => {
     });
     expect(await screen.findByText("Task (Ship it) has been added")).toBeInTheDocument();
     expect(await screen.findByText("Something went wrong")).toBeInTheDocument();
+  });
+
+  it("converts second durations to ms, keeping 0 as persistent", () => {
+    expect(toMs()).toBe(5000);
+    expect(toMs(7)).toBe(7000);
+    expect(toMs(0)).toBe(Infinity);
   });
 
   it("keeps toasts clickable while a modal dialog is open, without dismissing the dialog", async () => {

@@ -16,7 +16,8 @@ declare global {
 }
 
 // Durations in the existing API are seconds; sonner uses milliseconds.
-const toMs = (seconds = 5) => seconds * 1000;
+// 0 meant "persistent" in the previous toaster, which sonner spells Infinity.
+export const toMs = (seconds = 5) => (seconds === 0 ? Infinity : seconds * 1000);
 
 export default function Toaster() {
   const { resolvedTheme } = useTheme();
