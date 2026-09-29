@@ -11,6 +11,13 @@ import userRoutes from "./routes/user.routes.js";
 import statusRoutes from "./routes/status.routes.js";
 import { invitesRouter, membersRouter } from "./routes/member.routes.js";
 import internalRoutes from "./routes/internal.routes.js";
+import {
+  checklistItemRouter,
+  checklistRouter,
+  tagRouter,
+  taskDetailRouter,
+  workspaceTagsRouter,
+} from "./routes/taskDetail.routes.js";
 import { globalErrorHandler } from "./lib/middlewares/error.middleware.js";
 import { catchAsync } from "./lib/utils/catchAsync.js";
 import { prisma } from "./lib/prisma.js";
@@ -39,9 +46,14 @@ app.get(
 );
 
 app.use("/api/users", userRoutes);
+app.use("/api/workspaces/:workspaceId/tags", workspaceTagsRouter);
 app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/tasks", taskDetailRouter);
+app.use("/api/checklists", checklistRouter);
+app.use("/api/checklist-items", checklistItemRouter);
+app.use("/api/tags", tagRouter);
 app.use("/api/statuses", statusRoutes);
 app.use("/api/members", membersRouter);
 app.use("/api/invites", invitesRouter);

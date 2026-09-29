@@ -5,3 +5,4 @@ export * from "./status.js";
 export * from "./task.js";
 export * from "./workspace.js";
 export * from "./member.js";
+export * from "./taskDetail.js";

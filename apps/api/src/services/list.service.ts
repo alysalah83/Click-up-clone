@@ -13,11 +13,11 @@ export async function listListsWithCounts(userId: string) {
     prisma.list.findMany({
       where: listInMyWorkspaces(userId),
       orderBy: { createdAt: "asc" },
-      include: { _count: { select: { tasks: true } } },
+      include: { _count: { select: { tasks: { where: { parentTaskId: null } } } } },
     }),
     prisma.task.groupBy({
       by: ["listId"],
-      where: { ...inMyWorkspaces(userId), status: { type: "done" } },
+      where: { ...inMyWorkspaces(userId), parentTaskId: null, status: { type: "done" } },
       _count: true,
     }),
   ]);
