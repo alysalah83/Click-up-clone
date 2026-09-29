@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { StrictMode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import Modal, { ModalContent, ModalTrigger, useModal } from "./ModalCompound";
 import { Menu, MenuContent, MenuTrigger, useMenu } from "./Menu/MenuCompound";
@@ -7,7 +8,11 @@ import { ToolTip, ToolTipMessage, ToolTipTrigger } from "./ToolTip/ToolTip";
 
 function CloseFromInside() {
   const { closeModal } = useModal();
-  return <button type="button" onClick={closeModal}>done</button>;
+  return (
+    <button type="button" onClick={closeModal}>
+      done
+    </button>
+  );
 }
 
 function renderModal(onClose?: () => void) {
@@ -67,7 +72,9 @@ describe("Modal", () => {
         </ModalContent>
       </Modal>,
     );
-    expect(screen.getByRole("dialog", { name: "Create space" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("dialog", { name: "Create space" }),
+    ).toBeInTheDocument();
   });
 
   it("stays open while a Modal nested inside a Menu's content is open, and closes the menu when the dialog closes", async () => {
@@ -140,5 +147,69 @@ describe("Modal", () => {
     await user.click(screen.getByLabelText("modal close button"));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
+  it("Escape inside a Menu opened within a dialog closes only the menu first, then the dialog", async () => {
+    // StrictMode mirrors `next dev` (double-invoked effects on Radix's
+    // FocusScope / DismissableLayer) — the environment the bug was seen in.
+    const user = userEvent.setup();
+    render(
+      <StrictMode>
+        <Modal initialOpen>
+          <ModalContent title="Create space">
+            <Menu>
+              <MenuTrigger>
+                <button type="button">avatar</button>
+              </MenuTrigger>
+              <MenuContent>
+                <button type="button">red color</button>
+                <button type="button">blue color</button>
+                <input type="search" aria-label="Search icons" />
+              </MenuContent>
+            </Menu>
+          </ModalContent>
+        </Modal>
+      </StrictMode>,
+    );
+    await user.click(screen.getByText("avatar"));
+    expect(screen.getByText("red color")).toBeInTheDocument();
+    await user.click(screen.getByText("blue color"));
+    expect(screen.getByText("blue color")).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText("red color")).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("avatar")).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("Escape from a keyboard-opened Menu within a dialog closes only the menu", async () => {
+    const user = userEvent.setup();
+    render(
+      <Modal initialOpen>
+        <ModalContent title="Create space">
+          <Menu>
+            <MenuTrigger>
+              <button type="button">avatar</button>
+            </MenuTrigger>
+            <MenuContent>
+              <button type="button">red color</button>
+              <button type="button">blue color</button>
+            </MenuContent>
+          </Menu>
+        </ModalContent>
+      </Modal>,
+    );
+    screen.getByText("avatar").focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByText("red color")).toBeInTheDocument();
+    await user.tab();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText("red color")).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
