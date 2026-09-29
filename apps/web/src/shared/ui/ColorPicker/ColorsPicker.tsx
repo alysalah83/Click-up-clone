@@ -20,14 +20,15 @@ function ColorsPicker({ selectedColor, setSelectedColor }: ColorPickerProps) {
           const isSelected = selectedColor === color;
 
           return (
-            <div
-              role="button"
-              aria-label={`Select ${color} color`}
+            <button
+              type="button"
+              aria-label={`${color} color`}
+              aria-pressed={isSelected}
               className={`h-5 w-5 ${bgColor} ${
                 isSelected
                   ? `cursor-default ${ringColor} ring-2 ring-offset-2 ring-offset-neutral-300 dark:ring-offset-neutral-700`
                   : "cursor-pointer ring-neutral-100/30 ring-offset-neutral-700 hover:ring-2 hover:ring-offset-2"
-              } rounded-full transition-all duration-300`}
+              } rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-ring`}
               onClick={() => setSelectedColor(color)}
               key={color}
             />
