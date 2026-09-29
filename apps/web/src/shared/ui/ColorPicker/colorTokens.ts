@@ -57,7 +57,7 @@ export const COLORS_TOKENS = {
     bg: "bg-indigo-600",
     ring: "ring-indigo-600",
     icon: "fill-indigo-500 text-indigo-500",
-    hex: "#7f22fe",
+    hex: "#4f39f6",
   },
   violet: {
     bg: "bg-violet-600",

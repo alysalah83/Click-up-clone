@@ -99,6 +99,11 @@ describe("statuses", () => {
       "to doCount": 2,
       "in progressCount": 0,
       completeCount: 1,
+      colors: {
+        "to do": "neutral",
+        "in progress": "violet",
+        complete: "emerald",
+      },
     });
   });
 });

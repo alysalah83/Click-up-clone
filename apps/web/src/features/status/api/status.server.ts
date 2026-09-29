@@ -14,9 +14,9 @@ export async function getStatuses(listId: List["id"]) {
 
 export async function getStatusesCountsSummery() {
   const serverAxios = await createServerAxios();
-  return await serverAxios.get<Record<`${string}Count`, number>>(
-    "/statuses/statusCounts",
-  );
+  return await serverAxios.get<
+    Record<`${string}Count`, number> & { colors: Record<string, string> }
+  >("/statuses/statusCounts");
 }
 
 export async function deleteStatus(statusId: Status["id"]) {
