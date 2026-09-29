@@ -2,11 +2,20 @@
 
 import {
   isServer,
+  Query,
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+export function toastQueryError(
+  error: Error,
+  query: Query<unknown, unknown, unknown, readonly unknown[]>,
+) {
+  const message = query.meta?.errorMessage ?? error.message;
+  if (typeof window !== "undefined") window.toast?.error(message as string, 7);
+}
 
 function makeQueryClient() {
   return new QueryClient({
@@ -16,10 +25,7 @@ function makeQueryClient() {
       },
     },
     queryCache: new QueryCache({
-      onError: (error, query) => {
-        const message = query.meta?.errorMessage ?? error.message;
-        window.toast?.error(message as string, 7);
-      },
+      onError: toastQueryError,
     }),
   });
 }
