@@ -3,6 +3,10 @@ import { ColorsToken } from "@/shared/ui/ColorPicker/types";
 
 const COLOR_TOKEN_NAMES = Object.keys(COLORS_TOKENS) as ColorsToken[];
 
+function isColorsToken(value: string): value is ColorsToken {
+  return value in COLORS_TOKENS;
+}
+
 /** Stable (non-cryptographic) string hash, so the same name always maps to the same token. */
 function hashString(value: string): number {
   let hash = 0;
@@ -24,7 +28,7 @@ function fallbackHex(name: string): string {
  * with the same input always return the same output.
  */
 export function statusColorHex(name: string, colors: Record<string, string>): string {
-  const token = colors[name] as ColorsToken | undefined;
-  const hex = token ? COLORS_TOKENS[token]?.hex : undefined;
-  return hex ?? fallbackHex(name);
+  const token = colors[name];
+  if (token !== undefined && isColorsToken(token)) return COLORS_TOKENS[token].hex;
+  return fallbackHex(name);
 }

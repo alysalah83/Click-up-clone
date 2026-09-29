@@ -106,4 +106,36 @@ describe("statuses", () => {
       },
     });
   });
+
+  it("colors[name] resolves deterministically to the oldest status with that name across lists", async () => {
+    const a = await signUp();
+    const { list: list1 } = await seedWorkspace(a.cookie, "Team A");
+    const { list: list2 } = await seedWorkspace(a.cookie, "Team B");
+
+    const first = await api()
+      .post("/api/statuses")
+      .set("Cookie", a.cookie)
+      .send({ name: "review", listId: list1.id, icon: "inProgress", iconColor: "sky", bgColor: "sky" })
+      .expect(201);
+    const second = await api()
+      .post("/api/statuses")
+      .set("Cookie", a.cookie)
+      .send({ name: "review", listId: list2.id, icon: "inProgress", iconColor: "amber", bgColor: "amber" })
+      .expect(201);
+
+    // Force the second status to be the older one, independent of real wall-clock
+    // timing between the two inserts, so the assertion below actually exercises the
+    // deterministic `orderBy` rather than relying on insertion order to happen to match.
+    await prisma.status.update({
+      where: { id: second.body.id },
+      data: { createdAt: new Date(Date.now() - 60_000) },
+    });
+    expect(first.body.id).not.toBe(second.body.id);
+
+    const res = await api().get("/api/statuses/statusCounts").set("Cookie", a.cookie).expect(200);
+    expect(res.body.colors.review).toBe("amber");
+    expect(res.body.reviewCount).toBe(0);
+    expect(res.body.totalCount).toBe(0);
+    expect(typeof res.body["to doCount"]).toBe("number");
+  });
 });
