@@ -50,9 +50,9 @@ function OptionsMenuItem({ option }: { option: OptionItem }) {
     const { ActionComponent } = display;
     return (
       <li>
-        <Modal>
+        <Modal onClose={toggleMenu}>
           <ModalTrigger>
-            <button type="button" className={itemClasses} onClick={toggleMenu}>
+            <button type="button" className={itemClasses}>
               {itemContent}
             </button>
           </ModalTrigger>
