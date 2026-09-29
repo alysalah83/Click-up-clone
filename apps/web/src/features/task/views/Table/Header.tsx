@@ -27,6 +27,9 @@ function Header() {
       >
         Name
       </div>
+      <div className={`col-span-2 flex items-center ${slotBorderClasses} ${slotPadding}`}>
+        Assignee
+      </div>
       <div
         className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
@@ -46,7 +49,7 @@ function Header() {
         <SortRowField sortField="priority" />
       </div>
       <div
-        className={`col-span-5 flex items-center gap-2 ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`col-span-3 flex items-center gap-2 ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Created at</span>
         <SortRowField sortField="createdAt" />

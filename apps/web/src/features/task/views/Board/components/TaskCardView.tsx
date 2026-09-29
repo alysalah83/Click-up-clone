@@ -11,6 +11,7 @@ import TaskRenameForm from "@/features/task/components/TaskRenameForm";
 import OptionsRow from "./OptionsRow";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { cn } from "@/shared/lib/utils/cn";
+import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 
 interface TaskCardViewProps extends Omit<ComponentPropsWithRef<"div">, "task"> {
   task: Task;
@@ -58,6 +59,9 @@ function TaskCardView({ task, className, ...rest }: TaskCardViewProps) {
           )}
           <div className="flex items-center gap-1">
             <FeatureBtns />
+            <span className="ml-auto">
+              <AssigneesButton task={task} size="xs" />
+            </span>
           </div>
         </div>
       </DropdownTrigger>

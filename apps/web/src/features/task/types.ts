@@ -5,6 +5,7 @@ import {
   updateTaskSchema,
 } from "./schema/task-action.schema";
 import { Status } from "@/features/status/types";
+import type { Assignee } from "@/features/members/types";
 
 interface TaskDateRange {
   startDate: Task["startDate"];
@@ -44,6 +45,8 @@ type Task = {
   listId: string;
   createdAt: Date;
   updatedAt: Date;
+  /** Always sent by the API; missing only on optimistic temp tasks. */
+  assignees?: Assignee[];
 };
 
 export type {

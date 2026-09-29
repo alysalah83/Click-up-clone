@@ -5,6 +5,7 @@ import {
   FaPaintBrush,
   FaRegUserCircle,
   FaSignOutAlt,
+  FaUsers,
 } from "react-icons/fa";
 import {
   FaArrowDownLong,
@@ -14,7 +15,7 @@ import {
   FaPlus,
   FaSort,
 } from "react-icons/fa6";
-import { FiMail } from "react-icons/fi";
+import { FiCopy, FiExternalLink, FiLink, FiMail } from "react-icons/fi";
 import { HiOutlineTrash } from "react-icons/hi";
 import { ImSpinner9 } from "react-icons/im";
 import {
@@ -98,4 +99,8 @@ export const ICONS_MAP = {
   notFound: TbZoomQuestionFilled,
   calendar: TiCalendar,
   dragHandle: RiDraggable,
+  team: FaUsers,
+  copy: FiCopy,
+  link: FiLink,
+  externalLink: FiExternalLink,
 } as const;

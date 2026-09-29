@@ -18,6 +18,7 @@ import { IconsRegistry } from "@/shared/ui/IconPicker/types";
 import { TASK_PRIORITIES_LIST } from "../../constants/tasks.const";
 import Field from "./Field";
 import MetaItem from "./MetaItem";
+import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 
 function TaskDetailPanelInner({ task }: { task: Task }) {
   const { updateTask } = useUpdateTask();
@@ -79,6 +80,16 @@ function TaskDetailPanelInner({ task }: { task: Task }) {
               <StatusesUpdater tasksId={new Set([task.id])} />
             </MenuContent>
           </Menu>
+        </Field>
+
+        <Field label="Assignees">
+          <AssigneesButton
+            task={task}
+            size="sm"
+            max={6}
+            emptyLabel="Empty"
+            className="px-2 py-1 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+          />
         </Field>
 
         <Field label="Priority">

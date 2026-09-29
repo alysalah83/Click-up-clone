@@ -13,6 +13,10 @@ import { BOARD_STATUS_BACKGROUND_COLOR } from "../board.const";
 import useTasks from "@/features/task/hooks/useTasks";
 import TaskItem from "./TaskItem";
 import ColumnFeaturesBtn from "./ColumnFeaturesBtn";
+import {
+  matchesAssigneeFilter,
+  useAssigneeFilterStore,
+} from "@/features/members/components/BoardAssigneeFilter";
 
 interface ColumnProps {
   statusItem: Status;
@@ -26,7 +30,10 @@ function Column({ statusItem }: ColumnProps) {
 
   const isTempStatus = id.includes("temp");
   const isColumnFormOpened = activeStatusColumn === statusName;
-  const statusTasks = tasks?.filter((task) => task.statusId === id);
+  const assigneeFilter = useAssigneeFilterStore((state) => state.selectedIds);
+  const statusTasks = tasks?.filter(
+    (task) => task.statusId === id && matchesAssigneeFilter(task, assigneeFilter),
+  );
   const tasksCount = statusTasks?.length;
 
   const handleActiveColumnForm = () => setActiveColumn(statusName);

@@ -6,8 +6,9 @@ import TableSlotPriority from "./TaskPrioritySlot";
 import CheckBoxSlot from "./CheckBoxSlot";
 import TaskStatusSlot from "./TaskStatusSlot";
 import TaskCreatedAtSlot from "./TaskCreatedAtSlot";
-import { containerGridClasses } from "./table.styles";
 import { Task } from "../../types";
+import { AssigneesButton } from "@/features/members/components/AssigneePicker";
+import { containerGridClasses, slotBorderClasses, slotHoverClasses } from "./table.styles";
 
 function Row({ task, sortNum }: { task: Task; sortNum: number }) {
   const { id, priority, status, endDate, startDate, createdAt } = task;
@@ -27,6 +28,9 @@ function Row({ task, sortNum }: { task: Task; sortNum: number }) {
     >
       <CheckBoxSlot isTaskRowHovered={isTaskRowHovered} sortNum={sortNum} />
       <TaskNameSlot />
+      <div className={`col-span-2 flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
+        <AssigneesButton task={task} size="sm" />
+      </div>
       <TaskStatusSlot status={status} />
       <TaskDateSlot startDate={startDate} endDate={endDate} />
       <TableSlotPriority priority={priority} />

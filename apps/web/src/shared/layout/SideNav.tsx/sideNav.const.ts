@@ -13,6 +13,11 @@ export const SIDE_NAV_ITEMS = [
     href: "/home/dashboard",
   },
   {
+    icon: "team" as IconsMap,
+    label: "Teams",
+    href: "/home/teams",
+  },
+  {
     icon: "paintBrush" as IconsMap,
     label: "Whiteboard",
     href: "/home/whiteboard",
