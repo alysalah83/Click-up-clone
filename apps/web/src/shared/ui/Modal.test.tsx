@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Modal, { ModalContent, ModalTrigger, useModal } from "./ModalCompound";
 import { Menu, MenuContent, MenuTrigger, useMenu } from "./Menu/MenuCompound";
+import { ToolTip, ToolTipMessage, ToolTipTrigger } from "./ToolTip/ToolTip";
 
 function CloseFromInside() {
   const { closeModal } = useModal();
@@ -115,5 +116,29 @@ describe("Modal", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.queryByText("open dialog from menu")).not.toBeInTheDocument();
+  });
+
+  it("does not pop the trigger's tooltip open after closing with the mouse", async () => {
+    const user = userEvent.setup();
+    render(
+      <Modal>
+        <ToolTip>
+          <ToolTipTrigger>
+            <ModalTrigger>
+              <button type="button">open modal</button>
+            </ModalTrigger>
+          </ToolTipTrigger>
+          <ToolTipMessage>Settings</ToolTipMessage>
+        </ToolTip>
+        <ModalContent>
+          <p>modal body</p>
+        </ModalContent>
+      </Modal>,
+    );
+    await user.click(screen.getByText("open modal"));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await user.click(screen.getByLabelText("modal close button"));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 });

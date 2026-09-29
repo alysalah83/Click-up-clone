@@ -79,6 +79,11 @@ function ModalContent({
   title?: string;
 }) {
   const { closeModal } = useModal();
+  // Same pointer-vs-keyboard tracking as MenuContent: triggers are often
+  // wrapped in a ToolTip that opens on focus, so returning focus to the
+  // trigger after a mouse-driven close would pop that tooltip open.
+  // Keyboard/Escape closes still return focus to the trigger.
+  const wasPointerInteractionRef = useRef(false);
   return (
     <Dialog.Portal>
       <Dialog.Overlay
@@ -96,6 +101,23 @@ function ModalContent({
       />
       <Dialog.Content
         aria-describedby={undefined}
+        onOpenAutoFocus={() => {
+          // Reset per open/close cycle; default open-focus is left intact.
+          wasPointerInteractionRef.current = false;
+        }}
+        onPointerDown={() => {
+          wasPointerInteractionRef.current = true;
+        }}
+        onPointerDownOutside={() => {
+          // A click on the overlay closes the dialog by pointer too.
+          wasPointerInteractionRef.current = true;
+        }}
+        onKeyDown={() => {
+          wasPointerInteractionRef.current = false;
+        }}
+        onCloseAutoFocus={(e) => {
+          if (wasPointerInteractionRef.current) e.preventDefault();
+        }}
         className={cn(
           "bg-popover fixed left-1/2 z-50 m-4 h-fit w-fit -translate-x-1/2 overflow-hidden rounded-lg outline-none",
           contentYPosition === "withTopMargin" ? "top-48" : "top-1/2 -translate-y-1/2",
