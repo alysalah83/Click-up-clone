@@ -112,6 +112,12 @@ function ModalContent({
           // A click on the overlay closes the dialog by pointer too.
           wasPointerInteractionRef.current = true;
         }}
+        onInteractOutside={(e) => {
+          // Toasts (sonner) render outside the dialog; interacting with one
+          // must not dismiss the dialog.
+          const target = e.target as Element | null;
+          if (target?.closest?.("[data-sonner-toaster]")) e.preventDefault();
+        }}
         onKeyDown={() => {
           wasPointerInteractionRef.current = false;
         }}
