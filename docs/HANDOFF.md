@@ -1,6 +1,6 @@
 # Handoff: next steps for new chats
 
-Last updated: 2026-09-30 (sprint chat: Steps 0–3 shipped). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
+Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, AI shipped). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
 
 ## Current state
 
@@ -13,7 +13,13 @@ Last updated: 2026-09-30 (sprint chat: Steps 0–3 shipped). **Every new chat st
 | B1 | Guest demo workspace seed (2 spaces, 4 lists, 80 tasks) | ✅ live |
 | B2 | Workspace members/roles, Teams page, assignees, invites, 6 demo teammates | ✅ live |
 | B3 | Rich task panel: Tiptap description, subtasks, checklists, tags, activity | ✅ live |
-| B4 | Comments + @mentions | ⏳ next |
+| B4 | Comments (threads, @mentions, reactions) | ✅ live |
+| B5 | Home / My Work (`/home/my-work`) | ✅ live |
+| B6 | Inbox + unread badge, 30s polling | ✅ live |
+| C1 | Real shadcn/ui components + modern restyle; Menu/Modal/ToolTip facades on them | ✅ live |
+| C2 | Table/List rows open task panel | ✅ live |
+| C3 | Ctrl+K command palette (tasks, lists, members) | ✅ live |
+| C4 | Claude AI on task panel: Summarize, Generate subtasks | ✅ live, needs `ANTHROPIC_API_KEY` on the API Vercel project |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
@@ -209,6 +215,9 @@ pnpm --filter @clickup/web dev               # :3000
 - **Claude Desktop browser pane:** it can show stale screenshots and stall CSS animations while hidden. For UI checks, inject `*{animation:none!important;transition:none!important}`, click by element ref, and read state from the DOM.
 
 ## Owner's to-do
+
+- [ ] Vercel → API project → add `ANTHROPIC_API_KEY`, redeploy. Without it the AI buttons show "AI is not configured".
+- [ ] Not yet restyled: task panel, badges, empty/loading states. Nothing from the second sprint was eyeballed in a browser; do a visual pass first.
 
 - [ ] Vercel → API project → Environment Variables: add `CRON_SECRET` (any long random string), then redeploy. Until then, the daily cleanup of old guest accounts doesn't run.
 - [ ] Optional: archive the old `Click-up-clone-back-end` GitHub repo.
