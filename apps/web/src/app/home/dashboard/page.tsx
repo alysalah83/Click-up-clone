@@ -1,6 +1,8 @@
 import DashboardStatusCards from "@/features/status/components/DashboardStatusCards";
 import DashboardStatusPie from "@/features/status/components/DashboardStatusPie";
 import DashboardPriorityPie from "@/features/task/views/Dashboard/DashboardPriorityPie";
+import DashboardMetrics from "@/features/dashboard/DashboardMetrics";
+import DashboardBurndown from "@/features/dashboard/DashboardBurndown";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,6 +21,12 @@ function DashboardPage() {
         </section>
         <section className="col-span-1 rounded-xl border border-neutral-200 bg-neutral-200 p-4 dark:border-neutral-600 dark:bg-neutral-900">
           <DashboardPriorityPie />
+        </section>
+        <section className="col-span-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <DashboardMetrics />
+        </section>
+        <section className="col-span-1">
+          <DashboardBurndown />
         </section>
       </main>
     </main>
