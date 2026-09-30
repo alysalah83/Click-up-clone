@@ -21,7 +21,6 @@ import type { Task } from "@/features/task/types";
 import {
   DAY_W,
   HEADER_H,
-  LABEL_W,
   ROW_H,
   applyDrag,
   arrowPath,
@@ -199,11 +198,13 @@ function TimelineView() {
       </div>
 
       <div ref={scroller} className="min-h-0 flex-1 overflow-auto">
-        <div className="flex" style={{ width: LABEL_W + width }}>
+        <div
+          className="flex [--label-w:136px] sm:[--label-w:224px]"
+          style={{ width: `calc(var(--label-w) + ${width}px)` }}
+        >
           {/* Task names */}
           <div
-            className="sticky left-0 z-20 shrink-0 border-r border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-900"
-            style={{ width: LABEL_W }}
+            className="sticky left-0 z-20 w-(--label-w) shrink-0 border-r border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-900"
           >
             <div
               className="sticky top-0 z-30 flex items-end border-b border-neutral-300 bg-white px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900"

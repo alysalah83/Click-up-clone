@@ -2,6 +2,8 @@
 
 import ButtonIcon from "@/shared/ui/Button/ButtonIcon";
 import { ReactNode, useEffect } from "react";
+import SideNav from "../SideNav.tsx/SideNav";
+import { usePathname } from "next/navigation";
 import { useSideBarStore } from "./useSideNavStore";
 
 function SideBar({ children }: { children: ReactNode }) {
@@ -12,6 +14,7 @@ function SideBar({ children }: { children: ReactNode }) {
     const mediaQuery: MediaQueryList = window.matchMedia("(width >= 1024px)");
     const isBigScreen = mediaQuery.matches;
     if (isBigScreen) setOpenSideBar();
+    else if (window.innerWidth < 640) setCloseSideBar();
     const handleMediaChange = (e: MediaQueryListEvent) => {
       const isBigScreen = e.matches;
       isBigScreen ? setOpenSideBar() : setCloseSideBar();
@@ -21,21 +24,14 @@ function SideBar({ children }: { children: ReactNode }) {
     return () => mediaQuery.removeEventListener("change", handleMediaChange);
   }, [setOpenSideBar, setCloseSideBar]);
 
+  // On phones the sidebar is a drawer: close it after navigating.
+  const pathname = usePathname();
+  useEffect(() => {
+    if (window.innerWidth < 640) setCloseSideBar();
+  }, [pathname, setCloseSideBar]);
+
   return (
     <>
-      <div
-        onClick={setOpenSideBar}
-        aria-label="open home sidebar"
-        className={`bg-neutral-200text-neutral-700 fixed top-3 left-3 z-30 rounded-lg border border-neutral-300 shadow-sm transition sm:hidden dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 ${
-          isSideBarOpened ? "pointer-events-none opacity-0" : "opacity-100"
-        }`}
-      >
-        <ButtonIcon
-          icon="sideBarRightCollapse"
-          ariaLabel="open side nav button"
-          withBg={false}
-        />
-      </div>
       <div
         onClick={setCloseSideBar}
         className={`fixed inset-0 z-30 bg-black/40 transition sm:hidden ${
@@ -64,6 +60,9 @@ function SideBar({ children }: { children: ReactNode }) {
             />
           </div>
         </header>
+        <div className="sm:hidden">
+          <SideNav horizontal />
+        </div>
         <section className="flex flex-col gap-2">{children}</section>
       </aside>
     </>

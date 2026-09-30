@@ -139,7 +139,7 @@ function ModalContent({
         if (wasPointerInteractionRef.current) e.preventDefault();
       }}
       className={cn(
-        "bg-popover m-4 h-fit w-fit max-w-none -translate-x-1/2 gap-0 overflow-hidden rounded-2xl border p-0 shadow-2xl sm:max-w-none",
+        "bg-popover m-4 h-fit w-fit max-w-[calc(100vw-1rem)] max-h-[calc(100dvh-1rem)] -translate-x-1/2 overflow-y-auto gap-0 rounded-2xl border p-0 shadow-2xl sm:max-w-[calc(100vw-1rem)]",
         contentYPosition === "withTopMargin"
           ? "top-48 translate-y-0"
           : "top-1/2 -translate-y-1/2",
