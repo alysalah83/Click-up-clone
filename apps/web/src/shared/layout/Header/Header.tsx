@@ -28,7 +28,7 @@ function Header({
     <header
       className={`flex flex-col gap-3 border-b px-3 pt-3 sm:px-4 sm:pt-4 ${
         !isSideBarOpened ? "sm:rounded-tl-xl" : ""
-      } border-neutral-300 dark:border-neutral-700`}
+      } border-neutral-200 dark:border-neutral-800`}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">

@@ -24,7 +24,7 @@ function Row({ task, sortNum }: { task: Task; sortNum: number }) {
     <main
       onPointerEnter={handleTaskRowHovered}
       onPointerLeave={handleTaskRowNotHovered}
-      className={`${containerGridClasses} border-b border-neutral-300 ${isTaskTemp ? "pointer-events-none opacity-60" : ""} dark:border-neutral-700 ${isTaskChecked ? "bg-neutral-200 dark:bg-neutral-500/30" : "bg-neutral-50 hover:bg-neutral-200/20 active:bg-neutral-200/20 dark:bg-neutral-900/50 dark:hover:bg-neutral-500/20 dark:active:bg-neutral-500/20"} text-sm font-medium text-neutral-600 transition duration-200 dark:text-neutral-300`}
+      className={`${containerGridClasses} border-b border-neutral-200 ${isTaskTemp ? "pointer-events-none opacity-60" : ""} dark:border-neutral-800 ${isTaskChecked ? "bg-neutral-200 dark:bg-neutral-500/30" : "bg-white hover:bg-indigo-50/60 active:bg-indigo-50 dark:bg-neutral-900/50 dark:hover:bg-neutral-500/20 dark:active:bg-neutral-500/20"} text-sm font-medium text-neutral-600 transition duration-200 dark:text-neutral-300`}
     >
       <CheckBoxSlot isTaskRowHovered={isTaskRowHovered} sortNum={sortNum} />
       <TaskNameSlot />

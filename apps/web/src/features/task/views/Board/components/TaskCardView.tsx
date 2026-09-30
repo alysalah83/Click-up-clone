@@ -33,7 +33,7 @@ function TaskCardView({ task, className, ...rest }: TaskCardViewProps) {
       <DropdownTrigger>
         <div
           className={cn(
-            "group flex w-full cursor-pointer flex-col gap-3 rounded-lg border border-neutral-300 bg-neutral-100 px-3 py-2 transition duration-300 hover:border-neutral-100 active:border-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-500 dark:active:border-neutral-500",
+            "group flex w-full cursor-pointer flex-col gap-3 rounded-xl border border-neutral-200 bg-white px-3 py-2.5 shadow-sm transition duration-200 hover:-translate-y-px hover:border-indigo-600/40 hover:shadow-md active:translate-y-0 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-indigo-600/50",
             isTempTask && "pointer-events-none opacity-75",
             className,
           )}
