@@ -10,6 +10,10 @@ import taskRoutes from "./routes/task.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import statusRoutes from "./routes/status.routes.js";
 import { invitesRouter, membersRouter } from "./routes/member.routes.js";
+import { commentsRouter, taskCommentsRouter } from "./routes/comment.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
+import { myWorkRouter, searchRouter } from "./routes/home.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
 import internalRoutes from "./routes/internal.routes.js";
 import {
   checklistItemRouter,
@@ -51,6 +55,12 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", taskDetailRouter);
+app.use("/api/tasks", taskCommentsRouter);
+app.use("/api/tasks", aiRoutes);
+app.use("/api/comments", commentsRouter);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/my-work", myWorkRouter);
+app.use("/api/search", searchRouter);
 app.use("/api/checklists", checklistRouter);
 app.use("/api/checklist-items", checklistItemRouter);
 app.use("/api/tags", tagRouter);

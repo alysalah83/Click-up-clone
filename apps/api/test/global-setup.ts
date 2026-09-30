@@ -90,6 +90,8 @@ export default async function setup(project: TestProject) {
       password: "postgres",
       port,
       persistent: false,
+      // UTF8 regardless of the OS locale (Windows defaults to WIN1252, which rejects emoji).
+      initdbFlags: ["--encoding=UTF8", "--locale=C"],
       // Throwaway data: skip fsync so startup, tests and shutdown checkpoints stay fast.
       postgresFlags: ["-c", "fsync=off"],
     });

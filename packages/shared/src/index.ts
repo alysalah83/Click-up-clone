@@ -6,3 +6,4 @@ export * from "./task.js";
 export * from "./workspace.js";
 export * from "./member.js";
 export * from "./taskDetail.js";
+export * from "./collab.js";

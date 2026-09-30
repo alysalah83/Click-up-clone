@@ -6,6 +6,7 @@ import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
 import { DEMO_TEMPLATE, buildDemoWorkspace } from "../seed/demoWorkspace.js";
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
+import { buildDemoCollab } from "../seed/demoCollab.js";
 
 const publicUser = {
   id: true,
@@ -49,6 +50,15 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     template === DEMO_TEMPLATE
       ? buildDemoRichTasks({ ownerUserId: userId, seed, teammates: team.users })
       : undefined;
+  const collab =
+    template === DEMO_TEMPLATE
+      ? buildDemoCollab({
+          ownerUserId: userId,
+          seed,
+          teammates: team.users,
+          existingAssignees: team.assignees,
+        })
+      : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -71,6 +81,15 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
           prisma.tag.createMany({ data: rich.tags }),
           prisma.taskTag.createMany({ data: rich.taskTags }),
           prisma.activity.createMany({ data: rich.activities }),
+        ]
+      : []),
+    ...(collab
+      ? [
+          prisma.taskAssignee.createMany({ data: collab.guestAssignees }),
+          prisma.comment.createMany({ data: collab.comments }),
+          prisma.commentReaction.createMany({ data: collab.reactions }),
+          prisma.commentMention.createMany({ data: collab.mentions }),
+          prisma.notification.createMany({ data: collab.notifications }),
         ]
       : []),
   ]);

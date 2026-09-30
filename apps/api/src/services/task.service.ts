@@ -19,6 +19,7 @@ import {
   logActivity,
   type ActivityRow,
 } from "./activity.service.js";
+import { notifyAssigned, notifyTaskChanges } from "./notification.service.js";
 
 /** Top-level views (board, table, list, calendar, counts) never show subtasks. */
 const topLevel = { parentTaskId: null };
@@ -131,7 +132,9 @@ export async function updateTask(
     data,
     include: taskInclude,
   });
-  await logActivity(diffTaskActivity(userId, task, data, updated.status.name));
+  const rows = diffTaskActivity(userId, task, data, updated.status.name);
+  await logActivity(rows);
+  await notifyTaskChanges(userId, [{ id, name: updated.name }], rows);
   return toTaskDto(updated);
 }
 
@@ -156,11 +159,11 @@ export async function updateTasks(
     data: updatedFields,
   });
   const nextStatusName = await statusName(updatedFields.statusId);
-  await logActivity(
-    tasks.flatMap((task) =>
-      diffTaskActivity(userId, task, updatedFields, nextStatusName),
-    ),
+  const rows = tasks.flatMap((task) =>
+    diffTaskActivity(userId, task, updatedFields, nextStatusName),
   );
+  await logActivity(rows);
+  await notifyTaskChanges(userId, tasks, rows);
 }
 
 export async function deleteTask(userId: string, id: string) {
@@ -241,6 +244,7 @@ export async function setAssignees(
       })),
     ];
     await logActivity(rows);
+    await notifyAssigned(userId, task, added);
   }
   return toTaskDto(task);
 }
