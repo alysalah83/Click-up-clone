@@ -520,6 +520,7 @@ export function buildDemoRichTasks({
         startDate: null,
         endDate: parent.endDate,
         createdAt: new Date(parent.createdAt.getTime() + (i + 1) * 17 * MINUTE),
+        updatedAt: new Date(parent.createdAt.getTime() + (i + 1) * 17 * MINUTE),
         parentTaskId: parent.id,
       });
       subtaskAssignees.push({ taskId: id, userId: nextPerson().id });
