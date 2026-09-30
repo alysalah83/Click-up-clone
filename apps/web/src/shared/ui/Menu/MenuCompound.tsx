@@ -1,6 +1,10 @@
 "use client";
 
-import { Popover } from "radix-ui";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   createContext,
   useContext,
@@ -29,7 +33,12 @@ interface MenuProps {
 
 const MenuContext = createContext<MenuContextValues | null>(null);
 
-function Menu({ children, menuMargin = MENU_MARGIN, outerIsOpen = false, outerSetIsOpen }: MenuProps) {
+function Menu({
+  children,
+  menuMargin = MENU_MARGIN,
+  outerIsOpen = false,
+  outerSetIsOpen,
+}: MenuProps) {
   const [innerIsOpen, setInnerIsOpen] = useState(outerIsOpen);
   const isControlled = outerSetIsOpen !== undefined;
   const isOpened = isControlled ? outerIsOpen : innerIsOpen;
@@ -42,16 +51,23 @@ function Menu({ children, menuMargin = MENU_MARGIN, outerIsOpen = false, outerSe
 
   return (
     <MenuContext value={{ isOpened, toggleMenu, menuMargin }}>
-      <Popover.Root open={isOpened} onOpenChange={setOpen}>
+      <Popover open={isOpened} onOpenChange={setOpen}>
         {children}
-      </Popover.Root>
+      </Popover>
     </MenuContext>
   );
 }
 
-const FOCUSABLE_SELECTOR = 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE_SELECTOR =
+  'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-function MenuTrigger({ children, containerClasses }: { children: ReactNode; containerClasses?: string }) {
+function MenuTrigger({
+  children,
+  containerClasses,
+}: {
+  children: ReactNode;
+  containerClasses?: string;
+}) {
   // A wrapper div (not asChild on the child) because children are often
   // components that do not forward refs (ButtonIcon, Avatar, StatusBadge).
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -71,7 +87,7 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
   // not tab-reachable — no double tab stop) and redirect that programmatic
   // focus to the real interactive descendant (the button/link inside).
   return (
-    <Popover.Trigger asChild>
+    <PopoverTrigger asChild>
       <div
         ref={wrapperRef}
         tabIndex={selfFocusable ? 0 : -1}
@@ -79,11 +95,14 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
         className={cn(
           containerClasses,
           "outline-none",
-          selfFocusable && "focus-visible:ring-ring rounded-sm focus-visible:ring-2",
+          selfFocusable &&
+            "focus-visible:ring-ring rounded-sm focus-visible:ring-2",
         )}
         onFocus={(e) => {
           if (e.target !== wrapperRef.current) return;
-          wrapperRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
+          wrapperRef.current
+            ?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
+            ?.focus();
         }}
         onKeyDown={(e) => {
           // A div has no native Enter/Space activation; emulate a button's
@@ -97,7 +116,7 @@ function MenuTrigger({ children, containerClasses }: { children: ReactNode; cont
       >
         {children}
       </div>
-    </Popover.Trigger>
+    </PopoverTrigger>
   );
 }
 
@@ -112,59 +131,56 @@ function MenuContent({ children }: { children: ReactNode }) {
   // closes are suppressed.
   const wasPointerInteractionRef = useRef(false);
   return (
-    <Popover.Portal>
-      <Popover.Content
-        side="bottom"
-        align="start"
-        sideOffset={menuMargin}
-        collisionPadding={8}
-        onClick={(e) => e.stopPropagation()}
-        onOpenAutoFocus={() => {
-          // Reset for this open/close cycle. Without this, a stale `true`
-          // left over from a previous pointer-driven close would make a
-          // later keyboard/Escape close skip returning focus to the trigger.
-          // Radix's default open-focus behavior is left untouched (no
-          // preventDefault here).
-          wasPointerInteractionRef.current = false;
-        }}
-        onPointerDown={() => {
-          wasPointerInteractionRef.current = true;
-        }}
-        onKeyDown={() => {
-          wasPointerInteractionRef.current = false;
-        }}
-        onCloseAutoFocus={(e) => {
-          // Radix's default behavior focuses this menu's trigger when the
-          // content unmounts. That's correct for Escape / item-removal, but
-          // when an item inside this menu opens another menu (e.g. an
-          // "options" item that opens an "avatar picker" and then closes
-          // itself), focus has already moved into that other, newly-opened
-          // menu. Refocusing our trigger would steal focus away from it,
-          // and that other menu's onFocusOutside/onInteractOutside would
-          // then dismiss it as a click/focus outside. Only restore focus to
-          // our own trigger when nothing else already holds focus.
-          const active = document.activeElement;
-          if (active && active !== document.body) e.preventDefault();
-          // Also skip restoring focus when the close was triggered by a
-          // pointer interaction inside the content (see comment above).
-          if (wasPointerInteractionRef.current) e.preventDefault();
-        }}
-        className={cn(
-          "bg-popover text-popover-foreground z-50 rounded-lg text-sm shadow-md shadow-neutral-900/10",
-          "origin-(--radix-popover-content-transform-origin) outline-none",
-          "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-        )}
-      >
-        {children}
-      </Popover.Content>
-    </Popover.Portal>
+    <PopoverContent
+      side="bottom"
+      align="start"
+      sideOffset={menuMargin}
+      collisionPadding={8}
+      onClick={(e) => e.stopPropagation()}
+      onOpenAutoFocus={() => {
+        // Reset for this open/close cycle. Without this, a stale `true`
+        // left over from a previous pointer-driven close would make a
+        // later keyboard/Escape close skip returning focus to the trigger.
+        // Radix's default open-focus behavior is left untouched (no
+        // preventDefault here).
+        wasPointerInteractionRef.current = false;
+      }}
+      onPointerDown={() => {
+        wasPointerInteractionRef.current = true;
+      }}
+      onKeyDown={() => {
+        wasPointerInteractionRef.current = false;
+      }}
+      onCloseAutoFocus={(e) => {
+        // Radix's default behavior focuses this menu's trigger when the
+        // content unmounts. That's correct for Escape / item-removal, but
+        // when an item inside this menu opens another menu (e.g. an
+        // "options" item that opens an "avatar picker" and then closes
+        // itself), focus has already moved into that other, newly-opened
+        // menu. Refocusing our trigger would steal focus away from it,
+        // and that other menu's onFocusOutside/onInteractOutside would
+        // then dismiss it as a click/focus outside. Only restore focus to
+        // our own trigger when nothing else already holds focus.
+        const active = document.activeElement;
+        if (active && active !== document.body) e.preventDefault();
+        // Also skip restoring focus when the close was triggered by a
+        // pointer interaction inside the content (see comment above).
+        if (wasPointerInteractionRef.current) e.preventDefault();
+      }}
+      className={cn(
+        "bg-popover text-popover-foreground z-50 w-auto rounded-xl border p-0 text-sm shadow-lg",
+        "outline-none",
+      )}
+    >
+      {children}
+    </PopoverContent>
   );
 }
 
 function useMenu() {
   const context = useContext(MenuContext);
-  if (!context) throw new Error("the menu context is being used out side of his scope");
+  if (!context)
+    throw new Error("the menu context is being used out side of his scope");
   return context;
 }
 

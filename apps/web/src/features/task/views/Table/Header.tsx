@@ -17,7 +17,7 @@ function Header() {
 
   return (
     <header
-      className={`${containerGridClasses} bg-neutral-100/80 text-sm font-semibold text-neutral-700 dark:bg-neutral-800/50 dark:text-neutral-500`}
+      className={`${containerGridClasses} bg-neutral-100/80 text-xs font-semibold tracking-wide text-neutral-500 uppercase dark:bg-neutral-800/50 dark:text-neutral-500`}
     >
       <div className="col-span-1 flex items-center justify-center border-r border-neutral-300 dark:border-neutral-700">
         <CheckBox checked={isAllChecked} onCheckedChange={handleCheckAll} />

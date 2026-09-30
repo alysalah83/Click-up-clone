@@ -51,7 +51,7 @@ function LogAndSignLayout({
         </div>
       </div>
 
-      <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-gray-50 px-4 py-20 sm:px-6 lg:w-[55%] lg:py-10">
+      <div className="relative flex min-h-screen w-full flex-col items-center justify-center bg-neutral-50 px-4 py-20 sm:px-6 lg:w-[55%] lg:py-10">
         <div className="bg-linear-to-br absolute inset-0 from-indigo-600 via-violet-600 to-purple-700 lg:hidden" />
 
         <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
@@ -95,7 +95,7 @@ function LogAndSignLayout({
           </div>
         </div>
 
-        <section className="relative z-10 w-full max-w-md rounded-2xl border border-white/20 bg-white px-8 py-8 shadow-2xl shadow-black/10 sm:px-10 sm:py-10 lg:border-gray-100 lg:shadow-xl lg:shadow-gray-200/60">
+        <section className="relative z-10 w-full max-w-md rounded-3xl border border-white/20 bg-white px-8 py-8 shadow-2xl shadow-black/10 sm:px-10 sm:py-10 lg:border-gray-100 lg:shadow-xl lg:shadow-gray-200/60">
           <h1 className="mb-7 border-b border-gray-100 pb-4 text-center text-2xl font-bold tracking-wide text-gray-800 sm:mb-8 sm:text-3xl">
             {isLoginPage ? "Welcome back!" : "Seconds to sign up!"}
           </h1>

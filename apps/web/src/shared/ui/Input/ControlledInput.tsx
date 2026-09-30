@@ -30,9 +30,9 @@ function ControlledInput({
   onBlur,
 }: ControlledInputProps) {
   const inputClasses = clsx(
-    "w-full rounded-lg transition duration-300 disabled:cursor-not-allowed outline-none",
+    "w-full rounded-lg transition duration-200 disabled:cursor-not-allowed outline-none bg-transparent",
     {
-      "px-4 py-2 border border-neutral-500 ring-offset-1 ring-offset-neutral-100 placeholder-neutral-500 focus:ring disabled:bg-neutral-600 disabled:text-neutral-100 dark:border-neutral-700 dark:ring-offset-neutral-500 dark:disabled:bg-neutral-500 dark:disabled:text-neutral-800":
+      "px-3.5 py-2 border border-neutral-300 shadow-xs placeholder-neutral-400 focus:border-ring focus:ring-4 focus:ring-ring/20 disabled:bg-neutral-200 disabled:text-neutral-500 dark:border-neutral-700 dark:disabled:bg-neutral-800 dark:disabled:text-neutral-400":
         inputStyle === "primary",
       "p-1 text-sm text-neutral-900 outline-0 dark:text-neutral-100 placeholder:text-neutral-400 disabled:opacity-50":
         inputStyle === "secondary",
