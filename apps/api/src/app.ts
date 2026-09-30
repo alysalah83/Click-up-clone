@@ -14,6 +14,7 @@ import { commentsRouter, taskCommentsRouter } from "./routes/comment.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import { myWorkRouter, searchRouter } from "./routes/home.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import { automationsRouter, listAutomationsRouter } from "./routes/automation.routes.js";
 import internalRoutes from "./routes/internal.routes.js";
 import {
   checklistItemRouter,
@@ -52,6 +53,8 @@ app.get(
 app.use("/api/users", userRoutes);
 app.use("/api/workspaces/:workspaceId/tags", workspaceTagsRouter);
 app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/lists", listAutomationsRouter);
+app.use("/api/automations", automationsRouter);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", taskDetailRouter);
