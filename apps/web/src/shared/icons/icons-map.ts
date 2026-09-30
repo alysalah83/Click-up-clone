@@ -21,6 +21,7 @@ import { ImSpinner9 } from "react-icons/im";
 import {
   IoCheckmarkCircleSharp,
   IoSearchOutline,
+  IoNotificationsOutline,
   IoCloseOutline,
   IoCheckmarkSharp,
   IoSettings,
@@ -61,6 +62,7 @@ export const ICONS_MAP = {
   inProgress: RiProgress3Line,
   complete: IoCheckmarkCircleSharp,
   search: IoSearchOutline,
+  inbox: IoNotificationsOutline,
   sideBarLeftCollapse: TbLayoutSidebarLeftCollapseFilled,
   sideBarRightCollapse: TbLayoutSidebarRightCollapseFilled,
   plus: FaPlus,
