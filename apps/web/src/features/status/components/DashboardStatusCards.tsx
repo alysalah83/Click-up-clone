@@ -11,10 +11,10 @@ async function DashboardStatusCards() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 rounded-xl border border-neutral-200 bg-neutral-200 p-4 pt-2 dark:border-neutral-600 dark:bg-neutral-900">
+      <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-5 pt-3 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
         <h3 className="text-xl font-semibold tracking-wide">Tasks</h3>
         <div className="flex w-full flex-col items-center justify-center gap-2">
-          <span className="text-4xl font-bold text-neutral-500 tabular-nums dark:text-neutral-300">
+          <span className="text-4xl font-semibold tracking-tight text-neutral-900 tabular-nums dark:text-neutral-300">
             {tasksCount}
           </span>
           <span className="text-base font-medium text-neutral-700 dark:text-neutral-500">
@@ -22,10 +22,10 @@ async function DashboardStatusCards() {
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-4 rounded-xl border border-neutral-200 bg-neutral-200 p-4 pt-2 dark:border-neutral-600 dark:bg-neutral-900">
+      <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-5 pt-3 shadow-sm transition hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
         <h3 className="text-xl font-semibold tracking-wide">Lists</h3>
         <div className="flex w-full flex-col items-center justify-center gap-2">
-          <span className="text-4xl font-bold text-neutral-500 tabular-nums dark:text-neutral-300">
+          <span className="text-4xl font-semibold tracking-tight text-neutral-900 tabular-nums dark:text-neutral-300">
             {listsCount}
           </span>
           <span className="text-base font-medium text-neutral-500">Count</span>
@@ -34,7 +34,7 @@ async function DashboardStatusCards() {
       <div className="flex flex-col gap-4 rounded-xl border border-neutral-200 bg-neutral-200 p-4 pt-2 sm:col-span-2 dark:border-neutral-600 dark:bg-neutral-900">
         <h3 className="text-xl font-semibold tracking-wide">Workspaces</h3>
         <div className="flex w-full flex-col items-center justify-center gap-2">
-          <span className="text-4xl font-bold text-neutral-500 tabular-nums dark:text-neutral-300">
+          <span className="text-4xl font-semibold tracking-tight text-neutral-900 tabular-nums dark:text-neutral-300">
             {workspacesCount}
           </span>
           <span className="text-base font-medium text-neutral-700 dark:text-neutral-500">
