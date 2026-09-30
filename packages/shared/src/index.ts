@@ -7,5 +7,9 @@ export * from "./workspace.js";
 export * from "./member.js";
 export * from "./taskDetail.js";
 export * from "./collab.js";
+<<<<<<< HEAD
 export * from "./dependency.js";
 export * from "./dashboard.js";
+=======
+export * from "./automation.js";
+>>>>>>> worktree-agent-af616adf442098d60

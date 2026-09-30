@@ -383,6 +383,7 @@ export function buildDemoWorkspace(
   return { ...rows, landingListId };
 }
 
+<<<<<<< HEAD
 /** "Blocked by" links of the default demo template, by task key: [task, blocked by]. */
 export const DEMO_DEPENDENCIES: [task: string, dependsOn: string][] = [
   ["sprint.onboarding-checklist", "sprint.sso"],
@@ -399,4 +400,37 @@ export function buildDemoDependencies(seed: DemoRows) {
     const dependsOnId = seed.idsByKey.get(dependsOn);
     return taskId && dependsOnId ? [{ taskId, dependsOnId }] : [];
   });
+=======
+/** Two demo automations, attached by list key (only for the default template). */
+export function buildDemoAutomations(seed: Pick<DemoRows, "idsByKey">, newId: () => string = randomUUID) {
+  const rows: {
+    id: string;
+    listId: string;
+    name: string;
+    enabled: boolean;
+    trigger: { type: "status_changed"; to: "done" } | { type: "task_created" };
+    actions: ({ type: "notify_assignees" } | { type: "set_priority"; priority: Priority })[];
+  }[] = [];
+  const sprintId = seed.idsByKey.get("sprint");
+  const bugsId = seed.idsByKey.get("bugs");
+  if (sprintId)
+    rows.push({
+      id: newId(),
+      listId: sprintId,
+      name: "When status becomes Done, notify assignees",
+      enabled: true,
+      trigger: { type: "status_changed", to: "done" },
+      actions: [{ type: "notify_assignees" }],
+    });
+  if (bugsId)
+    rows.push({
+      id: newId(),
+      listId: bugsId,
+      name: "When a task is created, set priority High",
+      enabled: true,
+      trigger: { type: "task_created" },
+      actions: [{ type: "set_priority", priority: "high" }],
+    });
+  return rows;
+>>>>>>> worktree-agent-af616adf442098d60
 }
