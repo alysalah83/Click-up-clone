@@ -266,12 +266,16 @@ export default function AutomationsDialog() {
           <Zap /> Automations
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[85vh] overflow-y-auto">
+      <DialogContent
+        className="max-h-[85vh] overflow-y-auto"
+        // an open Saved-views popover hands focus back to its trigger as it closes, which would dismiss the dialog
+        onFocusOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Automations</DialogTitle>
           <DialogDescription>Rules that run automatically for tasks in this list.</DialogDescription>
         </DialogHeader>
-        {open && <AutomationsList listId={listId} />}
+        <AutomationsList listId={listId} />
       </DialogContent>
     </Dialog>
   );
