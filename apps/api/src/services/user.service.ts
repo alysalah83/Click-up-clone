@@ -7,6 +7,7 @@ import { DEMO_TEMPLATE, buildDemoWorkspace } from "../seed/demoWorkspace.js";
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
+import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 
 const publicUser = {
   id: true,
@@ -72,6 +73,7 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     prisma.user.createMany({ data: team.users }),
     prisma.workspaceMember.createMany({ data: team.members }),
     prisma.taskAssignee.createMany({ data: team.assignees }),
+    prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
     ...(rich
       ? [
           prisma.task.createMany({ data: rich.subtasks }),

@@ -48,6 +48,7 @@ model User {
   demoOwner      User?             @relation("DemoTeammates", fields: [demoOwnerId], references: [id], onDelete: Cascade)
   demoTeammates  User[]            @relation("DemoTeammates")
   memberships    WorkspaceMember[]
+  savedViews     SavedView[]
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
   activities     Activity[]
@@ -95,6 +96,7 @@ model List {
   workspaceId String
   tasks       Task[]
   status      Status[]
+  savedViews  SavedView[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -359,4 +361,22 @@ model Notification {
   @@index([taskId])
   @@index([actorId])
   @@index([commentId])
+}
+
+/// A named set of filters + groupBy for a list, owned by one member.
+model SavedView {
+  id        String   @id @default(uuid())
+  listId    String
+  userId    String
+  name      String
+  config    Json
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([listId, userId])
+  @@index([userId])
 }

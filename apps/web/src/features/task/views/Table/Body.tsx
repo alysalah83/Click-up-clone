@@ -4,10 +4,10 @@ import Row from "./Row";
 import NoWorkspace from "@/features/workspace/components/EmptySpaces";
 import SkeletonLoader from "@/shared/ui/SkeletonLoader";
 import TaskProvider from "../../context/TaskProvider";
-import useTasks from "../../hooks/useTasks";
+import { useViewTasks } from "@/features/viewConfig/hooks/useViewTasks";
 
 function Body() {
-  const { tasks, isPending } = useTasks();
+  const { tasks, isPending } = useViewTasks();
 
   if (!tasks && !isPending) return <NoWorkspace />;
 

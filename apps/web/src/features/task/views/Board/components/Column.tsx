@@ -10,13 +10,9 @@ import StatusBadge from "@/features/status/components/StatusBadge";
 import { Status } from "@/features/status/types";
 import { ColorsToken } from "@/shared/ui/ColorPicker/types";
 import { BOARD_STATUS_BACKGROUND_COLOR } from "../board.const";
-import useTasks from "@/features/task/hooks/useTasks";
+import { useViewTasks } from "@/features/viewConfig/hooks/useViewTasks";
 import TaskItem from "./TaskItem";
 import ColumnFeaturesBtn from "./ColumnFeaturesBtn";
-import {
-  matchesAssigneeFilter,
-  useAssigneeFilterStore,
-} from "@/features/members/components/BoardAssigneeFilter";
 
 interface ColumnProps {
   statusItem: Status;
@@ -24,16 +20,13 @@ interface ColumnProps {
 
 function Column({ statusItem }: ColumnProps) {
   const { id, icon, name: statusName, bgColor, isDefault } = statusItem;
-  const { tasks, isPending } = useTasks();
+  const { tasks, isPending } = useViewTasks();
   const { activeStatusColumn, setActiveColumn } = useActiveColumnForm();
   const { isOver, setNodeRef } = useDroppable({ id });
 
   const isTempStatus = id.includes("temp");
   const isColumnFormOpened = activeStatusColumn === statusName;
-  const assigneeFilter = useAssigneeFilterStore((state) => state.selectedIds);
-  const statusTasks = tasks?.filter(
-    (task) => task.statusId === id && matchesAssigneeFilter(task, assigneeFilter),
-  );
+  const statusTasks = tasks?.filter((task) => task.statusId === id);
   const tasksCount = statusTasks?.length;
 
   const handleActiveColumnForm = () => setActiveColumn(statusName);
