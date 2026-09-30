@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
+import AiActions from "@/features/ai/components/AiActions";
+import CommentsSection from "@/features/comments/components/CommentsSection";
 import useTasks from "@/features/task/hooks/useTasks";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
 import ActivityFeed from "@/features/taskDetail/components/ActivityFeed";
@@ -152,6 +154,11 @@ function TaskDetailPanel({
             <TitleEditor key={`${task.id}-${task.name}`} task={task} />
             <PropertiesGrid task={task} />
           </div>
+          <AiActions
+            taskId={task.id}
+            listId={task.listId}
+            canHaveSubtasks={!task.parentTaskId}
+          />
           <DescriptionEditor
             key={task.id}
             taskId={task.id}
@@ -162,6 +169,7 @@ function TaskDetailPanel({
             <SubtasksSection detail={detail} onOpenTask={onOpenTask} />
           )}
           <ChecklistsSection detail={detail} />
+          <CommentsSection taskId={task.id} listId={task.listId} />
           <p className="mt-auto text-xs text-neutral-400">
             Created {format(new Date(task.createdAt), "MMM d, yyyy")} · Updated{" "}
             {format(new Date(task.updatedAt), "MMM d, yyyy")}
