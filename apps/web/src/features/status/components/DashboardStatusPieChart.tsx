@@ -9,7 +9,7 @@ function DashboardStatusPieChart({
 }) {
   return (
     <PieChart responsive className="h-full w-full">
-      <Pie
+      <Pie isAnimationActive={false}
         data={data}
         dataKey="value"
         nameKey="name"

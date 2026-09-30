@@ -23,7 +23,7 @@ function DashboardPriorityPieChart({ data }: { data: Data[] }) {
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={width} height={height}>
-          <Pie
+          <Pie isAnimationActive={false}
             dataKey="value"
             nameKey="name"
             startAngle={180}

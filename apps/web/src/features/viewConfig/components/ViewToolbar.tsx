@@ -143,7 +143,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
   return (
     <Popover>
       <PopoverTrigger className={cn(chip, active && chipActive)}>{active ? active.name : "Saved views"}</PopoverTrigger>
-      <PopoverContent align="end" className="w-72 p-2">
+      <PopoverContent align="end" className="w-80 max-w-[90vw] p-2">
         {views?.length ? (
           <ul className="mb-2 flex flex-col">
             {views.map((v) => (
@@ -151,14 +151,14 @@ function SavedViewsMenu({ listId }: { listId: string }) {
                 <button
                   type="button"
                   onClick={() => load(v.config, v.id)}
-                  className={cn("flex-1 cursor-pointer truncate px-2 py-1.5 text-left text-sm", v.id === activeViewId && "font-semibold text-violet-600")}
+                  className={cn("min-w-0 flex-1 cursor-pointer truncate px-2 py-1.5 text-left text-sm", v.id === activeViewId && "font-semibold text-violet-600")}
                 >
                   {v.name}
                   {v.isDefault && <span className="ml-1 text-xs text-neutral-500">(default)</span>}
                 </button>
                 <button
                   type="button"
-                  className="cursor-pointer rounded px-1.5 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+                  className="shrink-0 cursor-pointer whitespace-nowrap rounded px-1.5 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
                   onClick={() => update.mutate({ id: v.id, isDefault: !v.isDefault })}
                 >
                   {v.isDefault ? "Unset default" : "Set default"}
@@ -166,7 +166,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
                 <button
                   type="button"
                   aria-label={`Delete ${v.name}`}
-                  className="cursor-pointer rounded px-1.5 text-xs text-red-600"
+                  className="shrink-0 cursor-pointer rounded px-1.5 text-xs text-red-600"
                   onClick={() => remove.mutate(v.id, { onSuccess: () => v.id === activeViewId && load({ filters, groupBy }, null) })}
                 >
                   Delete
