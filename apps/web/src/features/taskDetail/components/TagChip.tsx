@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/lib/utils/cn";
 import type { TaskTag } from "../types";
 
@@ -14,10 +15,11 @@ function TagChip({
   className?: string;
 }) {
   return (
-    <span
+    <Badge
+      variant="ghost"
       style={{ backgroundColor: `${tag.color}26`, color: tag.color }}
       className={cn(
-        "inline-flex max-w-40 items-center gap-1 whitespace-nowrap rounded font-medium",
+        "max-w-40",
         size === "xs" ? "px-1.5 py-px text-[10px]" : "px-2 py-0.5 text-xs",
         className,
       )}
@@ -33,7 +35,7 @@ function TagChip({
           ×
         </button>
       )}
-    </span>
+    </Badge>
   );
 }
 

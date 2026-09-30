@@ -1,6 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Inbox } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/features/members/components/UserAvatar";
 import { useMarkAllRead, useMarkRead, useNotifications, type Notification } from "../hooks/useInbox";
 
@@ -28,39 +31,52 @@ function InboxView() {
     router.push(`/home/lists/${n.task.listId}/board?task=${n.task.id}`);
   };
 
-  if (isPending) return <p className="p-6 text-sm text-neutral-500">Loading inbox...</p>;
-  if (error) return <p className="p-6 text-sm text-red-500">Could not load notifications.</p>;
+  if (isPending)
+    return (
+      <div className="mx-auto flex max-w-3xl flex-col gap-3 p-4" aria-busy="true">
+        <Skeleton className="h-7 w-24" />
+        {Array.from({ length: 5 }, (_, i) => (
+          <Skeleton key={i} className="h-14 w-full" />
+        ))}
+      </div>
+    );
+  if (error) return <p className="p-6 text-sm text-destructive">Could not load notifications.</p>;
   const unread = data.filter((n) => !n.readAt).length;
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold">Inbox</h1>
-        <button
-          type="button"
+        <h1 className="text-lg font-semibold">Inbox</h1>
+        <Button
+          variant="outline"
+          size="sm"
           disabled={unread === 0 || markAll.isPending}
           onClick={() => markAll.mutate()}
-          className="rounded-md border border-neutral-400 px-3 py-1 text-sm disabled:opacity-50"
         >
           Mark all read
-        </button>
+        </Button>
       </div>
-      {data.length === 0 && <p className="text-sm text-neutral-500">You are all caught up.</p>}
-      <ul className="divide-y divide-neutral-200 rounded-lg border border-neutral-300 dark:divide-neutral-800 dark:border-neutral-700">
+      {data.length === 0 && (
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed py-14 text-muted-foreground">
+          <Inbox className="size-8" />
+          <p className="text-sm">You are all caught up.</p>
+        </div>
+      )}
+      <ul className="divide-y overflow-hidden rounded-xl border bg-card">
         {data.map((n) => (
           <li key={n.id}>
             <button
               type="button"
               onClick={() => open(n)}
-              className="flex w-full items-start gap-3 px-3 py-3 text-left hover:bg-neutral-500/10"
+              className="flex w-full items-start gap-3 px-3 py-3 text-left hover:bg-accent"
             >
               <UserAvatar user={n.actor} size="md" />
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className={`text-sm ${n.readAt ? "" : "font-semibold"}`}>{n.message}</span>
-                <span className="truncate text-xs text-neutral-500">{n.task.name}</span>
+                <span className="truncate text-xs text-muted-foreground">{n.task.name}</span>
               </span>
-              <span className="shrink-0 text-xs text-neutral-500">{relativeTime(n.createdAt)}</span>
-              {!n.readAt && <span aria-label="Unread" className="mt-1.5 size-2 shrink-0 rounded-full bg-sky-500" />}
+              <span className="shrink-0 text-xs text-muted-foreground">{relativeTime(n.createdAt)}</span>
+              {!n.readAt && <span aria-label="Unread" className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />}
             </button>
           </li>
         ))}

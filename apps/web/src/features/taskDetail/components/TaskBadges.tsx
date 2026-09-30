@@ -15,7 +15,7 @@ function TaskBadges({ task }: { task: Task }) {
   if (tags.length === 0 && subtasks === 0 && checklistTotal === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-neutral-500">
+    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
       {tags.slice(0, MAX_TAGS).map((tag) => (
         <TagChip key={tag.id} tag={tag} size="xs" />
       ))}
