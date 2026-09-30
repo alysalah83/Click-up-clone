@@ -11,6 +11,8 @@ import {
 } from "@/shared/ui/ToolTip/ToolTip";
 import { IconsMap } from "@/shared/icons/icons.type";
 import { SIDE_NAV_ITEMS } from "./sideNav.const";
+import SearchButton from "@/features/search/components/SearchButton";
+import InboxBadge from "@/features/inbox/components/InboxBadge";
 import { signOutUser } from "@/features/auth/actions/signout-user.action";
 
 interface MenuItem {
@@ -24,6 +26,7 @@ function SideNav() {
   const [_, action, isPending] = useActionState(signOutUser, null);
   return (
     <menu className="mr-2 flex w-fit flex-col items-center gap-6 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900">
+      <SearchButton />
       {SIDE_NAV_ITEMS.map((item) => (
         <SideMenuLink menuItem={item} key={item.href} />
       ))}
@@ -64,7 +67,8 @@ function SideMenuLink({ menuItem }: { menuItem: MenuItem }) {
     isActive = includedRoutes.some((path) => pathname.includes(path));
 
   return (
-    <li>
+    <li className="relative">
+      {href === "/home/inbox" && <InboxBadge />}
       <Link
         href={href}
         aria-label={`${label} button`}

@@ -7,6 +7,7 @@ import SideNav from "@/shared/layout/SideNav.tsx/SideNav";
 import SideBar from "@/shared/layout/SideBar/SideBar";
 import { authServices } from "@/features/auth/services/auth.service";
 import { listServices } from "@/features/list/services/list.service";
+import CommandPalette from "@/features/search/components/CommandPalette";
 import OnBoardingTrigger from "@/features/auth/components/OnBoardingTrigger";
 
 async function HomeLayout({ children }: { children: ReactNode }) {
@@ -15,6 +16,7 @@ async function HomeLayout({ children }: { children: ReactNode }) {
 
   return (
     <QueryProvider>
+      <CommandPalette />
       <div className="flex min-h-screen w-full min-w-0 bg-neutral-50 sm:p-2 dark:bg-black">
         <SideNav />
         <div className="flex w-full min-w-0 rounded-2xl border border-neutral-200 shadow-sm dark:border-neutral-800">
