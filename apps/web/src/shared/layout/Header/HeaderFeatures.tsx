@@ -1,5 +1,5 @@
 import AutomationsDialog from "@/features/automation/components/AutomationsDialog";
-import AddStatusfrom "@/features/status/components/AddStatus";
+import AddStatus from "@/features/status/components/AddStatus";
 import SortBtnWithMenu from "@/features/task/components/Sort/SortBtnWithMenu";
 import { TASK_VIEWS } from "@/features/task/constants/tasks.const";
 import { Button } from "@/shared/ui/Button";
