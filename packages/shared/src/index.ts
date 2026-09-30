@@ -10,3 +10,4 @@ export * from "./collab.js";
 export * from "./dependency.js";
 export * from "./dashboard.js";
 export * from "./automation.js";
+export * from "./savedView.js";
