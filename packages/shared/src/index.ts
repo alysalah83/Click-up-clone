@@ -7,3 +7,4 @@ export * from "./workspace.js";
 export * from "./member.js";
 export * from "./taskDetail.js";
 export * from "./collab.js";
+export * from "./savedView.js";

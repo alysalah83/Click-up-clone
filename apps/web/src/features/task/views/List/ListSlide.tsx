@@ -9,18 +9,30 @@ import SortRowField from "../../components/Sort/SortRowField";
 function ListSlide({
   status,
   tasks,
+  groupLabel,
 }: {
-  status: Task["status"];
+  /** Omitted when grouping by something other than status. */
+  status?: Task["status"];
   tasks: Task[] | undefined;
+  groupLabel?: string;
 }) {
-  const { id, name, bgColor, icon } = status;
   const tasksCount = tasks?.length;
 
   return (
     <div className="flex min-w-full flex-col gap-3 overflow-x-auto">
       <div className="min-w-2xl">
         <header className="flex items-center gap-2">
-          <StatusBadge status={name} bgColor={bgColor} icon={icon} />
+          {status ? (
+            <StatusBadge
+              status={status.name}
+              bgColor={status.bgColor}
+              icon={status.icon}
+            />
+          ) : (
+            <span className="font-semibold text-neutral-700 dark:text-neutral-200">
+              {groupLabel}
+            </span>
+          )}
           <span className="font-medium text-neutral-600 tabular-nums">
             {tasksCount}
           </span>
@@ -63,7 +75,7 @@ function ListSlide({
                 <ListSlideRow />
               </TaskProvider>
             ))}
-            <AddTaskRow statusId={id} styleFor="list" />
+            {status && <AddTaskRow statusId={status.id} styleFor="list" />}
           </section>
         </main>
       </div>
