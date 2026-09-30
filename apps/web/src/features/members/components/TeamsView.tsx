@@ -4,7 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTransition } from "react";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Menu, MenuContent, MenuTrigger, useMenu } from "@/shared/ui/Menu/MenuCompound";
-import SkeletonLoader from "@/shared/ui/SkeletonLoader";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/shared/lib/utils/cn";
 import { formatErrorForToast } from "@/shared/lib/utils/formatErrorForToast";
 import { removeMemberAction, updateMemberRoleAction } from "../actions/members.actions";
@@ -26,10 +27,10 @@ const canManage = (role: MemberRole | undefined) => role === "owner" || role ===
 
 function RoleBadge({ role, space }: { role: MemberRole; space?: string }) {
   return (
-    <span className={cn("rounded px-1.5 py-0.5 text-xs font-medium capitalize", ROLE_STYLES[role])}>
+    <Badge variant="ghost" className={cn("rounded-md capitalize", ROLE_STYLES[role])}>
       {space && <span className="font-normal opacity-80">{space} · </span>}
       {role}
-    </span>
+    </Badge>
   );
 }
 
@@ -83,7 +84,7 @@ function RoleMenu({
 
 function PersonRow({ person, myRoles }: { person: Person; myRoles: Map<string, MemberRole> }) {
   return (
-    <tr className="border-b border-neutral-200 text-sm last:border-b-0 dark:border-neutral-800">
+    <tr className="border-b text-sm last:border-b-0">
       <td className="px-3 py-2.5">
         <div className="flex items-center gap-3">
           <UserAvatar user={person} size="md" />
@@ -145,7 +146,7 @@ function TeamsView() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-5 p-3 sm:p-4 lg:p-8">
       <header className="flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-violet-500 text-white">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <ICONS_MAP.team className="size-5" />
         </span>
         <div>
@@ -158,9 +159,9 @@ function TeamsView() {
 
       {!isPending && <InvitePanel workspaces={invitable} />}
 
-      <section className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
+      <section className="overflow-x-auto rounded-xl border bg-card">
         <table className="w-full min-w-[520px] text-left">
-          <thead className="bg-neutral-100/80 text-xs font-semibold text-neutral-500 uppercase dark:bg-neutral-800/50">
+          <thead className="bg-muted/50 text-xs font-semibold text-muted-foreground uppercase">
             <tr>
               <th className="px-3 py-2">Name</th>
               <th className="hidden px-3 py-2 sm:table-cell">Email</th>
@@ -172,13 +173,17 @@ function TeamsView() {
             {isPending && (
               <tr>
                 <td colSpan={4} className="p-3">
-                  <SkeletonLoader height="h-10" width="w-full" count={5} />
+                  <div className="flex flex-col gap-2">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <Skeleton key={i} className="h-10 w-full" />
+                    ))}
+                  </div>
                 </td>
               </tr>
             )}
             {error && (
               <tr>
-                <td colSpan={4} className="p-4 text-sm text-red-500">
+                <td colSpan={4} className="p-4 text-sm text-destructive">
                   Could not load members.
                 </td>
               </tr>

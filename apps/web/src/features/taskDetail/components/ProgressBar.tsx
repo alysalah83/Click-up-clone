@@ -6,10 +6,10 @@ function ProgressBar({ done, total }: { done: number; total: number }) {
       aria-valuenow={percent}
       aria-valuemin={0}
       aria-valuemax={100}
-      className="h-1.5 w-24 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
+      className="h-1.5 w-24 overflow-hidden rounded-full bg-muted"
     >
       <span
-        className={`block h-full rounded-full transition-all ${percent === 100 ? "bg-emerald-500" : "bg-violet-500"}`}
+        className={`block h-full rounded-full transition-all ${percent === 100 ? "bg-emerald-500" : "bg-primary"}`}
         style={{ width: `${percent}%` }}
       />
     </span>

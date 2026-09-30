@@ -13,7 +13,7 @@ import SubtasksSection from "@/features/taskDetail/components/SubtasksSection";
 import { useTaskDetail } from "@/features/taskDetail/hooks/useTaskDetail";
 import type { TaskDetail } from "@/features/taskDetail/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
-import SkeletonLoader from "@/shared/ui/SkeletonLoader";
+import { Skeleton } from "@/components/ui/skeleton";
 import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
 
@@ -107,10 +107,13 @@ function TaskDetailPanel({
     return (
       <PanelShell>
         <div className="flex flex-1 flex-col gap-4 p-10" aria-busy="true">
-          <SkeletonLoader height="h-3" width="w-40" />
-          <SkeletonLoader height="h-8" width="w-2/3" />
-          <SkeletonLoader height="h-4" count={4} />
-          <SkeletonLoader height="h-32" />
+          <Skeleton className="h-3 w-40" />
+          <Skeleton className="h-8 w-2/3" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-2/3" />
+          <Skeleton className="h-32 w-full" />
         </div>
       </PanelShell>
     );
@@ -118,7 +121,7 @@ function TaskDetailPanel({
   if (error || !detail)
     return (
       <PanelShell>
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 text-neutral-500">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 text-muted-foreground">
           <ICONS_MAP.notFound className="size-10" />
           <p>
             {error?.statusCode === 404
