@@ -49,6 +49,7 @@ model User {
   demoTeammates  User[]            @relation("DemoTeammates")
   memberships    WorkspaceMember[]
   savedViews     SavedView[]
+  docs           Doc[]
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
   activities     Activity[]
@@ -72,6 +73,7 @@ model Workspace {
   members   WorkspaceMember[]
   invites   WorkspaceInvite[]
   tags      Tag[]
+  docs      Doc[]
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
@@ -442,4 +444,26 @@ model TimeEntry {
   @@index([taskId])
   @@index([userId, endedAt])
   @@index([startedAt])
+}
+
+/// A Notion-style page in a space (workspace). `content` is Tiptap JSON stored as a string.
+/// Pages nest through parentId; deleting a page deletes its sub-pages.
+model Doc {
+  id          String   @id @default(uuid())
+  workspaceId String
+  parentId    String?
+  title       String   @default("")
+  icon        String?
+  content     String   @default("")
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  parent    Doc?      @relation("DocTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Doc[]     @relation("DocTree")
+  createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, parentId])
+  @@index([createdById])
 }
