@@ -4,6 +4,16 @@ export const SIDE_NAV_ITEMS = [
   {
     icon: "home" as IconsMap,
     label: "Home",
+    href: "/home/my-work",
+  },
+  {
+    icon: "inbox" as IconsMap,
+    label: "Inbox",
+    href: "/home/inbox",
+  },
+  {
+    icon: "list" as IconsMap,
+    label: "Lists",
     href: "/home",
     includedRoutes: ["/board", "/table", "/list", "/home/lists"],
   },
