@@ -52,6 +52,11 @@ model User {
   createdInvites WorkspaceInvite[]
   activities     Activity[]
   checklistItems ChecklistItem[]
+  comments       Comment[]
+  commentReactions CommentReaction[]
+  commentMentions  CommentMention[]
+  notifications  Notification[] @relation("NotificationRecipient")
+  actedNotifications Notification[] @relation("NotificationActor")
 
   @@index([demoOwnerId])
 }
@@ -155,6 +160,8 @@ model Task {
   checklists   Checklist[]
   tags         TaskTag[]
   activities   Activity[]
+  comments     Comment[]
+  notifications Notification[]
 
   status     Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
   user       User   @relation(fields: [userId], references: [id])
@@ -276,4 +283,80 @@ model Activity {
 
   @@index([taskId, createdAt])
   @@index([actorId])
+}
+
+enum NotificationType {
+  ASSIGNED
+  MENTIONED
+  TASK_UPDATED
+  COMMENTED
+}
+
+/// A task comment. Replies point at a top-level comment via `parentId` (one level of nesting).
+model Comment {
+  id        String   @id @default(uuid())
+  taskId    String
+  authorId  String
+  parentId  String?
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task      Task              @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    Comment?          @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[]         @relation("CommentReplies")
+  reactions CommentReaction[]
+  mentions  CommentMention[]
+  notifications Notification[]
+
+  @@index([taskId, createdAt])
+  @@index([parentId])
+  @@index([authorId])
+}
+
+model CommentReaction {
+  commentId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([commentId, userId, emoji])
+  @@index([userId])
+}
+
+model CommentMention {
+  commentId String
+  userId    String
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([commentId, userId])
+  @@index([userId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  actorId   String
+  type      NotificationType
+  taskId    String
+  commentId String?
+  message   String
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user    User     @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  actor   User     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  task    Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@index([taskId])
+  @@index([actorId])
+  @@index([commentId])
 }

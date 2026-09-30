@@ -10,6 +10,7 @@ const pg = new EmbeddedPostgres({
   password: "postgres",
   port: PORT,
   persistent: true,
+  initdbFlags: ["--encoding=UTF8", "--locale=C"],
 });
 
 const firstRun = !existsSync(DATA_DIR);
