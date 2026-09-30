@@ -284,6 +284,7 @@ export interface DemoRows {
     startDate: Date | null;
     endDate: Date | null;
     createdAt: Date;
+    updatedAt: Date;
   }[];
   landingListId: string;
   /** Template key -> generated id, for every space, list, status and task. */
@@ -353,6 +354,13 @@ export function buildDemoWorkspace(
         const start = t.due === undefined ? undefined : (t.start ?? t.due);
         // Created a few days before its start (or before today), never in the future.
         const createdDaysAgo = Math.min(Math.max(0, -(start ?? 0)) + 2 + (taskIndex % 6), 29);
+        const createdAt = new Date(now.getTime() - createdDaysAgo * DAY - (taskIndex % 7) * 37 * MINUTE);
+        // No completion timestamp exists: done tasks get a plausible `updatedAt` in the last ~10 days.
+        const isDone = list.statuses.find((s) => s.key === t.status)?.type === "done";
+        const doneAt = Math.min(
+          now.getTime(),
+          Math.max(createdAt.getTime() + 6 * 60 * MINUTE, now.getTime() - (taskIndex % 10) * DAY - 3 * 60 * MINUTE),
+        );
         rows.tasks.push({
           id: idFor(t.key),
           name: t.name,
@@ -362,7 +370,8 @@ export function buildDemoWorkspace(
           priority: t.priority,
           startDate: start === undefined ? null : noonUtc(now, start),
           endDate: t.due === undefined ? null : noonUtc(now, t.due),
-          createdAt: new Date(now.getTime() - createdDaysAgo * DAY - (taskIndex % 7) * 37 * MINUTE),
+          createdAt,
+          updatedAt: isDone ? new Date(doneAt) : createdAt,
         });
         taskIndex++;
       }
