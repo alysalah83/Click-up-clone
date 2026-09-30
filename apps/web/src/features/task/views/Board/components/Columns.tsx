@@ -6,14 +6,20 @@ import AddTaskStatus from "../../../../status/components/AddStatus";
 import DragProvider from "../contexts/DragProvider";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
 import BoardSkeleton from "./BoardSkeleton";
-import BoardAssigneeFilter from "@/features/members/components/BoardAssigneeFilter";
+import { ViewToolbar } from "@/features/viewConfig/components/ViewToolbar";
+import GroupedBoardColumns from "@/features/viewConfig/components/GroupedBoardColumns";
+import { useViewConfigStore } from "@/features/viewConfig/store";
 
 function Columns() {
   const { statuses, isPending } = useStatuses();
+  const groupBy = useViewConfigStore((s) => s.groupBy);
 
   return (
     <div className="flex h-full flex-col">
-      <BoardAssigneeFilter />
+      <ViewToolbar groupable />
+      {groupBy !== "status" ? (
+        <GroupedBoardColumns groupBy={groupBy} />
+      ) : (
       <section className="min-h-0 flex-1 overflow-x-auto p-3 sm:p-4">
         <main className="flex h-full min-w-fit flex-col gap-4 after:min-w-[0.1px] after:content-[''] lg:flex-row">
           <ActiveColumnFormProvider>
@@ -30,6 +36,7 @@ function Columns() {
           <AddTaskStatus />
         </main>
       </section>
+      )}
     </div>
   );
 }

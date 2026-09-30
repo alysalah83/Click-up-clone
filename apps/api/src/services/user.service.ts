@@ -7,6 +7,7 @@ import { DEMO_TEMPLATE, buildDemoAutomations, buildDemoDependencies, buildDemoWo
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
+import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 
 const publicUser = {
   id: true,
@@ -76,6 +77,7 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     ...(template === DEMO_TEMPLATE
       ? [prisma.automation.createMany({ data: buildDemoAutomations(seed) })]
       : []),
+    prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
     ...(rich
       ? [
           prisma.task.createMany({ data: rich.subtasks }),
