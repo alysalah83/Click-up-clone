@@ -58,6 +58,12 @@ export function activitySentence({
       return [plain("completed "), strong(data.text)];
     case "tag_added":
       return [plain("added tag "), strong(data.name)];
+    case "automation":
+      return [
+        plain("ran automation "),
+        strong(data.name),
+        plain(` (${data.summary ?? "done"})`),
+      ];
     default:
       return [plain("updated this task")];
   }

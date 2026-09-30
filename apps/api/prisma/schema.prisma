@@ -95,6 +95,7 @@ model List {
   workspaceId String
   tasks       Task[]
   status      Status[]
+  automations Automation[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -363,6 +364,7 @@ model Notification {
   @@index([commentId])
 }
 
+<<<<<<< HEAD
 /// `task` is blocked by `dependsOn` (a "blocked by" link; both tasks are in the same workspace).
 model TaskDependency {
   taskId      String
@@ -374,4 +376,19 @@ model TaskDependency {
 
   @@id([taskId, dependsOnId])
   @@index([dependsOnId])
+=======
+/// A per-list rule: when `trigger` fires for a task in the list, run `actions` in order.
+model Automation {
+  id        String   @id @default(uuid())
+  listId    String
+  name      String
+  enabled   Boolean  @default(true)
+  trigger   Json
+  actions   Json
+  createdAt DateTime @default(now())
+
+  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+>>>>>>> worktree-agent-af616adf442098d60
 }

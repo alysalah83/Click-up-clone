@@ -19,6 +19,7 @@ import {
   logActivity,
   type ActivityRow,
 } from "./activity.service.js";
+import { runAutomations } from "./automation.service.js";
 import { notifyAssigned, notifyTaskChanges } from "./notification.service.js";
 
 /** Top-level views (board, table, list, calendar, counts) never show subtasks. */
@@ -51,7 +52,10 @@ export async function createTask(userId: string, input: CreateTaskInput) {
     include: taskInclude,
   });
   await logActivity([{ taskId: task.id, actorId: userId, type: "created" }]);
-  return toTaskDto(task);
+  await runAutomations(userId, { type: "task_created", taskId: task.id });
+  return toTaskDto(
+    (await prisma.task.findUnique({ where: { id: task.id }, include: taskInclude })) ?? task,
+  );
 }
 
 export function countTasks(userId: string, listId?: string) {
@@ -135,6 +139,12 @@ export async function updateTask(
   const rows = diffTaskActivity(userId, task, data, updated.status.name);
   await logActivity(rows);
   await notifyTaskChanges(userId, [{ id, name: updated.name }], rows);
+  if (rows.some((r) => r.type === "status")) {
+    await runAutomations(userId, { type: "status_changed", taskId: id, statusId: updated.statusId });
+    return toTaskDto(
+      (await prisma.task.findUnique({ where: { id }, include: taskInclude })) ?? updated,
+    );
+  }
   return toTaskDto(updated);
 }
 
@@ -164,6 +174,13 @@ export async function updateTasks(
   );
   await logActivity(rows);
   await notifyTaskChanges(userId, tasks, rows);
+  for (const row of rows)
+    if (row.type === "status" && updatedFields.statusId)
+      await runAutomations(userId, {
+        type: "status_changed",
+        taskId: row.taskId,
+        statusId: updatedFields.statusId,
+      });
 }
 
 export async function deleteTask(userId: string, id: string) {

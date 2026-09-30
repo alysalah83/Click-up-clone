@@ -3,7 +3,11 @@ import bcrypt from "bcrypt";
 import type { LoginInput, RegisterInput, UpdateMeInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
 import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
+<<<<<<< HEAD
 import { DEMO_TEMPLATE, buildDemoDependencies, buildDemoWorkspace } from "../seed/demoWorkspace.js";
+=======
+import { DEMO_TEMPLATE, buildDemoAutomations, buildDemoWorkspace } from "../seed/demoWorkspace.js";
+>>>>>>> worktree-agent-af616adf442098d60
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
@@ -72,7 +76,13 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     prisma.user.createMany({ data: team.users }),
     prisma.workspaceMember.createMany({ data: team.members }),
     prisma.taskAssignee.createMany({ data: team.assignees }),
+<<<<<<< HEAD
     ...(template === DEMO_TEMPLATE ? [prisma.taskDependency.createMany({ data: buildDemoDependencies(seed) })] : []),
+=======
+    ...(template === DEMO_TEMPLATE
+      ? [prisma.automation.createMany({ data: buildDemoAutomations(seed) })]
+      : []),
+>>>>>>> worktree-agent-af616adf442098d60
     ...(rich
       ? [
           prisma.task.createMany({ data: rich.subtasks }),
