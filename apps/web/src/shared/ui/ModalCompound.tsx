@@ -1,7 +1,18 @@
 "use client";
 
-import { Dialog } from "radix-ui";
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import ButtonIcon from "./Button/ButtonIcon";
 import { cn } from "@/shared/lib/utils/cn";
 
@@ -45,9 +56,12 @@ function Modal({
 
   return (
     <ModalContext value={{ isModalOpen, toggleModal, closeModal }}>
-      <Dialog.Root open={isModalOpen} onOpenChange={(open) => (open ? setOpen(true) : closeModal())}>
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(open) => (open ? setOpen(true) : closeModal())}
+      >
         {children}
-      </Dialog.Root>
+      </Dialog>
     </ModalContext>
   );
 }
@@ -62,7 +76,7 @@ function ModalTrigger({ children }: { children: ReactNode }) {
   const wrapperRef = useRef<HTMLSpanElement>(null);
 
   return (
-    <Dialog.Trigger asChild>
+    <DialogTrigger asChild>
       <span
         ref={wrapperRef}
         tabIndex={-1}
@@ -70,13 +84,15 @@ function ModalTrigger({ children }: { children: ReactNode }) {
         onFocus={(e) => {
           if (e.target !== wrapperRef.current) return;
           wrapperRef.current
-            ?.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+            ?.querySelector<HTMLElement>(
+              'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+            )
             ?.focus();
         }}
       >
         {children}
       </span>
-    </Dialog.Trigger>
+    </DialogTrigger>
   );
 }
 
@@ -96,65 +112,57 @@ function ModalContent({
   // Keyboard/Escape closes still return focus to the trigger.
   const wasPointerInteractionRef = useRef(false);
   return (
-    <Dialog.Portal>
-      <Dialog.Overlay
-        className={cn(
-          // z-50 (not z-40): the dialog portal is appended after the
-          // Menu/Popover portal (see MenuCompound.tsx), so an equal z-index
-          // still stacks the overlay above an already-open menu — a lower
-          // z-index would leave that menu rendered undimmed above the
-          // backdrop when a Modal is opened from inside it (see
-          // OptionsMenuItem's "modal" branch).
-          "fixed inset-0 z-50 bg-neutral-950/50",
-          "data-[state=open]:animate-in data-[state=open]:fade-in-0",
-          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
-        )}
-      />
-      <Dialog.Content
-        aria-describedby={undefined}
-        onOpenAutoFocus={() => {
-          // Reset per open/close cycle; default open-focus is left intact.
-          wasPointerInteractionRef.current = false;
-        }}
-        onPointerDown={() => {
-          wasPointerInteractionRef.current = true;
-        }}
-        onPointerDownOutside={() => {
-          // A click on the overlay closes the dialog by pointer too.
-          wasPointerInteractionRef.current = true;
-        }}
-        onInteractOutside={(e) => {
-          // Toasts (sonner) render outside the dialog; interacting with one
-          // must not dismiss the dialog.
-          const target = e.target as Element | null;
-          if (target?.closest?.("[data-sonner-toaster]")) e.preventDefault();
-        }}
-        onKeyDown={() => {
-          wasPointerInteractionRef.current = false;
-        }}
-        onCloseAutoFocus={(e) => {
-          if (wasPointerInteractionRef.current) e.preventDefault();
-        }}
-        className={cn(
-          "bg-popover fixed left-1/2 z-50 m-4 h-fit w-fit -translate-x-1/2 overflow-hidden rounded-lg outline-none",
-          contentYPosition === "withTopMargin" ? "top-48" : "top-1/2 -translate-y-1/2",
-          "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-        )}
-      >
-        <Dialog.Title className="sr-only">{title}</Dialog.Title>
-        {children}
-        <span className="absolute top-6 right-6 z-50">
-          <ButtonIcon icon="close" ariaLabel="modal close button" padding="small" onClick={closeModal} />
-        </span>
-      </Dialog.Content>
-    </Dialog.Portal>
+    <DialogContent
+      showCloseButton={false}
+      aria-describedby={undefined}
+      onOpenAutoFocus={() => {
+        // Reset per open/close cycle; default open-focus is left intact.
+        wasPointerInteractionRef.current = false;
+      }}
+      onPointerDown={() => {
+        wasPointerInteractionRef.current = true;
+      }}
+      onPointerDownOutside={() => {
+        // A click on the overlay closes the dialog by pointer too.
+        wasPointerInteractionRef.current = true;
+      }}
+      onInteractOutside={(e) => {
+        // Toasts (sonner) render outside the dialog; interacting with one
+        // must not dismiss the dialog.
+        const target = e.target as Element | null;
+        if (target?.closest?.("[data-sonner-toaster]")) e.preventDefault();
+      }}
+      onKeyDown={() => {
+        wasPointerInteractionRef.current = false;
+      }}
+      onCloseAutoFocus={(e) => {
+        if (wasPointerInteractionRef.current) e.preventDefault();
+      }}
+      className={cn(
+        "bg-popover m-4 h-fit w-fit max-w-none -translate-x-1/2 gap-0 overflow-hidden rounded-2xl border p-0 shadow-2xl sm:max-w-none",
+        contentYPosition === "withTopMargin"
+          ? "top-48 translate-y-0"
+          : "top-1/2 -translate-y-1/2",
+      )}
+    >
+      <DialogTitle className="sr-only">{title}</DialogTitle>
+      {children}
+      <span className="absolute right-6 top-6 z-50">
+        <ButtonIcon
+          icon="close"
+          ariaLabel="modal close button"
+          padding="small"
+          onClick={closeModal}
+        />
+      </span>
+    </DialogContent>
   );
 }
 
 export function useModal() {
   const context = useContext(ModalContext);
-  if (!context) throw new Error("the Modal context is being used outside of his scope");
+  if (!context)
+    throw new Error("the Modal context is being used outside of his scope");
   return context;
 }
 

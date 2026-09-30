@@ -23,7 +23,7 @@ interface MenuItem {
 function SideNav() {
   const [_, action, isPending] = useActionState(signOutUser, null);
   return (
-    <menu className="mr-2 flex w-fit flex-col items-center gap-6 rounded-xl bg-neutral-200 px-1 py-4 md:px-2 dark:bg-neutral-900">
+    <menu className="mr-2 flex w-fit flex-col items-center gap-6 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900">
       {SIDE_NAV_ITEMS.map((item) => (
         <SideMenuLink menuItem={item} key={item.href} />
       ))}

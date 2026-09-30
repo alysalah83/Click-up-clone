@@ -22,22 +22,22 @@ export function getButtonClasses({
   extraClasses = "",
 }: ButtonClassOptions) {
   return clsx(
-    "capitalize transition duration-300 text-nowrap",
+    "capitalize transition duration-200 text-nowrap shadow-xs active:scale-[0.98] focus-visible:ring-ring/40 outline-none focus-visible:ring-4",
     stretch ? "w-full flex justify-center" : "w-fit",
     {
-      "bg-neutral-800 text-neutral-50 dark:bg-neutral-100 dark:text-neutral-900":
+      "bg-neutral-900 text-neutral-50 dark:bg-neutral-100 dark:text-neutral-900":
         type === "primary",
-      "bg-neutral-100  dark:bg-neutral-925 border border-neutral-400 dark:border-neutral-800 text-neutral-500 dark:text-neutral-300":
+      "bg-white dark:bg-neutral-925 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300":
         type === "secondary",
       "bg-red-600 text-red-100 dark:bg-red-500 dark:text-red-50":
         type === "delete",
-      "bg-indigo-600 text-indigo-50": type === "colored",
+      "bg-indigo-600 text-white": type === "colored",
     },
     {
       "cursor-pointer": !pending,
-      "hover:bg-neutral-700 dark:hover:bg-neutral-300":
+      "hover:bg-neutral-700 dark:hover:bg-neutral-300 hover:shadow-md":
         type === "primary" && !pending,
-      "hover:bg-neutral-200 dark:hover:bg-neutral-900":
+      "hover:bg-neutral-100 dark:hover:bg-neutral-900":
         type === "secondary" && !pending,
       "hover:bg-red-800": type === "delete" && !pending,
       "hover:bg-indigo-700": type === "colored" && !pending,
