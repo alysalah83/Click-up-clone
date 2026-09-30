@@ -373,3 +373,21 @@ export function buildDemoWorkspace(
   if (!landingListId) throw new Error("Demo template has no lists");
   return { ...rows, landingListId };
 }
+
+/** "Blocked by" links of the default demo template, by task key: [task, blocked by]. */
+export const DEMO_DEPENDENCIES: [task: string, dependsOn: string][] = [
+  ["sprint.onboarding-checklist", "sprint.sso"],
+  ["sprint.search-index", "sprint.csv-export"],
+  ["sprint.recurring-tasks", "sprint.search-index"],
+  ["sprint.dark-mode-charts", "sprint.board-virtualization"],
+  ["sprint.mobile-nav", "sprint.dark-mode-charts"],
+];
+
+/** Dependency rows for the demo tasks; links to keys missing from the seed are skipped. */
+export function buildDemoDependencies(seed: DemoRows) {
+  return DEMO_DEPENDENCIES.flatMap(([task, dependsOn]) => {
+    const taskId = seed.idsByKey.get(task);
+    const dependsOnId = seed.idsByKey.get(dependsOn);
+    return taskId && dependsOnId ? [{ taskId, dependsOnId }] : [];
+  });
+}

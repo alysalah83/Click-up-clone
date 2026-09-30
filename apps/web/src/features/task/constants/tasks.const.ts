@@ -50,7 +50,7 @@ const OPTIONS_UI_MENU = [
   },
 ] as OptionUiItem[];
 
-const TASK_VIEWS = ["board", "list", "table", "calendar"];
+const TASK_VIEWS = ["board", "list", "table", "calendar", "timeline"];
 
 export {
   TASK_RENAME_FORM_ICON_SIZE,
