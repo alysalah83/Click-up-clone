@@ -16,11 +16,15 @@ import { ICONS_REGISTRY } from "@/shared/ui/IconPicker/IconRegistry";
 import { IconsRegistry } from "@/shared/ui/IconPicker/types";
 import { COLORS_TOKENS } from "@/shared/ui/ColorPicker/colorTokens";
 import { ColorsToken } from "@/shared/ui/ColorPicker/types";
+import { shouldOpenTaskDetail } from "../../lib/shouldOpenTaskDetail";
+import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 
 function ListSlideRow() {
-  const { task, isTempTask } = useTask();
+  const { task, isTempTask, isRenameOpen } = useTask();
+  const openTask = useOpenTask();
   const {
+    id,
     name,
     status: { icon, iconColor },
   } = task;
@@ -30,7 +34,18 @@ function ListSlideRow() {
 
   return (
     <div
-      className={`grid grid-cols-21 ${listRowBorder} ${isTempTask ? "pointer-events-none opacity-60" : ""} text-base font-medium text-neutral-300 ${listBgHoverGradient}`}
+      onClick={(e) => {
+        if (
+          shouldOpenTaskDetail({
+            target: e.target as Element,
+            currentTarget: e.currentTarget,
+            isRenameOpen,
+            isTempTask,
+          })
+        )
+          openTask(id);
+      }}
+      className={`cursor-pointer grid grid-cols-21 ${listRowBorder} ${isTempTask ? "pointer-events-none opacity-60" : ""} text-base font-medium text-neutral-300 ${listBgHoverGradient}`}
     >
       <div className="col-span-10 flex items-center gap-2 p-2">
         <Icon className={`${iconColorClass} size-4 shrink-0`} />
