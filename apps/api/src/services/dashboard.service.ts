@@ -25,6 +25,38 @@ async function completionTimes(tasks: { id: string; updatedAt: Date; status: { n
   return new Map(tasks.map((t) => [t.id, found.get(t.id) ?? t.updatedAt]));
 }
 
+/** Tracked seconds of an entry; a running timer counts up to `now`. */
+export function trackedSeconds(entry: { startedAt: Date; endedAt: Date | null; durationSec: number | null }, now: Date) {
+  if (entry.endedAt) return entry.durationSec ?? 0;
+  return Math.max(0, Math.round((now.getTime() - entry.startedAt.getTime()) / 1000));
+}
+
+/** Time tracked in the last 7 days on tasks of the user's workspaces: the total and per member (highest first). */
+async function timeTracked(userId: string, now: Date) {
+  const entries = await prisma.timeEntry.findMany({
+    where: { startedAt: { gte: new Date(now.getTime() - 7 * DAY_MS) }, task: inMyWorkspaces(userId) },
+    select: {
+      startedAt: true,
+      endedAt: true,
+      durationSec: true,
+      user: { select: { id: true, name: true, email: true } },
+    },
+  });
+  const byMember = new Map<string, { name: string; seconds: number }>();
+  let total = 0;
+  for (const entry of entries) {
+    const seconds = trackedSeconds(entry, now);
+    total += seconds;
+    const row = byMember.get(entry.user.id) ?? { name: entry.user.name ?? entry.user.email ?? "Member", seconds: 0 };
+    row.seconds += seconds;
+    byMember.set(entry.user.id, row);
+  }
+  return {
+    timeTrackedThisWeekSec: total,
+    timeByMember: [...byMember.values()].sort((a, b) => b.seconds - a.seconds),
+  };
+}
+
 export async function summary(userId: string, now = new Date()) {
   const tasks = await prisma.task.findMany({
     where: { ...inMyWorkspaces(userId), parentTaskId: null },
@@ -61,6 +93,7 @@ export async function summary(userId: string, now = new Date()) {
   for (const t of tasks) categories[t.status.type]++;
 
   return {
+    ...(await timeTracked(userId, now)),
     total: tasks.length,
     overdue,
     completedThisWeek,

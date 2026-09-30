@@ -7,6 +7,7 @@ import { DEMO_TEMPLATE, buildDemoAutomations, buildDemoDependencies, buildDemoWo
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
+import { applyDemoRecurrence, buildDemoTimeEntries } from "../seed/demoTime.js";
 import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 
 const publicUser = {
@@ -51,6 +52,7 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
     template === DEMO_TEMPLATE
       ? buildDemoRichTasks({ ownerUserId: userId, seed, teammates: team.users })
       : undefined;
+  applyDemoRecurrence(seed);
   const collab =
     template === DEMO_TEMPLATE
       ? buildDemoCollab({
@@ -78,6 +80,9 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
       ? [prisma.automation.createMany({ data: buildDemoAutomations(seed) })]
       : []),
     prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
+    prisma.timeEntry.createMany({
+      data: buildDemoTimeEntries({ ownerUserId: userId, seed, teammates: team.users }),
+    }),
     ...(rich
       ? [
           prisma.task.createMany({ data: rich.subtasks }),

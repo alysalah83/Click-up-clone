@@ -30,6 +30,8 @@ interface TasksPriorityCountResponse {
 type CreateTaskInput = z.infer<typeof createTaskSchema>;
 type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 
+type RecurrenceType = "none" | "daily" | "weekly" | "monthly" | "custom";
+
 type SortOrder = "" | "asc" | "desc";
 
 type Task = {
@@ -55,6 +57,8 @@ type Task = {
   subtaskDoneCount?: number;
   checklistTotal?: number;
   checklistDone?: number;
+  recurrenceType?: RecurrenceType;
+  recurrenceInterval?: number;
 };
 
 interface TaskTag {
@@ -65,6 +69,7 @@ interface TaskTag {
 
 export type {
   Task,
+  RecurrenceType,
   TaskTag,
   CreateTaskInput,
   TaskStatusCountsResponse,

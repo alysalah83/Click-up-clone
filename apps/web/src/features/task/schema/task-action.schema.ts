@@ -23,6 +23,8 @@ const updateTaskSchema = z.object({
   priority: z.enum(["urgent", "high", "normal", "low", "none"]).optional(),
   startDate: z.date().nullable().optional(),
   endDate: z.date().nullable().optional(),
+  recurrenceType: z.enum(["none", "daily", "weekly", "monthly", "custom"]).optional(),
+  recurrenceInterval: z.number().int().min(1).max(365).optional(),
 });
 
 export { createTaskSchema, updateTaskSchema };

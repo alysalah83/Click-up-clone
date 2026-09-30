@@ -3,6 +3,11 @@ import { booleanStringSchema, idSchema, optionalSortOrderSchema, prioritySchema 
 
 const optionalDateSchema = z.coerce.date().nullable().optional();
 
+export const RECURRENCE_TYPES = ["none", "daily", "weekly", "monthly", "custom"] as const;
+export const recurrenceTypeSchema = z.enum(RECURRENCE_TYPES);
+/** "custom" repeats every N days. */
+export const recurrenceIntervalSchema = z.number().int().min(1).max(365);
+
 export const taskNameSchema = z.string().trim().min(1).max(128);
 
 /** Fields a client may set when creating a task (without placement). */
@@ -21,6 +26,8 @@ export const updateTaskSchema = z.object({
   priority: prioritySchema.optional(),
   startDate: optionalDateSchema,
   endDate: optionalDateSchema,
+  recurrenceType: recurrenceTypeSchema.optional(),
+  recurrenceInterval: recurrenceIntervalSchema.optional(),
 });
 
 export const bulkUpdateTasksSchema = z.object({
@@ -48,3 +55,4 @@ export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 export type BulkUpdateTasksInput = z.infer<typeof bulkUpdateTasksSchema>;
 export type TasksQuery = z.infer<typeof tasksQuerySchema>;
+export type RecurrenceType = z.infer<typeof recurrenceTypeSchema>;

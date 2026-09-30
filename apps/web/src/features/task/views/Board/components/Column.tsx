@@ -37,7 +37,7 @@ function Column({ statusItem }: ColumnProps) {
   return (
     <div
       ref={setNodeRef}
-      className={`flex h-fit max-h-full w-2xs shrink-0 flex-col gap-1 overflow-y-auto rounded-xl px-1.5 pt-2.5 pb-1.5 ${isTempStatus ? "pointer-events-none opacity-75" : ""} ${cardBgColorClass} ${isOver ? "ring-2 ring-neutral-300 outline-0 dark:ring-neutral-700" : ""} transition-all duration-200`}
+      className={`flex h-fit max-h-full w-2xs shrink-0 snap-start flex-col gap-1 overflow-y-auto rounded-xl px-1.5 pt-2.5 pb-1.5 ${isTempStatus ? "pointer-events-none opacity-75" : ""} ${cardBgColorClass} ${isOver ? "ring-2 ring-neutral-300 outline-0 dark:ring-neutral-700" : ""} transition-all duration-200`}
     >
       <header className="flex w-full items-center justify-between">
         <div className="flex items-center gap-4">

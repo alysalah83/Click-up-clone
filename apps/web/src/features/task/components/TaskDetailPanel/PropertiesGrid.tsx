@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { format } from "date-fns";
+import { Repeat } from "lucide-react";
 import StatusBadge from "@/features/status/components/StatusBadge";
 import StatusesUpdater from "@/features/status/components/StatusesUpdater";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
@@ -9,6 +10,7 @@ import TagsField from "@/features/taskDetail/components/TagsField";
 import type { TaskDetail } from "@/features/taskDetail/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Menu, MenuContent, MenuTrigger } from "@/shared/ui/Menu/MenuCompound";
+import RepeatField from "./RepeatField";
 import DateUpdater from "../DateUpdater";
 import PriorityUpdater from "../PriorityUpdater";
 import { TASK_PRIORITIES_LIST } from "../../constants/tasks.const";
@@ -133,6 +135,10 @@ function PropertiesGrid({ task }: { task: TaskDetail }) {
             <PriorityUpdater />
           </MenuContent>
         </Menu>
+      </Property>
+
+      <Property label="Repeat" icon={<Repeat className={iconClass} />}>
+        <RepeatField task={task} />
       </Property>
 
       <div className="sm:col-span-2">

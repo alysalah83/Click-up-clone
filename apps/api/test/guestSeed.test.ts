@@ -110,3 +110,16 @@ describe("guest demo workspace", () => {
       .expect(404);
   });
 });
+
+describe("guest demo: time tracking and recurring tasks", () => {
+  it("seeds time entries for teammates and the guest, and two recurring tasks", async () => {
+    const res = await api().post("/api/users/register/guest").expect(201);
+    const guestId = res.body.user.id as string;
+    const entries = await prisma.timeEntry.findMany({ where: { task: { userId: guestId } } });
+    expect(entries.length).toBeGreaterThanOrEqual(20);
+    expect(entries.every((e) => e.endedAt && e.durationSec)).toBe(true);
+    expect(entries.some((e) => e.userId === guestId)).toBe(true);
+    expect(new Set(entries.map((e) => e.userId)).size).toBe(7);
+    expect(await prisma.task.count({ where: { userId: guestId, recurrenceType: { not: "none" } } })).toBe(2);
+  });
+});

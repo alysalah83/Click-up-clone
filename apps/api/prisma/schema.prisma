@@ -52,6 +52,7 @@ model User {
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
   activities     Activity[]
+  timeEntries    TimeEntry[]
   checklistItems ChecklistItem[]
   comments       Comment[]
   commentReactions CommentReaction[]
@@ -116,6 +117,14 @@ enum Priority {
   none
 }
 
+enum RecurrenceType {
+  none
+  daily
+  weekly
+  monthly
+  custom
+}
+
 enum StatusType {
   open
   active
@@ -167,6 +176,10 @@ model Task {
   notifications Notification[]
   blockedBy     TaskDependency[] @relation("TaskBlockedBy")
   blocking      TaskDependency[] @relation("TaskBlocks")
+  /// Repeat rule: when the task is completed the next occurrence is created. custom = every N days.
+  recurrenceType     RecurrenceType @default(none)
+  recurrenceInterval Int            @default(1)
+  timeEntries        TimeEntry[]
 
   status     Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
   user       User   @relation(fields: [userId], references: [id])
@@ -410,4 +423,23 @@ model SavedView {
 
   @@index([listId, userId])
   @@index([userId])
+}
+
+/// Time tracked on a task. endedAt is null while the timer runs (one running entry per user).
+model TimeEntry {
+  id          String    @id @default(uuid())
+  taskId      String
+  userId      String
+  startedAt   DateTime
+  endedAt     DateTime?
+  /// Computed when the timer stops (or set for manual entries).
+  durationSec Int?
+  createdAt   DateTime  @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId, endedAt])
+  @@index([startedAt])
 }
