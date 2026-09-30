@@ -14,6 +14,7 @@ import ThemeButton from "./ThemeButton";
 import HeaderFeatures from "./HeaderFeatures";
 import NavButtons from "./NavButtons";
 import HeaderTitle from "./HeaderTitle";
+import { usePathname } from "next/navigation";
 
 function Header({
   userPromise,
@@ -23,12 +24,13 @@ function Header({
   latestListIdPromise: Promise<{ id: List["id"] } | null>;
 }) {
   const { isSideBarOpened, setOpenSideBar } = useSideBarStore();
+  const showViewTabs = usePathname().startsWith("/home/lists");
 
   return (
     <header
       className={`flex flex-col gap-3 border-b px-3 pt-3 sm:px-4 sm:pt-4 ${
         !isSideBarOpened ? "sm:rounded-tl-xl" : ""
-      } border-neutral-200 dark:border-neutral-800`}
+      } ${showViewTabs ? "" : "pb-3 sm:pb-4"} border-neutral-200 dark:border-neutral-800`}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
@@ -61,10 +63,12 @@ function Header({
           <UserLogo userPromise={userPromise} />
         </div>
       </div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <NavButtons latestListIdPromise={latestListIdPromise} />
-        <HeaderFeatures />
-      </div>
+      {showViewTabs && (
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+          <NavButtons latestListIdPromise={latestListIdPromise} />
+          <HeaderFeatures />
+        </div>
+      )}
     </header>
   );
 }

@@ -20,11 +20,11 @@ Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, A
 | C2 | Table/List rows open task panel | ✅ live |
 | C3 | Ctrl+K command palette (tasks, lists, members) | ✅ live |
 | C4 | Claude AI on task panel: Summarize, Generate subtasks | ✅ live, needs `ANTHROPIC_API_KEY` on the API Vercel project |
-| D1 | Restyle: task panel, badges, empty/loading states, Teams/My Work/Inbox on shadcn | ✅ merged, not eyeballed |
-| D2 | Timeline (Gantt) view, drag/resize, "blocked by" dependencies | ✅ merged, not eyeballed |
-| D3 | Filters, Group by (List/Board), saved views + default | ✅ merged, not eyeballed |
-| D4 | Automations per list + rules builder, 2 demo rules | ✅ merged, not eyeballed |
-| D5 | Dashboard 2.0: workload, overdue, completed this week, burndown | ✅ merged, not eyeballed |
+| D1 | Restyle: task panel, badges, empty/loading states, Teams/My Work/Inbox on shadcn | ✅ live, eyeballed 2026-09-30 |
+| D2 | Timeline (Gantt) view, drag/resize, "blocked by" dependencies | ✅ live, eyeballed 2026-09-30 |
+| D3 | Filters, Group by (List/Board), saved views + default | ✅ live, eyeballed 2026-09-30 |
+| D4 | Automations per list + rules builder, 2 demo rules | ✅ live, eyeballed 2026-09-30 |
+| D5 | Dashboard 2.0: workload, overdue, completed this week, burndown | ✅ live, eyeballed 2026-09-30 |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
@@ -34,7 +34,7 @@ Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, A
 
 ## Third sprint (2026-09-30)
 
-D1–D5 built by parallel subagents, merged to master; lint, typecheck, 77 API tests and web build pass. **Never viewed in a browser.** Known: Board grouped by assignee/priority/tag is read-only (no drag between groups); `BoardAssigneeFilter` now unused; burndown history only exists for freshly seeded guests; Gantt/dashboard use UTC days. Tip: don't run several `pnpm install` in parallel worktrees, it stalls the machine. Next: visual pass on the new views.
+D1–D5 built by parallel subagents, merged, then walked through on the live guest demo (Board, task panel, Timeline, filters + saved views, Automations, My Work, Inbox, Dashboard, Teams). Fixes: three Next proxy routes (dashboard burndown, dependencies, saved-views) had never been committed and 404ed in production (task panel showed "Something went wrong"); view tabs now only show on list routes; header toolbar stacks until `xl`; saved-views popover widened; pie animation off. Not checked: drag on Timeline, phone width, light theme (pane screenshots stall). Known: opening Automations while the Saved views popover is open renders an empty dialog body.
 
 ## Where the sprint chat stopped (2026-09-30)
 
