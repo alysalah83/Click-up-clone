@@ -17,8 +17,10 @@ async function HomeLayout({ children }: { children: ReactNode }) {
   return (
     <QueryProvider>
       <CommandPalette />
-      <div className="flex min-h-screen w-full min-w-0 bg-neutral-50 sm:p-2 dark:bg-black">
-        <SideNav />
+      <div className="flex min-h-screen w-full min-w-0 overflow-x-clip bg-neutral-50 sm:p-2 dark:bg-black">
+        <div className="hidden sm:block">
+          <SideNav />
+        </div>
         <div className="flex w-full min-w-0 rounded-2xl border border-neutral-200 shadow-sm dark:border-neutral-800">
           <SideBar>
             <Workspace />

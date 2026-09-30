@@ -25,12 +25,21 @@ Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, A
 | D3 | Filters, Group by (List/Board), saved views + default | ✅ live, eyeballed 2026-09-30 |
 | D4 | Automations per list + rules builder, 2 demo rules | ✅ live, eyeballed 2026-09-30 |
 | D5 | Dashboard 2.0: workload, overdue, completed this week, burndown | ✅ live, eyeballed 2026-09-30 |
+| E1 | Time tracking: timer on task panel, manual entries, Dashboard totals + per-member chart | ✅ shipped 2026-10-01, not eyeballed |
+| E2 | Recurring tasks: Repeat selector, next occurrence spawns on completion | ✅ shipped 2026-10-01, not eyeballed |
+| E3 | Docs: nested pages per space, Tiptap editor with autosave, sidebar tree, Ctrl+K | ✅ shipped 2026-10-01, not eyeballed |
+| E4 | Mobile layout: sidebar drawer, snap-scroll board, wrapped My Work rows, capped modals | ✅ shipped 2026-10-01 (Playwright at 390px) |
+| E4b | Landing page refresh: hero, "Try the live demo", screenshots (`public/landing/`), feature grid | ✅ shipped 2026-10-01 |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
   - Web: https://click-up-clone-two.vercel.app
   - API: https://click-up-clone-back-end.vercel.app (`/health`)
 - **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
+
+## Fourth sprint (2026-10-01)
+
+E1–E4b shipped, plus the empty Automations dialog fix (an open Saved-views popover was dismissing it via focus-outside). Known gaps: "this week" is a rolling 7 days; recurrence creates only the next occurrence and doesn't copy subtasks/checklists; repeat icon only on board cards; one-running-timer is service-enforced only; Calendar keeps an 840px min width on phones; landing screenshots need re-capturing if the UI changes (Playwright against the live guest demo). Nothing from this sprint was eyeballed in a real browser. Local dev DB `clickup` is WIN1252 and rejects emoji seeds; use a UTF-8 database.
 
 ## Third sprint (2026-09-30)
 

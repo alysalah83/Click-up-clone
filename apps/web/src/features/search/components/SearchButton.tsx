@@ -17,7 +17,7 @@ function SearchButton() {
         <ICONS_MAP.search className="size-6" />
       </span>
       <span className="text-xs font-medium md:font-bold">Search</span>
-      <kbd className="rounded border border-neutral-400 px-1 text-[10px] text-neutral-500">Ctrl K</kbd>
+      <kbd className="max-sm:hidden rounded border border-neutral-400 px-1 text-[10px] text-neutral-500">Ctrl K</kbd>
     </button>
   );
 }

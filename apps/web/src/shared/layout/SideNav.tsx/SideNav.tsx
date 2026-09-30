@@ -22,17 +22,23 @@ interface MenuItem {
   includedRoutes?: string[];
 }
 
-function SideNav() {
+function SideNav({ horizontal = false }: { horizontal?: boolean }) {
   const [_, action, isPending] = useActionState(signOutUser, null);
   return (
-    <menu className="mr-2 flex w-fit flex-col items-center gap-6 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900">
+    <menu
+      className={
+        horizontal
+          ? "flex w-full flex-wrap items-start justify-between gap-x-2 gap-y-3 rounded-xl bg-neutral-200/60 px-2 py-3 dark:bg-neutral-800/60"
+          : "mr-2 flex w-fit flex-col items-center gap-6 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900"
+      }
+    >
       <SearchButton />
       {SIDE_NAV_ITEMS.map((item) => (
         <SideMenuLink menuItem={item} key={item.href} />
       ))}
 
       <form
-        className={`mt-auto flex ${isPending ? "cursor-not-allowed" : "cursor-pointer"} flex-col items-center gap-1`}
+        className={`${horizontal ? "" : "mt-auto"} flex ${isPending ? "cursor-not-allowed" : "cursor-pointer"} flex-col items-center gap-1`}
         action={action}
       >
         <ToolTip>
@@ -73,7 +79,7 @@ function SideMenuLink({ menuItem }: { menuItem: MenuItem }) {
         href={href}
         aria-label={`${label} button`}
         aria-current={isActive ? "page" : undefined}
-        className="flex flex-col items-center gap-1"
+        className="flex min-w-11 flex-col items-center gap-1 py-1"
       >
         <ButtonIcon
           icon={icon}

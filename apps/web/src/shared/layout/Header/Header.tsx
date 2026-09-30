@@ -32,7 +32,7 @@ function Header({
         !isSideBarOpened ? "sm:rounded-tl-xl" : ""
       } ${showViewTabs ? "" : "pb-3 sm:pb-4"} border-neutral-200 dark:border-neutral-800`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-nowrap items-center justify-between gap-2 sm:flex-wrap sm:gap-3">
         <div className="flex min-w-0 items-center gap-2">
           {!isSideBarOpened && (
             <ToolTip>
@@ -58,7 +58,7 @@ function Header({
           />
           <HeaderTitle />
         </div>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex shrink-0 items-center gap-1">
           <ThemeButton />
           <UserLogo userPromise={userPromise} />
         </div>
