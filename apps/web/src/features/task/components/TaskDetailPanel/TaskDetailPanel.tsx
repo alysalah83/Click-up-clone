@@ -13,6 +13,7 @@ import SubtasksSection from "@/features/taskDetail/components/SubtasksSection";
 import { useTaskDetail } from "@/features/taskDetail/hooks/useTaskDetail";
 import type { TaskDetail } from "@/features/taskDetail/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
+import TimeTrackingSection from "@/features/timeTracking/TimeTrackingSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
@@ -146,6 +147,8 @@ function TaskDetailPanel({
         startDate: cached.startDate,
         endDate: cached.endDate,
         assignees: cached.assignees ?? detail.assignees,
+        recurrenceType: cached.recurrenceType ?? detail.recurrenceType,
+        recurrenceInterval: cached.recurrenceInterval ?? detail.recurrenceInterval,
       }
     : detail;
 
@@ -177,6 +180,7 @@ function TaskDetailPanel({
             listId={task.listId}
             onOpenTask={onOpenTask}
           />
+          <TimeTrackingSection taskId={task.id} />
           <ChecklistsSection detail={detail} />
           <CommentsSection taskId={task.id} listId={task.listId} />
           <p className="mt-auto text-xs text-neutral-400">

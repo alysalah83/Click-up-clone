@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Priority, StatusType } from "@clickup/shared";
+import type { Priority, RecurrenceType, StatusType } from "@clickup/shared";
 import { HIGHEST_ORDER } from "../consts/status.const.js";
 
 /**
@@ -285,6 +285,8 @@ export interface DemoRows {
     endDate: Date | null;
     createdAt: Date;
     updatedAt: Date;
+    recurrenceType?: RecurrenceType;
+    recurrenceInterval?: number;
   }[];
   landingListId: string;
   /** Template key -> generated id, for every space, list, status and task. */

@@ -13,7 +13,9 @@ type ActivityType =
   | "subtask_added"
   | "checklist_item_done"
   | "tag_added"
-  | "automation";
+  | "automation"
+  | "recurred"
+  | "time_logged";
 
 interface ChecklistItem {
   id: string;

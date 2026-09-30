@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { formatDuration } from "./duration";
 import type { ActivityEntry } from "../types";
 
 /** A sentence part; `strong` parts are rendered bold. */
@@ -64,6 +65,10 @@ export function activitySentence({
         strong(data.name),
         plain(` (${data.summary ?? "done"})`),
       ];
+    case "recurred":
+      return [plain("completed this task and scheduled the next occurrence")];
+    case "time_logged":
+      return [plain("tracked "), strong(formatDuration(Number(data.durationSec ?? 0)))];
     default:
       return [plain("updated this task")];
   }

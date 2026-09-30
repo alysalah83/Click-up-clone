@@ -20,8 +20,8 @@ function Columns() {
       {groupBy !== "status" ? (
         <GroupedBoardColumns groupBy={groupBy} />
       ) : (
-      <section className="min-h-0 flex-1 overflow-x-auto p-3 sm:p-4">
-        <main className="flex h-full min-w-fit flex-col gap-4 after:min-w-[0.1px] after:content-[''] lg:flex-row">
+      <section className="min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto scroll-px-3 p-3 sm:snap-none sm:p-4">
+        <main className="flex h-full min-w-fit flex-row gap-4 sm:flex-col after:min-w-[0.1px] after:content-[''] lg:flex-row">
           <ActiveColumnFormProvider>
             <DragProvider>
               {isPending ? (

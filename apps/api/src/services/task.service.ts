@@ -20,6 +20,7 @@ import {
   type ActivityRow,
 } from "./activity.service.js";
 import { runAutomations } from "./automation.service.js";
+import { spawnNextOccurrence } from "./recurrence.service.js";
 import { notifyAssigned, notifyTaskChanges } from "./notification.service.js";
 
 /** Top-level views (board, table, list, calendar, counts) never show subtasks. */
@@ -140,6 +141,7 @@ export async function updateTask(
   await logActivity(rows);
   await notifyTaskChanges(userId, [{ id, name: updated.name }], rows);
   if (rows.some((r) => r.type === "status")) {
+    if (updated.status.type === "done") await spawnNextOccurrence(userId, id);
     await runAutomations(userId, { type: "status_changed", taskId: id, statusId: updated.statusId });
     return toTaskDto(
       (await prisma.task.findUnique({ where: { id }, include: taskInclude })) ?? updated,
@@ -174,13 +176,23 @@ export async function updateTasks(
   );
   await logActivity(rows);
   await notifyTaskChanges(userId, tasks, rows);
+  const movedToDone = updatedFields.statusId
+    ? (
+        await prisma.status.findUnique({
+          where: { id: updatedFields.statusId },
+          select: { type: true },
+        })
+      )?.type === "done"
+    : false;
   for (const row of rows)
-    if (row.type === "status" && updatedFields.statusId)
+    if (row.type === "status" && updatedFields.statusId) {
+      if (movedToDone) await spawnNextOccurrence(userId, row.taskId);
       await runAutomations(userId, {
         type: "status_changed",
         taskId: row.taskId,
         statusId: updatedFields.statusId,
       });
+    }
 }
 
 export async function deleteTask(userId: string, id: string) {

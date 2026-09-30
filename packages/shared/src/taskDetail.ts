@@ -71,6 +71,8 @@ export const ACTIVITY_TYPES = [
   "checklist_item_done",
   "tag_added",
   "automation",
+  "recurred",
+  "time_logged",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
