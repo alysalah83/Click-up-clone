@@ -9,6 +9,7 @@ import { ListItem } from "@/features/list";
 import Modal, { ModalContent, ModalTrigger } from "@/shared/ui/ModalCompound";
 import RowAddNew from "@/shared/components/RowAddNew";
 import CreateListForm from "@/features/list/components/CreateListForm";
+import DocsTree from "@/features/docs/components/DocsTree";
 
 interface SpaceItemProps {
   workspace: Workspace;
@@ -44,6 +45,7 @@ function SpaceItem({ workspace, lists }: SpaceItemProps) {
           </ModalContent>
         </Modal>
       </menu>
+      <DocsTree workspaceId={workspace.id} />
     </li>
   );
 }

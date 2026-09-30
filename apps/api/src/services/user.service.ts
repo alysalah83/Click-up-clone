@@ -9,6 +9,7 @@ import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
 import { applyDemoRecurrence, buildDemoTimeEntries } from "../seed/demoTime.js";
 import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
+import { buildDemoDocs } from "../seed/demoDocs.js";
 
 const publicUser = {
   id: true,
@@ -80,6 +81,7 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
       ? [prisma.automation.createMany({ data: buildDemoAutomations(seed) })]
       : []),
     prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
+    prisma.doc.createMany({ data: buildDemoDocs(userId, seed) }),
     prisma.timeEntry.createMany({
       data: buildDemoTimeEntries({ ownerUserId: userId, seed, teammates: team.users }),
     }),

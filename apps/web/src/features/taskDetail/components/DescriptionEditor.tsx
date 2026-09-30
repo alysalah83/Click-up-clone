@@ -18,7 +18,7 @@ import { useTaskDetailMutation } from "../hooks/useTaskDetail";
 
 const SAVE_DELAY_MS = 1200;
 
-function ToolbarButton({
+export function ToolbarButton({
   label,
   isActive,
   onClick,

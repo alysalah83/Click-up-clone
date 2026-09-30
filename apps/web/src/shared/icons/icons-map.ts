@@ -4,6 +4,7 @@ import {
   FaMoon,
   FaPaintBrush,
   FaRegUserCircle,
+  FaRegFileAlt,
   FaSignOutAlt,
   FaUsers,
 } from "react-icons/fa";
@@ -102,6 +103,7 @@ export const ICONS_MAP = {
   calendar: TiCalendar,
   dragHandle: RiDraggable,
   team: FaUsers,
+  doc: FaRegFileAlt,
   copy: FiCopy,
   link: FiLink,
   externalLink: FiExternalLink,
