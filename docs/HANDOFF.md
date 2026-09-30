@@ -20,12 +20,21 @@ Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, A
 | C2 | Table/List rows open task panel | ✅ live |
 | C3 | Ctrl+K command palette (tasks, lists, members) | ✅ live |
 | C4 | Claude AI on task panel: Summarize, Generate subtasks | ✅ live, needs `ANTHROPIC_API_KEY` on the API Vercel project |
+| D1 | Restyle: task panel, badges, empty/loading states, Teams/My Work/Inbox on shadcn | ✅ merged, not eyeballed |
+| D2 | Timeline (Gantt) view, drag/resize, "blocked by" dependencies | ✅ merged, not eyeballed |
+| D3 | Filters, Group by (List/Board), saved views + default | ✅ merged, not eyeballed |
+| D4 | Automations per list + rules builder, 2 demo rules | ✅ merged, not eyeballed |
+| D5 | Dashboard 2.0: workload, overdue, completed this week, burndown | ✅ merged, not eyeballed |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
   - Web: https://click-up-clone-two.vercel.app
   - API: https://click-up-clone-back-end.vercel.app (`/health`)
 - **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
+
+## Third sprint (2026-09-30)
+
+D1–D5 built by parallel subagents, merged to master; lint, typecheck, 77 API tests and web build pass. **Never viewed in a browser.** Known: Board grouped by assignee/priority/tag is read-only (no drag between groups); `BoardAssigneeFilter` now unused; burndown history only exists for freshly seeded guests; Gantt/dashboard use UTC days. Tip: don't run several `pnpm install` in parallel worktrees, it stalls the machine. Next: visual pass on the new views.
 
 ## Where the sprint chat stopped (2026-09-30)
 
