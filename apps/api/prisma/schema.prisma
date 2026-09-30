@@ -162,6 +162,8 @@ model Task {
   activities   Activity[]
   comments     Comment[]
   notifications Notification[]
+  blockedBy     TaskDependency[] @relation("TaskBlockedBy")
+  blocking      TaskDependency[] @relation("TaskBlocks")
 
   status     Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
   user       User   @relation(fields: [userId], references: [id])
@@ -359,4 +361,17 @@ model Notification {
   @@index([taskId])
   @@index([actorId])
   @@index([commentId])
+}
+
+/// `task` is blocked by `dependsOn` (a "blocked by" link; both tasks are in the same workspace).
+model TaskDependency {
+  taskId      String
+  dependsOnId String
+  createdAt   DateTime @default(now())
+
+  task      Task @relation("TaskBlockedBy", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn Task @relation("TaskBlocks", fields: [dependsOnId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, dependsOnId])
+  @@index([dependsOnId])
 }

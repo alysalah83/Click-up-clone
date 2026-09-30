@@ -16,6 +16,7 @@ import { ICONS_MAP } from "@/shared/icons/icons-map";
 import SkeletonLoader from "@/shared/ui/SkeletonLoader";
 import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
+import BlockedBySection from "./BlockedBySection";
 
 function PanelShell({ children }: { children: React.ReactNode }) {
   return (
@@ -168,6 +169,11 @@ function TaskDetailPanel({
           {!task.parentTaskId && (
             <SubtasksSection detail={detail} onOpenTask={onOpenTask} />
           )}
+          <BlockedBySection
+            taskId={task.id}
+            listId={task.listId}
+            onOpenTask={onOpenTask}
+          />
           <ChecklistsSection detail={detail} />
           <CommentsSection taskId={task.id} listId={task.listId} />
           <p className="mt-auto text-xs text-neutral-400">
