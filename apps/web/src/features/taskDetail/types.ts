@@ -12,7 +12,8 @@ type ActivityType =
   | "description"
   | "subtask_added"
   | "checklist_item_done"
-  | "tag_added";
+  | "tag_added"
+  | "automation";
 
 interface ChecklistItem {
   id: string;
