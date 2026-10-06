@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
 import BlockedBySection from "./BlockedBySection";
+import TaskTemplateMenu from "@/features/taskTemplates/components/TaskTemplateMenu";
 
 const PANEL_SHELL =
   "flex h-[min(88vh,860px)] w-[min(1120px,calc(100vw-2rem))] flex-col overflow-y-auto md:flex-row md:overflow-hidden";
@@ -159,7 +160,14 @@ function TaskDetailPanel({
     <TaskProvider task={task}>
       <AttachmentsDropTarget className={PANEL_SHELL} onFiles={attachments.upload}>
         <section className="flex min-w-0 flex-1 flex-col gap-6 px-6 py-6 md:overflow-y-auto md:px-10">
-          <Breadcrumb task={task} onOpenTask={onOpenTask} />
+          <div className="flex items-center justify-between gap-2">
+            <Breadcrumb task={task} onOpenTask={onOpenTask} />
+            {!task.parentTaskId && (
+              <TaskTemplateMenu
+                task={{ id: task.id, name: task.name, subtasks: detail.subtasks, checklists: detail.checklists }}
+              />
+            )}
+          </div>
           <div className="-mt-3 flex flex-col gap-4">
             <TitleEditor key={`${task.id}-${task.name}`} task={task} />
             <PropertiesGrid task={task} />

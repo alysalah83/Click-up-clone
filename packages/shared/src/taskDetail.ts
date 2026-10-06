@@ -23,8 +23,8 @@ export const createSubtaskSchema = z.object({
   statusId: idSchema.optional(),
 });
 
-const checklistNameSchema = z.string().trim().min(1).max(128);
-const checklistItemTextSchema = z.string().trim().min(1).max(256);
+export const checklistNameSchema = z.string().trim().min(1).max(128);
+export const checklistItemTextSchema = z.string().trim().min(1).max(256);
 
 export const createChecklistSchema = z.object({
   name: checklistNameSchema.default("Checklist"),
@@ -76,6 +76,7 @@ export const ACTIVITY_TYPES = [
   "points",
   "sprint_carried",
   "attachment_added",
+  "created_from_template",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
