@@ -18,12 +18,12 @@ import { env } from "../config/env.js";
 type Claimed = { id: string; landingListId: string | null };
 
 /**
- * Guests pooled before this instant were seeded by an older demo seed. They are never
- * claimed or counted, so the pool refills with the current seed after each deploy that
- * changes it, and the leftovers age out through the normal guest cleanup.
- * Bump it whenever the guest seed gains new demo data.
+ * Version of the demo seed a pooled guest was made with. Only guests of the current
+ * version are claimed or counted, so a deploy that changes the seed refills the pool,
+ * and the leftovers age out through the normal guest cleanup.
+ * Increment it whenever the guest seed gains new demo data.
  */
-export const POOL_SEED_EPOCH = "2026-10-06T15:01:00.000Z";
+export const POOL_SEED_VERSION = 3;
 
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();
@@ -33,7 +33,7 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
   const rows = await prisma.$queryRaw<Claimed[]>`
     WITH pick AS (
       SELECT id, "pooledAt" FROM "User"
-      WHERE "pooledAt" >= ${POOL_SEED_EPOCH}::timestamp
+      WHERE "pooledAt" IS NOT NULL AND "poolSeedVersion" = ${POOL_SEED_VERSION}
       ORDER BY "pooledAt" DESC
       LIMIT 1
       FOR UPDATE SKIP LOCKED
@@ -87,13 +87,14 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
 /** Marks a freshly seeded guest as waiting in the pool. */
 export function markPooled(userId: string, landingListId: string, now = new Date()) {
   return prisma.$executeRaw`
-    UPDATE "User" SET "pooledAt" = ${utc(now)}::timestamp, "landingListId" = ${landingListId}
+    UPDATE "User" SET "pooledAt" = ${utc(now)}::timestamp, "landingListId" = ${landingListId},
+      "poolSeedVersion" = ${POOL_SEED_VERSION}
     WHERE id = ${userId}`;
 }
 
 export async function countPooledGuests() {
   const [row] = await prisma.$queryRaw<{ n: number }[]>`
-    SELECT count(*)::int AS n FROM "User" WHERE "pooledAt" >= ${POOL_SEED_EPOCH}::timestamp`;
+    SELECT count(*)::int AS n FROM "User" WHERE "pooledAt" IS NOT NULL AND "poolSeedVersion" = ${POOL_SEED_VERSION}`;
   return row?.n ?? 0;
 }
 

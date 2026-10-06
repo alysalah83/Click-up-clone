@@ -42,6 +42,8 @@ model User {
   pooledAt      DateTime?
   /// The seeded Sprint Board a pooled guest lands on.
   landingListId String?
+  /// Demo seed version of a pooled guest (see POOL_SEED_VERSION).
+  poolSeedVersion Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   workspaces   Workspace[]
