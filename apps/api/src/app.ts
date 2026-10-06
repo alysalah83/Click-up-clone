@@ -13,6 +13,7 @@ import userRoutes from "./routes/user.routes.js";
 import statusRoutes from "./routes/status.routes.js";
 import savedViewRoutes from "./routes/savedView.routes.js";
 import docRoutes from "./routes/doc.routes.js";
+import whiteboardRoutes from "./routes/whiteboard.routes.js";
 import { invitesRouter, membersRouter } from "./routes/member.routes.js";
 import { dependenciesRouter } from "./routes/dependency.routes.js";
 import { commentsRouter, taskCommentsRouter } from "./routes/comment.routes.js";
@@ -35,6 +36,8 @@ import { prisma } from "./lib/prisma.js";
 const app = express();
 
 app.use(helmet());
+// Whiteboard scenes are bigger than any other payload; parsed first, the global parser then skips them.
+app.use("/api/whiteboards", express.json({ limit: "2mb" }));
 app.use(express.json({ limit: "100kb" }));
 
 app.use(
@@ -78,6 +81,7 @@ app.use("/api/tags", tagRouter);
 app.use("/api/statuses", statusRoutes);
 app.use("/api/saved-views", savedViewRoutes);
 app.use("/api/docs", docRoutes);
+app.use("/api/whiteboards", whiteboardRoutes);
 app.use("/api/members", membersRouter);
 app.use("/api/invites", invitesRouter);
 app.use("/internal", internalRoutes);

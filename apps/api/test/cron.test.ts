@@ -54,6 +54,7 @@ describe("GET /internal/cron/cleanup-guests", () => {
     const id = res.body.user.id as string;
     expect(await prisma.task.count({ where: { userId: id } })).toBeGreaterThan(0);
     expect(await prisma.doc.count()).toBeGreaterThan(0);
+    expect(await prisma.whiteboard.count()).toBeGreaterThan(0);
     expect(await prisma.activity.count()).toBeGreaterThan(0);
     expect(await prisma.tag.count()).toBeGreaterThan(0);
     await prisma.user.update({ where: { id }, data: { createdAt: EIGHT_DAYS_AGO } });
@@ -76,5 +77,6 @@ describe("GET /internal/cron/cleanup-guests", () => {
     expect(await prisma.taskTag.count()).toBe(0);
     expect(await prisma.activity.count()).toBe(0);
     expect(await prisma.doc.count()).toBe(0);
+    expect(await prisma.whiteboard.count()).toBe(0);
   });
 });

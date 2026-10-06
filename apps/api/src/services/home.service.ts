@@ -42,7 +42,7 @@ const LIMIT = 8;
 /** Case-insensitive search over tasks, lists and teammates in my workspaces. */
 export async function search(userId: string, q: string) {
   const contains = { contains: q, mode: "insensitive" as const };
-  const [tasks, lists, members, docs] = await Promise.all([
+  const [tasks, lists, members, docs, whiteboards] = await Promise.all([
     prisma.task.findMany({
       where: { ...inMyWorkspaces(userId), name: contains },
       select: { id: true, name: true, listId: true, status: { select: { id: true, name: true, type: true } } },
@@ -70,6 +70,12 @@ export async function search(userId: string, q: string) {
       orderBy: { updatedAt: "desc" },
       take: LIMIT,
     }),
+    prisma.whiteboard.findMany({
+      where: { workspace: memberOf(userId), title: contains },
+      select: { id: true, title: true },
+      orderBy: { updatedAt: "desc" },
+      take: LIMIT,
+    }),
   ]);
-  return { tasks, lists, members, docs };
+  return { tasks, lists, members, docs, whiteboards };
 }

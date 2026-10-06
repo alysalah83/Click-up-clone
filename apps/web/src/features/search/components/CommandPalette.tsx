@@ -13,6 +13,7 @@ type SearchResult = {
   tasks: { id: string; name: string; listId: string; status: { name: string } }[];
   lists: { id: string; name: string }[];
   docs?: { id: string; title: string; icon: string | null }[];
+  whiteboards?: { id: string; title: string }[];
   members: { id: string; name: string | null; email: string | null; avatarColor: string | null }[];
 };
 
@@ -28,6 +29,7 @@ const QUICK_NAV: Item[] = [
   { key: "nav-home", group: "Go to", label: "Home", href: "/home/my-work" },
   { key: "nav-inbox", group: "Go to", label: "Inbox", href: "/home/inbox" },
   { key: "nav-docs", group: "Go to", label: "Docs", href: "/home/docs" },
+  { key: "nav-whiteboards", group: "Go to", label: "Whiteboards", href: "/home/whiteboards" },
   { key: "nav-teams", group: "Go to", label: "Teams", href: "/home/teams" },
   { key: "nav-dashboard", group: "Go to", label: "Dashboard", href: "/home/dashboard" },
 ];
@@ -94,6 +96,12 @@ function CommandPalette() {
         label: `${d.icon ?? "📄"} ${d.title.trim() || "Untitled"}`,
         href: `/home/docs/${d.id}`,
       })),
+      ...(results.whiteboards ?? []).map((w) => ({
+        key: `w-${w.id}`,
+        group: "Whiteboards",
+        label: w.title.trim() || "Untitled whiteboard",
+        href: `/home/whiteboards/${w.id}`,
+      })),
       ...results.members.map((m) => ({
         key: `m-${m.id}`,
         group: "Members",
@@ -149,7 +157,7 @@ function CommandPalette() {
               setQuery(e.target.value);
               setActive(0);
             }}
-            placeholder="Search tasks, lists, docs, people..."
+            placeholder="Search tasks, lists, docs, boards, people..."
             aria-label="Search"
             className="w-full border-b border-neutral-300 bg-transparent px-4 py-3 text-sm outline-none dark:border-neutral-700"
           />

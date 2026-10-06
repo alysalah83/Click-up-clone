@@ -13,3 +13,4 @@ export * from "./automation.js";
 export * from "./savedView.js";
 export * from "./timeEntry.js";
 export * from "./doc.js";
+export * from "./whiteboard.js";

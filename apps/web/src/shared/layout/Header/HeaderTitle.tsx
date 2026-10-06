@@ -25,7 +25,7 @@ function HeaderTitle() {
 
   let title = "List";
   if (pathname.startsWith("/home/dashboard")) title = "Dashboard";
-  else if (pathname.startsWith("/home/whiteboard")) title = "Whiteboard";
+  else if (pathname.startsWith("/home/whiteboard")) title = "Whiteboards";
   else if (pathname.startsWith("/home/teams")) title = "Teams";
   else if (pathname.startsWith("/home/my-work")) title = "My Work";
   else if (pathname.startsWith("/home/inbox")) title = "Inbox";
