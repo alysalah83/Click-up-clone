@@ -13,6 +13,11 @@ describe("guest pool", () => {
       where: { userId: user.id, endDate: { not: null } },
       select: { id: true, endDate: true, createdAt: true },
     });
+    const sprintBefore = await prisma.list.findUniqueOrThrow({ where: { id: landingListId } });
+    const doneBefore = await prisma.task.findFirstOrThrow({
+      where: { userId: user.id, completedAt: { not: null } },
+      select: { id: true, completedAt: true },
+    });
 
     const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
     expect(claimed).toEqual({ id: user.id, landingListId });
@@ -24,6 +29,15 @@ describe("guest pool", () => {
     const shift = after.createdAt.getTime() - before.createdAt.getTime();
     expect(shift).toBeGreaterThan(3 * DAY - 60_000);
     expect(shift).toBeLessThan(3 * DAY + 60_000);
+
+    // Sprint dates move by whole days, completion times exactly.
+    const sprintAfter = await prisma.list.findUniqueOrThrow({ where: { id: landingListId } });
+    expect(sprintAfter.sprintStart!.getTime() - sprintBefore.sprintStart!.getTime()).toBe(3 * DAY);
+    expect(sprintAfter.sprintEnd!.getTime() - sprintBefore.sprintEnd!.getTime()).toBe(3 * DAY);
+    const doneAfter = await prisma.task.findUniqueOrThrow({ where: { id: doneBefore.id } });
+    const doneShift = doneAfter.completedAt!.getTime() - doneBefore.completedAt!.getTime();
+    expect(doneShift).toBeGreaterThan(3 * DAY - 60_000);
+    expect(doneShift).toBeLessThan(3 * DAY + 60_000);
   });
 
   it("refills the pool up to the target size", async () => {

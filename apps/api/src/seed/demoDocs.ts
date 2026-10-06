@@ -54,7 +54,7 @@ const DEMO_DOCS: DemoDoc[] = [
       ),
       h(3, "Risks"),
       ol("Data migration for existing workspaces", "Mobile layout still needs a polish pass", "Only one engineer on automations"),
-      p("Questions or blockers go into the Sprint Board list so they are visible to everyone."),
+      p("Questions or blockers go into the active sprint list so they are visible to everyone."),
     ),
   },
   {

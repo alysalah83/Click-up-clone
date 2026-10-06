@@ -73,6 +73,8 @@ export const ACTIVITY_TYPES = [
   "automation",
   "recurred",
   "time_logged",
+  "points",
+  "sprint_carried",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 

@@ -11,6 +11,7 @@ import type { TaskDetail } from "@/features/taskDetail/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Menu, MenuContent, MenuTrigger } from "@/shared/ui/Menu/MenuCompound";
 import RepeatField from "./RepeatField";
+import PointsPicker from "@/features/sprint/components/PointsPicker";
 import DateUpdater from "../DateUpdater";
 import PriorityUpdater from "../PriorityUpdater";
 import { TASK_PRIORITIES_LIST } from "../../constants/tasks.const";
@@ -135,6 +136,19 @@ function PropertiesGrid({ task }: { task: TaskDetail }) {
             <PriorityUpdater />
           </MenuContent>
         </Menu>
+      </Property>
+
+      <Property
+        label="Sprint points"
+        icon={
+          <svg aria-hidden viewBox="0 0 12 12" className={`${iconClass} fill-none stroke-current`}>
+            <path d="M6 0.75 11 3.4v5.2L6 11.25 1 8.6V3.4z" strokeWidth="1.2" />
+          </svg>
+        }
+      >
+        <PointsPicker taskId={task.id} points={task.points} className={valueButton}>
+          {task.points != null ? `${task.points} point${task.points === 1 ? "" : "s"}` : "Empty"}
+        </PointsPicker>
       </Property>
 
       <Property label="Repeat" icon={<Repeat className={iconClass} />}>

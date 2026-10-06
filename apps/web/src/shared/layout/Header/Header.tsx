@@ -14,6 +14,7 @@ import ThemeButton from "./ThemeButton";
 import HeaderFeatures from "./HeaderFeatures";
 import NavButtons from "./NavButtons";
 import HeaderTitle from "./HeaderTitle";
+import SprintBar from "@/features/sprint/components/SprintBar";
 import { usePathname } from "next/navigation";
 
 function Header({
@@ -63,6 +64,7 @@ function Header({
           <UserLogo userPromise={userPromise} />
         </div>
       </div>
+      {showViewTabs && <SprintBar />}
       {showViewTabs && (
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <NavButtons latestListIdPromise={latestListIdPromise} />

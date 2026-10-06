@@ -12,6 +12,7 @@ import { shouldOpenTaskDetail } from "../../lib/shouldOpenTaskDetail";
 import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 import { containerGridClasses, slotBorderClasses, slotHoverClasses } from "./table.styles";
+import PointsPicker from "@/features/sprint/components/PointsPicker";
 
 function Row({ task, sortNum }: { task: Task; sortNum: number }) {
   const { id, priority, status, endDate, startDate, createdAt } = task;
@@ -50,6 +51,9 @@ function Row({ task, sortNum }: { task: Task; sortNum: number }) {
       <TaskStatusSlot status={status} />
       <TaskDateSlot startDate={startDate} endDate={endDate} />
       <TableSlotPriority priority={priority} />
+      <div className={`col-span-2 flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
+        <PointsPicker taskId={id} points={task.points} className="h-full w-full" />
+      </div>
       <TaskCreatedAtSlot createdAt={createdAt} />
     </main>
   );

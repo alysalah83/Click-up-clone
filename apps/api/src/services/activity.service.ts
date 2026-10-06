@@ -49,6 +49,7 @@ type TaskSnapshot = {
   priority: string;
   startDate: Date | null;
   endDate: Date | null;
+  points?: number | null;
   status: { id: string; name: string };
 };
 
@@ -65,6 +66,7 @@ export function diffTaskActivity(
     priority?: string;
     startDate?: Date | null;
     endDate?: Date | null;
+    points?: number | null;
   },
   nextStatusName?: string,
 ): ActivityRow[] {
@@ -87,6 +89,15 @@ export function diffTaskActivity(
       ...base,
       type: "priority",
       data: { from: before.priority, to: changes.priority },
+    });
+  if (changes.points !== undefined && changes.points !== (before.points ?? null))
+    rows.push({
+      ...base,
+      type: "points",
+      data: {
+        from: before.points == null ? null : String(before.points),
+        to: changes.points === null ? null : String(changes.points),
+      },
     });
 
   const startChanged =

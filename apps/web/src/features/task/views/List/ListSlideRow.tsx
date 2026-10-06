@@ -20,6 +20,7 @@ import { ColorsToken } from "@/shared/ui/ColorPicker/types";
 import { shouldOpenTaskDetail } from "../../lib/shouldOpenTaskDetail";
 import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
+import PointsPicker from "@/features/sprint/components/PointsPicker";
 
 function ListSlideRow() {
   const { task, isTempTask, isRenameOpen } = useTask();
@@ -49,7 +50,7 @@ function ListSlideRow() {
       }}
       className={`cursor-pointer grid grid-cols-21 ${listRowBorder} ${isTempTask ? "pointer-events-none opacity-60" : ""} text-base font-medium text-neutral-300 ${listBgHoverGradient}`}
     >
-      <div className="col-span-10 flex items-center gap-2 p-2">
+      <div className="col-span-8 flex items-center gap-2 p-2">
         <Icon className={`${iconColorClass} size-4 shrink-0`} />
         <span className="line-clamp-1 truncate">{name}</span>
         {recurrenceType && recurrenceType !== "none" && (
@@ -65,6 +66,9 @@ function ListSlideRow() {
       <ListSlotDueDate />
       <ListSlotPriority />
       <ListSlotStatus />
+      <div className={`col-span-2 flex items-center px-2 py-1 ${listSlotHover}`}>
+        <PointsPicker taskId={id} points={task.points} />
+      </div>
     </div>
   );
 }

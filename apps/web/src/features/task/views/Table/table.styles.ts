@@ -1,4 +1,4 @@
-const containerGridClasses = "grid grid-cols-19";
+const containerGridClasses = "grid grid-cols-21";
 const slotBorderClasses = "border-r border-neutral-300 dark:border-neutral-700";
 const slotPadding = "p-2";
 const headerSlotHoverClasses =
