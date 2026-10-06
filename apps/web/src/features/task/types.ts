@@ -59,6 +59,9 @@ type Task = {
   checklistDone?: number;
   recurrenceType?: RecurrenceType;
   recurrenceInterval?: number;
+  /** Sprint points (null = not estimated). */
+  points?: number | null;
+  completedAt?: Date | string | null;
 };
 
 interface TaskTag {

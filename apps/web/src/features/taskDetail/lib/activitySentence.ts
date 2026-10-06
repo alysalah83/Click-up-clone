@@ -69,6 +69,12 @@ export function activitySentence({
       return [plain("completed this task and scheduled the next occurrence")];
     case "time_logged":
       return [plain("tracked "), strong(formatDuration(Number(data.durationSec ?? 0)))];
+    case "points":
+      if (!data.to) return [plain("removed the sprint points")];
+      if (!data.from) return [plain("set sprint points to "), strong(data.to)];
+      return [plain("changed sprint points from "), strong(data.from), plain(" to "), strong(data.to)];
+    case "sprint_carried":
+      return [plain("carried this task over from "), strong(data.from), plain(" to "), strong(data.to)];
     default:
       return [plain("updated this task")];
   }

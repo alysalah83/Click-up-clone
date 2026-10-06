@@ -6,6 +6,7 @@ import {
   type UpdateAutomationInput,
 } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
+import { syncCompletedAt } from "./completion.service.js";
 import { NotFoundError, ValidationError } from "../lib/errors/index.js";
 import { assertCanAccess } from "./access.service.js";
 import { logActivity, type ActivityRow } from "./activity.service.js";
@@ -158,6 +159,7 @@ async function runAction(
       const valid = await prisma.status.count({ where: { id: action.statusId, listId: task.listId } });
       if (!valid) return false;
       await prisma.task.update({ where: { id: task.id }, data: { statusId: action.statusId } });
+      await syncCompletedAt([task.id]);
       return true;
     }
   }

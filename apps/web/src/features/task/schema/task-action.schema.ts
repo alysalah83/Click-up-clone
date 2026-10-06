@@ -25,6 +25,7 @@ const updateTaskSchema = z.object({
   endDate: z.date().nullable().optional(),
   recurrenceType: z.enum(["none", "daily", "weekly", "monthly", "custom"]).optional(),
   recurrenceInterval: z.number().int().min(1).max(365).optional(),
+  points: z.number().int().min(0).max(999).nullable().optional(),
 });
 
 export { createTaskSchema, updateTaskSchema };

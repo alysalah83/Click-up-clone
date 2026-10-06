@@ -114,6 +114,7 @@ export async function spawnNextOccurrence(actorId: string, taskId: string): Prom
           listId: task.listId,
           statusId: openStatus.id,
           priority: task.priority,
+          points: task.points,
           parentTaskId: task.parentTaskId,
           ...(task.description !== null && { description: task.description as Prisma.InputJsonValue }),
           ...dates,

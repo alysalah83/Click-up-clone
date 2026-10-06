@@ -4,6 +4,8 @@ import { skipToken, useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { LIST_ID_RESERVED_ROUTES } from "@/shared/constants/layout";
 import { List } from "@/features/list/types";
+import { isSprintList, sprintRange } from "@/features/sprint/lib";
+import SprintStateBadge from "@/features/sprint/components/SprintStateBadge";
 
 /**
  * Title derived from the route. For a list page it reads the `["list", listId]`
@@ -32,6 +34,19 @@ function HeaderTitle() {
   else if (pathname.startsWith("/home/docs")) title = "Docs";
   else if (pathname === "/home/lists") title = "Lists Overview";
   else if (isListPage && list?.name) title = list.name;
+
+  if (isListPage && isSprintList(list))
+    return (
+      <div className="flex min-w-0 items-center gap-2">
+        <h4 className="truncate text-sm font-bold capitalize">
+          {title}
+          <span className="ml-1.5 font-medium text-neutral-500 normal-case">
+            · {sprintRange(list.sprintStart, list.sprintEnd)}
+          </span>
+        </h4>
+        {list.sprintState && <SprintStateBadge state={list.sprintState} />}
+      </div>
+    );
 
   return <h4 className="truncate text-sm font-bold capitalize">{title}</h4>;
 }

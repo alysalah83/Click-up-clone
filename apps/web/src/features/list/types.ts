@@ -1,6 +1,8 @@
 import z from "zod";
 import { createListSchema, updateListSchema } from "./schema/list.schema";
 
+type SprintState = "planned" | "active" | "completed";
+
 interface List {
   name: string;
   id: string;
@@ -8,6 +10,11 @@ interface List {
   updatedAt: Date;
   workspaceId: string;
   userId: string;
+  /** Sprint fields: set on sprint lists, null (or missing while the API lags) on plain lists. */
+  sprintNumber?: number | null;
+  sprintStart?: string | Date | null;
+  sprintEnd?: string | Date | null;
+  sprintState?: SprintState | null;
 }
 
 type CreateListInput = z.infer<typeof createListSchema>;
@@ -41,6 +48,7 @@ type ListWithCounts = List & {
 };
 
 export type {
+  SprintState,
   CreateListInput,
   UpdateListInput,
   ListWithStatuses,

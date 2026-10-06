@@ -107,6 +107,14 @@ model List {
   status      Status[]
   automations Automation[]
   savedViews  SavedView[]
+  /// Set on sprint lists (null = a regular list). Dates are calendar days at 12:00 UTC.
+  sprintNumber Int?
+  sprintStart  DateTime?
+  sprintEnd    DateTime?
+  sprintState  SprintState?
+  /// Snapshots taken when the sprint is completed (for velocity): all points vs done points.
+  sprintCommittedPoints Int?
+  sprintCompletedPoints Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -115,6 +123,12 @@ model List {
 
   @@index([workspaceId])
   @@index([userId])
+}
+
+enum SprintState {
+  planned
+  active
+  completed
 }
 
 enum Priority {
@@ -188,6 +202,10 @@ model Task {
   recurrenceType     RecurrenceType @default(none)
   recurrenceInterval Int            @default(1)
   timeEntries        TimeEntry[]
+  /// Sprint points (1, 2, 3, 5, 8, 13...).
+  points             Int?
+  /// When the task last entered a done-type status (null while not done).
+  completedAt        DateTime?
 
   status     Status @relation(fields: [statusId], references: [id], onDelete: NoAction)
   user       User   @relation(fields: [userId], references: [id])

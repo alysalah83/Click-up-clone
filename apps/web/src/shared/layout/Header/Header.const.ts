@@ -1,3 +1,11 @@
+/** Extra tab on sprint lists: the burndown and velocity report. */
+export const SPRINT_TAB = {
+  icon: "dashboard",
+  iconBgColor: "bg-violet-500",
+  href: "/sprint",
+  label: "Sprint report",
+} as const;
+
 export const HEADER_MENU = [
   {
     icon: "board",

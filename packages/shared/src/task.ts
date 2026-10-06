@@ -8,6 +8,10 @@ export const recurrenceTypeSchema = z.enum(RECURRENCE_TYPES);
 /** "custom" repeats every N days. */
 export const recurrenceIntervalSchema = z.number().int().min(1).max(365);
 
+/** Sprint points; the picker offers 1, 2, 3, 5, 8, 13 but any small integer is accepted. */
+export const SPRINT_POINTS = [1, 2, 3, 5, 8, 13] as const;
+export const taskPointsSchema = z.number().int().min(0).max(999).nullable();
+
 export const taskNameSchema = z.string().trim().min(1).max(128);
 
 /** Fields a client may set when creating a task (without placement). */
@@ -16,6 +20,7 @@ export const taskFieldsSchema = z.object({
   priority: prioritySchema.default("none"),
   startDate: optionalDateSchema,
   endDate: optionalDateSchema,
+  points: taskPointsSchema.optional(),
 });
 
 export const createTaskSchema = taskFieldsSchema.extend({ listId: idSchema, statusId: idSchema });
@@ -28,6 +33,7 @@ export const updateTaskSchema = z.object({
   endDate: optionalDateSchema,
   recurrenceType: recurrenceTypeSchema.optional(),
   recurrenceInterval: recurrenceIntervalSchema.optional(),
+  points: taskPointsSchema.optional(),
 });
 
 export const bulkUpdateTasksSchema = z.object({

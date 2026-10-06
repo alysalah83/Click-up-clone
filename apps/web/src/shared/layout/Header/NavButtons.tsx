@@ -1,5 +1,7 @@
 import { ButtonWithIconLabel } from "@/shared/ui/Button";
-import { HEADER_MENU } from "./Header.const";
+import { HEADER_MENU, SPRINT_TAB } from "./Header.const";
+import { useCurrentList } from "@/features/sprint/components/SprintBar";
+import { isSprintList } from "@/features/sprint/lib";
 import { usePathname } from "next/navigation";
 import { List } from "@/features/list/types";
 import { useCallback, useEffect, useRef } from "react";
@@ -12,8 +14,11 @@ function NavButtons({
   const pathname = usePathname();
   const itemRefs = useRef<HTMLAnchorElement[]>([]);
   const pillRef = useRef<HTMLSpanElement>(null);
+  // Sprint lists get a "Sprint report" tab before "Lists Overview".
+  const isSprint = isSprintList(useCurrentList());
+  const items = isSprint ? [...HEADER_MENU.slice(0, -1), SPRINT_TAB, ...HEADER_MENU.slice(-1)] : [...HEADER_MENU];
 
-  const activeItemIndex = HEADER_MENU.findIndex((item) =>
+  const activeItemIndex = items.findIndex((item) =>
     pathname.endsWith(item.href),
   );
 
@@ -46,7 +51,7 @@ function NavButtons({
         ref={pillRef}
         className="absolute top-0 bg-neutral-600/40 transition-all duration-300"
       />
-      {HEADER_MENU.map((item, index) => (
+      {items.map((item, index) => (
         <ButtonWithIconLabel
           key={item.href}
           ref={(el) => {

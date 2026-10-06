@@ -15,7 +15,9 @@ type ActivityType =
   | "tag_added"
   | "automation"
   | "recurred"
-  | "time_logged";
+  | "time_logged"
+  | "points"
+  | "sprint_carried";
 
 interface ChecklistItem {
   id: string;

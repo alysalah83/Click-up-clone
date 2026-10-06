@@ -11,6 +11,8 @@ import RowAddNew from "@/shared/components/RowAddNew";
 import CreateListForm from "@/features/list/components/CreateListForm";
 import DocsTree from "@/features/docs/components/DocsTree";
 import WhiteboardsTree from "@/features/whiteboard/components/WhiteboardsTree";
+import SprintsTree from "@/features/sprint/components/SprintsTree";
+import { splitSprintLists } from "@/features/sprint/lib";
 
 interface SpaceItemProps {
   workspace: Workspace;
@@ -18,7 +20,9 @@ interface SpaceItemProps {
 }
 
 function SpaceItem({ workspace, lists }: SpaceItemProps) {
-  const haveLists = (lists?.length ?? 0) > 0; // API may lag web during deploy
+  // Sprint lists go into the space's "Sprints" folder; the rest stay plain lists.
+  const { sprints, others } = splitSprintLists(lists ?? []); // API may lag web during deploy
+  const haveLists = others.length > 0;
 
   return (
     <li className="flex flex-col gap-2">
@@ -32,7 +36,7 @@ function SpaceItem({ workspace, lists }: SpaceItemProps) {
 
       <menu className="ml-auto flex w-[92%] flex-col gap-2 border-l border-neutral-300 pl-3 dark:border-neutral-700">
         {haveLists &&
-          lists?.map((list) => (
+          others.map((list) => (
             <ListProvider workspaceId={workspace.id} list={list} key={list.id}>
               <ListItem list={list} />
             </ListProvider>
@@ -46,6 +50,7 @@ function SpaceItem({ workspace, lists }: SpaceItemProps) {
           </ModalContent>
         </Modal>
       </menu>
+      <SprintsTree workspaceId={workspace.id} sprints={sprints} />
       <DocsTree workspaceId={workspace.id} />
       <WhiteboardsTree workspaceId={workspace.id} />
     </li>

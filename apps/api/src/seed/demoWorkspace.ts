@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Priority, RecurrenceType, StatusType } from "@clickup/shared";
+import type { Priority, RecurrenceType, SprintState, StatusType } from "@clickup/shared";
 import { HIGHEST_ORDER } from "../consts/status.const.js";
 
 /**
@@ -31,11 +31,17 @@ export interface DemoTask {
   start?: number;
   /** Day offset of the due (end) date. No `due` means an undated task. */
   due?: number;
+  /** Sprint points. */
+  points?: number;
+  /** Fractional day offset of the completion time (done tasks); defaults to a recent time. */
+  doneAt?: number;
 }
 
 export interface DemoList {
   key: string;
   name: string;
+  /** Makes the list a sprint: number, start/end day offsets (inclusive) and state. */
+  sprint?: { number: number; start: number; end: number; state: SprintState };
   statuses: DemoStatus[];
   tasks: DemoTask[];
 }
@@ -101,16 +107,28 @@ const tasksFor =
 
 const sprint = tasksFor("sprint");
 
+/** The sprint lists share one status set (so carried tasks keep their status by name). */
+const sprintStatuses = (prefix: string) =>
+  statusSet(prefix, ["to do", "neutral"], ["in progress", "violet"], ["in review", "TiEye", "amber"], ["done", "emerald"]);
+
+/** Points of the active sprint's tasks, and when its done tasks were completed (day offsets). */
+const SPRINT_14_POINTS: Record<string, number> = {
+  sso: 3, "onboarding-checklist": 2, "api-rate-limit": 3, "csv-export": 2, "dark-mode-charts": 1,
+  "billing-webhooks": 3, "search-index": 3, "notification-prefs": 1, "recurring-tasks": 2,
+  "board-virtualization": 3, "audit-log": 2, "mobile-nav": 2, "release-notes": 1, "flaky-e2e": 1,
+  "design-tokens": 3, "node-upgrade": 5, "feature-flags": 5, "error-tracking": 2, "welcome-emails": 3,
+  "bulk-edit": 5, "invite-modal": 1, "shortcuts-sheet": 1, retro: 1, "i18n-strings": 3,
+};
+const SPRINT_14_DONE_AT: Record<string, number> = {
+  "design-tokens": -5.3, "node-upgrade": -4.6, "feature-flags": -3.5, "error-tracking": -2.7,
+  "welcome-emails": -1.8, "bulk-edit": -1.2, "i18n-strings": -0.3,
+};
+
 const SPRINT_BOARD: DemoList = {
   key: "sprint",
-  name: "Sprint Board",
-  statuses: statusSet(
-    "sprint",
-    ["to do", "neutral"],
-    ["in progress", "violet"],
-    ["in review", "TiEye", "amber"],
-    ["done", "emerald"],
-  ),
+  name: "Sprint 14",
+  sprint: { number: 14, start: -6, end: 7, state: "active" },
+  statuses: sprintStatuses("sprint"),
   tasks: [
     sprint("sso", "Add Google SSO to the login page", "active", "high", 2, -3),
     sprint("onboarding-checklist", "Build onboarding checklist for new workspaces", "open", "normal", 5, 3),
@@ -136,8 +154,106 @@ const SPRINT_BOARD: DemoList = {
     sprint("shortcuts-sheet", "Keyboard shortcuts cheat sheet", "open", "none"),
     sprint("retro", "Sprint 14 retrospective", "open", "normal", 6),
     sprint("i18n-strings", "Extract UI strings for translation", "done", "none"),
+  ].map((t) => {
+    const key = t.key.slice("sprint.".length);
+    return { ...t, points: SPRINT_14_POINTS[key], doneAt: SPRINT_14_DONE_AT[key] };
+  }),
+};
+
+/** Sprint history task: done (with points and a completion day offset) or open. */
+const sprintTask =
+  (prefix: string) =>
+  (key: string, name: string, points: number, doneAt?: number, priority: Priority = "normal"): DemoTask => ({
+    key: `${prefix}.${key}`,
+    name,
+    status: `${prefix}.${doneAt === undefined ? "open" : "done"}`,
+    priority,
+    points,
+    doneAt,
+    ...(doneAt !== undefined && { due: Math.ceil(doneAt), start: Math.ceil(doneAt) - 2 }),
+  });
+
+const s11 = sprintTask("sprint11");
+const SPRINT_11: DemoList = {
+  key: "sprint11",
+  name: "Sprint 11",
+  sprint: { number: 11, start: -48, end: -35, state: "completed" },
+  statuses: sprintStatuses("sprint11"),
+  tasks: [
+    s11("color-tokens", "Design system: color tokens", 5, -46.3, "high"),
+    s11("swimlanes", "Kanban swimlanes spike", 3, -44.1, "low"),
+    s11("invite-flow", "Invite flow for new teammates", 8, -42.0, "high"),
+    s11("avatar-colors", "Avatar colors for teammates", 2, -38.8),
+    s11("rich-text", "Rich text editor for task descriptions", 8, -39.5, "urgent"),
+    s11("csv-import", "Fix CSV import encoding", 2, -37.4),
+    s11("retro", "Sprint 11 retrospective", 1, -35.2, "none"),
   ],
 };
+
+const s12 = sprintTask("sprint12");
+const SPRINT_12: DemoList = {
+  key: "sprint12",
+  name: "Sprint 12",
+  sprint: { number: 12, start: -34, end: -21, state: "completed" },
+  statuses: sprintStatuses("sprint12"),
+  tasks: [
+    s12("public-api", "Public API v1: task endpoints", 8, -32.5, "high"),
+    s12("webhooks", "Webhooks for task events", 5, -30.1, "high"),
+    s12("two-factor", "Two-factor authentication", 5, -28.4, "urgent"),
+    s12("gantt", "Gantt chart prototype", 8, -26.2),
+    s12("reactions", "Comment reactions", 3, -24.6, "low"),
+    s12("flaky-login", "Fix flaky login test", 3, -22.0),
+    s12("digest", "Email digest of unread notifications", 3, -23.3),
+    s12("retro", "Sprint 12 retrospective", 1, -21.2, "none"),
+  ],
+};
+
+const s13 = sprintTask("sprint13");
+const SPRINT_13: DemoList = {
+  key: "sprint13",
+  name: "Sprint 13",
+  sprint: { number: 13, start: -20, end: -7, state: "completed" },
+  statuses: sprintStatuses("sprint13"),
+  tasks: [
+    s13("session-store", "Migrate auth to the new session store", 5, -18.4, "high"),
+    s13("activity-pagination", "Paginate the activity feed", 3, -17.2),
+    s13("timezone-reminders", "Fix timezone bug in recurring reminders", 2, -16.0, "high"),
+    s13("metering", "Usage-based billing: metering events", 8, -14.5, "urgent"),
+    s13("templates", "Workspace templates gallery", 5, -12.3),
+    s13("tooltips", "Onboarding tooltips for the board view", 3, -10.6, "low"),
+    s13("list-perf", "Improve list view load time", 3, -9.4, "high"),
+    s13("a11y-modals", "Accessibility pass on modals", 2, -8.2),
+    s13("retro", "Sprint 13 retrospective", 1, -7.1, "none"),
+  ],
+};
+
+const s15 = sprintTask("sprint15");
+const SPRINT_15: DemoList = {
+  key: "sprint15",
+  name: "Sprint 15",
+  sprint: { number: 15, start: 8, end: 21, state: "planned" },
+  statuses: sprintStatuses("sprint15"),
+  tasks: [
+    s15("saml", "SAML SSO for enterprise workspaces", 8, undefined, "high"),
+    s15("calendar-drag", "Drag to reschedule in the calendar", 5),
+    s15("roadmap", "Public roadmap page", 3, undefined, "low"),
+    s15("digest-settings", "Notification digest settings", 3),
+    s15("archive-lists", "Archive completed lists", 2, undefined, "low"),
+  ],
+};
+
+/**
+ * Unfinished tasks carried from one sprint into the next ([task, from sprint list]). The tasks
+ * live in the later sprint; the history keeps the earlier sprints' burndown and velocity honest.
+ */
+export const DEMO_SPRINT_CARRIES: [task: string, fromList: string][] = [
+  ["sprint12.webhooks", "sprint11"],
+  ["sprint13.timezone-reminders", "sprint12"],
+  ["sprint13.a11y-modals", "sprint12"],
+  ["sprint.billing-webhooks", "sprint13"],
+  ["sprint.api-rate-limit", "sprint13"],
+  ["sprint.node-upgrade", "sprint13"],
+];
 
 
 const bug = tasksFor("bugs");
@@ -253,7 +369,7 @@ export const DEMO_TEMPLATE: DemoTemplate = {
       key: "product",
       name: "Product",
       avatar: { icon: "TiLightbulb", color: "violet" },
-      lists: [SPRINT_BOARD, BUG_TRACKER],
+      lists: [SPRINT_11, SPRINT_12, SPRINT_13, SPRINT_BOARD, SPRINT_15, BUG_TRACKER],
     },
     {
       key: "marketing",
@@ -272,7 +388,19 @@ const DAY = 24 * 60 * MINUTE;
 export interface DemoRows {
   avatars: { id: string; icon: string; color: string }[];
   workspaces: { id: string; name: string; userId: string; avatarId: string; createdAt: Date }[];
-  lists: { id: string; name: string; userId: string; workspaceId: string; createdAt: Date }[];
+  lists: {
+    id: string;
+    name: string;
+    userId: string;
+    workspaceId: string;
+    createdAt: Date;
+    sprintNumber?: number;
+    sprintStart?: Date;
+    sprintEnd?: Date;
+    sprintState?: SprintState;
+    sprintCommittedPoints?: number;
+    sprintCompletedPoints?: number;
+  }[];
   statuses: (Omit<DemoStatus, "key"> & { id: string; userId: string; listId: string; createdAt: Date })[];
   tasks: {
     id: string;
@@ -287,6 +415,8 @@ export interface DemoRows {
     updatedAt: Date;
     recurrenceType?: RecurrenceType;
     recurrenceInterval?: number;
+    points?: number | null;
+    completedAt?: Date | null;
   }[];
   landingListId: string;
   /** Template key -> generated id, for every space, list, status and task. */
@@ -337,7 +467,19 @@ export function buildDemoWorkspace(
     for (const list of space.lists) {
       const listId = idFor(list.key);
       const listCreatedAt = monthAgo + minute++ * MINUTE;
-      rows.lists.push({ id: listId, name: list.name, userId, workspaceId, createdAt: new Date(listCreatedAt) });
+      rows.lists.push({
+        id: listId,
+        name: list.name,
+        userId,
+        workspaceId,
+        createdAt: new Date(listCreatedAt),
+        ...(list.sprint && {
+          sprintNumber: list.sprint.number,
+          sprintStart: noonUtc(now, list.sprint.start),
+          sprintEnd: noonUtc(now, list.sprint.end),
+          sprintState: list.sprint.state,
+        }),
+      });
 
       list.statuses.forEach(({ key, ...status }, i) => {
         rows.statuses.push({
@@ -356,12 +498,20 @@ export function buildDemoWorkspace(
         const start = t.due === undefined ? undefined : (t.start ?? t.due);
         // Created a few days before its start (or before today), never in the future.
         const createdDaysAgo = Math.min(Math.max(0, -(start ?? 0)) + 2 + (taskIndex % 6), 29);
-        const createdAt = new Date(now.getTime() - createdDaysAgo * DAY - (taskIndex % 7) * 37 * MINUTE);
-        // No completion timestamp exists: done tasks get a plausible `updatedAt` in the last ~10 days.
+        let createdAt = new Date(now.getTime() - createdDaysAgo * DAY - (taskIndex % 7) * 37 * MINUTE);
+        // Tasks of older sprints were created a couple of days before they were completed.
+        if (t.doneAt !== undefined && createdAt.getTime() > now.getTime() + (t.doneAt - 2) * DAY)
+          createdAt = new Date(now.getTime() + (t.doneAt - 2 - (taskIndex % 3)) * DAY);
+        // Done tasks get a completion time: the template's, else a plausible one in the last ~10 days.
         const isDone = list.statuses.find((s) => s.key === t.status)?.type === "done";
         const doneAt = Math.min(
           now.getTime(),
-          Math.max(createdAt.getTime() + 6 * 60 * MINUTE, now.getTime() - (taskIndex % 10) * DAY - 3 * 60 * MINUTE),
+          Math.max(
+            createdAt.getTime() + 6 * 60 * MINUTE,
+            t.doneAt !== undefined
+              ? Math.round(now.getTime() + t.doneAt * DAY)
+              : now.getTime() - (taskIndex % 10) * DAY - 3 * 60 * MINUTE,
+          ),
         );
         rows.tasks.push({
           id: idFor(t.key),
@@ -374,6 +524,8 @@ export function buildDemoWorkspace(
           endDate: t.due === undefined ? null : noonUtc(now, t.due),
           createdAt,
           updatedAt: isDone ? new Date(doneAt) : createdAt,
+          points: t.points ?? null,
+          completedAt: isDone ? new Date(doneAt) : null,
         });
         taskIndex++;
       }

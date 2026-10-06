@@ -39,7 +39,7 @@ export async function deleteStatus(userId: string, id: string) {
     });
     if (!fallback) throw new AppError("List has no open status to move tasks into", 500);
 
-    const moved = await tx.task.updateMany({ where: { statusId: id }, data: { statusId: fallback.id } });
+    const moved = await tx.task.updateMany({ where: { statusId: id }, data: { statusId: fallback.id, completedAt: null } });
     const deleted = await tx.status.delete({ where: { id } });
     return { ...deleted, movedTasksCount: moved.count };
   });

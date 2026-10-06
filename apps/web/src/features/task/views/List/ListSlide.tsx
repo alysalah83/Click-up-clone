@@ -42,7 +42,7 @@ function ListSlide({
             className={`grid cursor-default grid-cols-21 ${listRowBorder} text-sm font-medium text-neutral-600`}
           >
             <div
-              className={`col-span-10 flex items-center p-2 ${listBgHoverGradient}`}
+              className={`col-span-8 flex items-center p-2 ${listBgHoverGradient}`}
             >
               <span>Name</span>
             </div>
@@ -67,6 +67,11 @@ function ListSlide({
               className={`col-span-3 flex items-center p-2 ${listBgHoverGradient}`}
             >
               <span>Status</span>
+            </div>
+            <div
+              className={`col-span-2 flex items-center p-2 ${listBgHoverGradient}`}
+            >
+              <span>Points</span>
             </div>
           </header>
           <section>

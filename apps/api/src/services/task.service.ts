@@ -20,6 +20,7 @@ import {
   type ActivityRow,
 } from "./activity.service.js";
 import { runAutomations } from "./automation.service.js";
+import { syncCompletedAt } from "./completion.service.js";
 import { spawnNextOccurrence } from "./recurrence.service.js";
 import { notifyAssigned, notifyTaskChanges } from "./notification.service.js";
 
@@ -32,6 +33,7 @@ const snapshotSelect = {
   priority: true,
   startDate: true,
   endDate: true,
+  points: true,
   listId: true,
   status: { select: { id: true, name: true } },
 } as const;
@@ -53,6 +55,7 @@ export async function createTask(userId: string, input: CreateTaskInput) {
     include: taskInclude,
   });
   await logActivity([{ taskId: task.id, actorId: userId, type: "created" }]);
+  if (task.status.type === "done") await syncCompletedAt([task.id]);
   await runAutomations(userId, { type: "task_created", taskId: task.id });
   return toTaskDto(
     (await prisma.task.findUnique({ where: { id: task.id }, include: taskInclude })) ?? task,
@@ -141,6 +144,7 @@ export async function updateTask(
   await logActivity(rows);
   await notifyTaskChanges(userId, [{ id, name: updated.name }], rows);
   if (rows.some((r) => r.type === "status")) {
+    await syncCompletedAt([id]);
     if (updated.status.type === "done") await spawnNextOccurrence(userId, id);
     await runAutomations(userId, { type: "status_changed", taskId: id, statusId: updated.statusId });
     return toTaskDto(
@@ -176,6 +180,7 @@ export async function updateTasks(
   );
   await logActivity(rows);
   await notifyTaskChanges(userId, tasks, rows);
+  if (updatedFields.statusId) await syncCompletedAt(ids);
   const movedToDone = updatedFields.statusId
     ? (
         await prisma.status.findUnique({

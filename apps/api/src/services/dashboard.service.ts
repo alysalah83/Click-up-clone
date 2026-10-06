@@ -5,10 +5,19 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const BURNDOWN_DAYS = 14;
 
 /**
- * Tasks have no completion timestamp: a done task counts as completed at its latest
- * status-change activity into its current status, else at its `updatedAt`.
+ * When each done task was completed: its `completedAt`, else (tasks done before that column
+ * existed) its latest status-change activity into its current status, else its `updatedAt`.
  */
-async function completionTimes(tasks: { id: string; updatedAt: Date; status: { name: string } }[]) {
+async function completionTimes(
+  tasks: { id: string; updatedAt: Date; completedAt: Date | null; status: { name: string } }[],
+) {
+  const stamped = new Map(tasks.flatMap((t) => (t.completedAt ? [[t.id, t.completedAt] as const] : [])));
+  const legacy = tasks.filter((t) => !t.completedAt);
+  if (legacy.length === 0) return stamped;
+  return new Map([...(await legacyCompletionTimes(legacy)), ...stamped]);
+}
+
+async function legacyCompletionTimes(tasks: { id: string; updatedAt: Date; status: { name: string } }[]) {
   const activities = tasks.length
     ? await prisma.activity.findMany({
         where: { taskId: { in: tasks.map((t) => t.id) }, type: "status" },
@@ -64,6 +73,7 @@ export async function summary(userId: string, now = new Date()) {
       id: true,
       endDate: true,
       updatedAt: true,
+      completedAt: true,
       status: { select: { name: true, type: true } },
       assignees: { select: { user: { select: { id: true, name: true, email: true } } } },
     },
@@ -107,7 +117,7 @@ export async function burndown(userId: string, listId: string, now = new Date())
   await assertCanAccess(userId, { listId });
   const tasks = await prisma.task.findMany({
     where: { listId, parentTaskId: null },
-    select: { id: true, createdAt: true, updatedAt: true, status: { select: { name: true, type: true } } },
+    select: { id: true, createdAt: true, updatedAt: true, completedAt: true, status: { select: { name: true, type: true } } },
   });
   const times = await completionTimes(tasks.filter((t) => t.status.type === "done"));
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());

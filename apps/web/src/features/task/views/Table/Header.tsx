@@ -48,6 +48,9 @@ function Header() {
         <span>Priority</span>
         <SortRowField sortField="priority" />
       </div>
+      <div className={`col-span-2 flex items-center ${slotBorderClasses} ${slotPadding}`} title="Sprint points">
+        Points
+      </div>
       <div
         className={`col-span-3 flex items-center gap-2 ${slotPadding} ${headerSlotHoverClasses}`}
       >
