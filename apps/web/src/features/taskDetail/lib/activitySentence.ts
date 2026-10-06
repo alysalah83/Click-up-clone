@@ -75,6 +75,8 @@ export function activitySentence({
       return [plain("changed sprint points from "), strong(data.from), plain(" to "), strong(data.to)];
     case "sprint_carried":
       return [plain("carried this task over from "), strong(data.from), plain(" to "), strong(data.to)];
+    case "attachment_added":
+      return [plain("attached "), strong(data.name)];
     default:
       return [plain("updated this task")];
   }

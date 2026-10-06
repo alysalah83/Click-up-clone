@@ -17,7 +17,8 @@ type ActivityType =
   | "recurred"
   | "time_logged"
   | "points"
-  | "sprint_carried";
+  | "sprint_carried"
+  | "attachment_added";
 
 interface ChecklistItem {
   id: string;

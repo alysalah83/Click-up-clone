@@ -19,6 +19,7 @@ describe("guest pool", () => {
       select: { id: true, completedAt: true },
     });
     const goalBefore = await prisma.goal.findFirstOrThrow({ where: { createdById: user.id } });
+    const attachmentBefore = await prisma.attachment.findFirstOrThrow({ where: { task: { userId: user.id } } });
 
     const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
     expect(claimed).toEqual({ id: user.id, landingListId });
@@ -41,6 +42,10 @@ describe("guest pool", () => {
     expect(doneShift).toBeLessThan(3 * DAY + 60_000);
     const goalAfter = await prisma.goal.findUniqueOrThrow({ where: { id: goalBefore.id } });
     expect(goalAfter.dueDate!.getTime() - goalBefore.dueDate!.getTime()).toBe(3 * DAY);
+    const attachmentAfter = await prisma.attachment.findUniqueOrThrow({ where: { id: attachmentBefore.id } });
+    const attachmentShift = attachmentAfter.createdAt.getTime() - attachmentBefore.createdAt.getTime();
+    expect(attachmentShift).toBeGreaterThan(3 * DAY - 60_000);
+    expect(attachmentShift).toBeLessThan(3 * DAY + 60_000);
   });
 
   it("refills the pool up to the target size", async () => {

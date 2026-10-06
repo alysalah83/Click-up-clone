@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Repeat } from "lucide-react";
+import { Paperclip, Repeat } from "lucide-react";
 import type { Task } from "@/features/task/types";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { cn } from "@/shared/lib/utils/cn";
@@ -8,7 +8,7 @@ import { PointsBadge } from "@/features/sprint/components/PointsPicker";
 
 const MAX_TAGS = 3;
 
-/** Board card badges: sprint points, tags, subtask count and checklist progress. Renders nothing when empty. */
+/** Board card badges: sprint points, tags, subtask count, attachments and checklist progress. Renders nothing when empty. */
 function TaskBadges({ task }: { task: Task }) {
   const tags = task.tags ?? [];
   const subtasks = task.subtaskCount ?? 0;
@@ -16,7 +16,9 @@ function TaskBadges({ task }: { task: Task }) {
   const checklistDone = task.checklistDone ?? 0;
   const repeats = !!task.recurrenceType && task.recurrenceType !== "none";
   const points = task.points ?? null;
-  if (tags.length === 0 && subtasks === 0 && checklistTotal === 0 && !repeats && points === null) return null;
+  const attachments = task.attachmentCount ?? 0;
+  if (tags.length === 0 && subtasks === 0 && checklistTotal === 0 && !repeats && points === null && attachments === 0)
+    return null;
 
   return (
     <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -37,6 +39,16 @@ function TaskBadges({ task }: { task: Task }) {
       {repeats && (
         <span className="flex items-center" title="Repeating task" aria-label="repeating task">
           <Repeat className="size-3" />
+        </span>
+      )}
+      {attachments > 0 && (
+        <span
+          className="flex items-center gap-0.5"
+          title={`${attachments} attachment${attachments === 1 ? "" : "s"}`}
+          aria-label={`${attachments} attachments`}
+        >
+          <Paperclip className="size-3" />
+          {attachments}
         </span>
       )}
       {checklistTotal > 0 && (

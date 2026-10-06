@@ -75,6 +75,7 @@ export const ACTIVITY_TYPES = [
   "time_logged",
   "points",
   "sprint_carried",
+  "attachment_added",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
