@@ -1,6 +1,6 @@
 # Handoff: next steps for new chats
 
-Last updated: 2026-10-06 (fifth sprint: portfolio pass: instant guest login, mobile calendar, OG card, README GIF). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
+Last updated: 2026-10-06 (sixth sprint: whiteboards, sprints, goals, attachments, templates, forms, swimlanes/WIP). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
 
 ## Current state
 
@@ -34,12 +34,27 @@ Last updated: 2026-10-06 (fifth sprint: portfolio pass: instant guest login, mob
 | F2 | Calendar on phones: compact month grid with dots + day list, week = day list | ✅ live 2026-10-06 (screenshot at 390px) |
 | F3 | Recurrence copies checklists (unchecked) and subtasks; repeat icon in List/Table | ✅ live 2026-10-06 |
 | F4 | Portfolio: page titles/description, Open Graph + Twitter card image, README rewrite with demo GIF and fresh screenshots | ✅ live 2026-10-06 |
+| G1 | Whiteboards: persisted Excalidraw boards per space, sidebar list, sticky note → task, demo brainstorm boards | ✅ live 2026-10-06 |
+| G2 | Sprints: sprint lists with dates (Sprints folder), points, Complete sprint carries unfinished work, burndown + velocity report; Sprints 11–15 seeded, 14 active | ✅ live 2026-10-06 |
+| G3 | Goals/OKRs: number/currency/true-false/task targets, live progress from linked tasks, Goals page, 3 demo goals | ✅ live 2026-10-06 |
+| G4 | Attachments on Vercel Blob: drag-and-drop upload (4 MB max), image lightbox, download/delete, seeded demo files | ✅ live 2026-10-06 (real upload/download/delete checked) |
+| G5 | Task templates: save task (+subtasks, checklists, tags) as template, picker on Board/List add rows, Templates page, 3 seeded | ✅ live 2026-10-06 |
+| G6 | Forms: Form tab per list with builder, public `/forms/<slug>` link (no login), submissions create tasks, demo "Report a bug" form | ✅ live 2026-10-06 (public submit checked) |
+| G7 | Board swimlanes (assignee/priority) + per-column WIP limits, seeded limits on Sprint 14 and a "By assignee" saved view | ✅ shipped 2026-10-06 |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
   - Web: https://click-up-clone-two.vercel.app
   - API: https://click-up-clone-back-end.vercel.app (`/health`)
 - **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
+
+## Sixth sprint (2026-10-06): seven features
+
+G1–G7 above, one commit each on master (`eb5d8c6`, `0785811`, `b3a6f48`, `10cd063`, `2c8be83`, `9e33c68`, `36748ab`), built by one subagent at a time with a shared brief, then lint/typecheck/test/build and push. API checks after each deploy hit the live guest demo; nothing was eyeballed in a browser.
+- **Guest pool seed version:** pooled guests now carry `User.poolSeedVersion`; only guests of `POOL_SEED_VERSION` (`guestPool.service.ts`, now 8) are claimed or counted. **Increment it whenever the guest seed changes**, or new guests land on the old seed. (A time cutoff was tried first and leaked old-seed guests pooled during the deploy.) The first guest after such a deploy is seeded inline (~6–10 s); the pool then refills.
+- **Date shift:** `claimPooledGuest` also shifts whiteboards, sprint dates, `Task.completedAt`, goal due dates, attachments, templates and forms. New seeded tables with visible dates must be added there.
+- **Blob:** store `clickup-attachments` (public, iad1) is connected to the API project; `BLOB_READ_WRITE_TOKEN` exists for Production and Preview only, so local uploads return 503 "Attachments are not configured". The API calls the Blob REST API directly (`lib/blobStorage.ts`, no `@vercel/blob`). Seeded attachments point at `WEB_URL` public files (empty `pathname` = never deleted from Blob).
+- **Known gaps:** whiteboard convert pill can sit off-screen near edges; last-save-wins on boards. Burndown has no scope-change line; completing a sprint early keeps the next sprint's planned dates; empty "Sprints" section shows in Marketing. Goals: no folders, target name/value not editable after creation. Attachments: list/space deletion doesn't delete blobs. Templates: contents not editable, no template button in Calendar/Timeline. Forms: field reorder by buttons only; the web copy of form validation must stay in sync with `packages/shared/src/form.ts`; per-visitor rate limit trusts `X-Client-Ip`. Swimlanes: WIP count ignores filters, no add-task on the swimlane grid, lanes only for people with visible tasks. Landing/README screenshots predate these features (`capture-screenshots.mjs`).
 
 ## Fifth sprint (2026-10-06): portfolio pass
 
@@ -245,5 +260,5 @@ pnpm --filter @clickup/web dev               # :3000
 - [ ] Vercel → API project → add `ANTHROPIC_API_KEY`, redeploy. Without it the AI buttons show "AI is not configured".
 - [ ] Not yet restyled: task panel, badges, empty/loading states. Nothing from the second sprint was eyeballed in a browser; do a visual pass first.
 
-- [ ] Vercel → API project → Environment Variables: add `CRON_SECRET` (any long random string), then redeploy. Until then, the daily cleanup of old guest accounts doesn't run.
+- [x] `CRON_SECRET` is set on the API project (seen 2026-10-06).
 - [ ] Optional: archive the old `Click-up-clone-back-end` GitHub repo.
