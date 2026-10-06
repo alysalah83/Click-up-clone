@@ -9,9 +9,9 @@ import { useListMembers } from "@/features/members/hooks/useMembers";
 import { displayName } from "@/features/members/lib/avatar";
 import useTasks from "@/features/task/hooks/useTasks";
 import { useSavedViews } from "../hooks/useSavedViews";
-import { countActiveFilters, UNASSIGNED } from "../lib/applyViewConfig";
+import { countActiveFilters, DEFAULT_CONFIG, UNASSIGNED } from "../lib/applyViewConfig";
 import { useViewConfigStore } from "../store";
-import type { DueKind, GroupBy } from "../types";
+import type { DueKind, GroupBy, Swimlanes } from "../types";
 
 const chip =
   "inline-flex h-7 cursor-pointer items-center gap-1 rounded-md border border-neutral-200 px-2 text-xs font-medium text-neutral-600 transition hover:bg-neutral-100 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-800";
@@ -122,7 +122,7 @@ function DueFilterControl() {
 
 function SavedViewsMenu({ listId }: { listId: string }) {
   const { views, create, update, remove } = useSavedViews(listId);
-  const { filters, groupBy, activeViewId, load } = useViewConfigStore();
+  const { filters, groupBy, swimlanes, activeViewId, load } = useViewConfigStore();
   const [name, setName] = useState("");
   const active = views?.find((v) => v.id === activeViewId);
 
@@ -130,7 +130,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
     const trimmed = name.trim();
     if (!trimmed) return;
     create.mutate(
-      { name: trimmed, config: { filters, groupBy } },
+      { name: trimmed, config: { filters, groupBy, swimlanes } },
       {
         onSuccess: (view) => {
           load(view.config, view.id);
@@ -167,7 +167,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
                   type="button"
                   aria-label={`Delete ${v.name}`}
                   className="shrink-0 cursor-pointer rounded px-1.5 text-xs text-red-600"
-                  onClick={() => remove.mutate(v.id, { onSuccess: () => v.id === activeViewId && load({ filters, groupBy }, null) })}
+                  onClick={() => remove.mutate(v.id, { onSuccess: () => v.id === activeViewId && load({ filters, groupBy, swimlanes }, null) })}
                 >
                   Delete
                 </button>
@@ -205,19 +205,20 @@ function SavedViewsMenu({ listId }: { listId: string }) {
 }
 
 /** Filter bar + Group by + saved views, shown above the List, Board and Table views. */
-export function ViewToolbar({ groupable = false }: { groupable?: boolean }) {
+export function ViewToolbar({ groupable = false, swimlanable = false }: { groupable?: boolean; swimlanable?: boolean }) {
   const { listId } = useParams<{ listId: string }>();
   const { statuses } = useStatuses();
   const { members } = useListMembers(listId);
   const { tasks } = useTasks();
   const { views, isPending: viewsPending } = useSavedViews(listId);
-  const { filters, groupBy, appliedListId, setFilters, setGroupBy, clearFilters, load } = useViewConfigStore();
+  const { filters, groupBy, swimlanes, appliedListId, setFilters, setGroupBy, setSwimlanes, clearFilters, load } =
+    useViewConfigStore();
 
   // Opening a list applies its default saved view (or resets a config left over from another list).
   useEffect(() => {
     if (viewsPending || appliedListId === listId) return;
     const def = views?.find((v) => v.isDefault);
-    load(def?.config ?? { filters: { assignees: [], statuses: [], priorities: [], tags: [], due: null }, groupBy: "status" }, def?.id ?? null, listId);
+    load(def?.config ?? DEFAULT_CONFIG, def?.id ?? null, listId);
   }, [viewsPending, views, listId, appliedListId, load]);
 
   const tagOptions = useMemo(() => {
@@ -267,6 +268,24 @@ export function ViewToolbar({ groupable = false }: { groupable?: boolean }) {
               <option value="assignee">Assignee</option>
               <option value="priority">Priority</option>
               <option value="tag">Tag</option>
+            </select>
+          </label>
+        )}
+        {swimlanable && groupBy === "status" && (
+          <label className="flex items-center gap-1 text-xs font-medium text-neutral-500">
+            Swimlanes
+            <select
+              aria-label="Swimlanes"
+              value={swimlanes}
+              onChange={(e) => setSwimlanes(e.target.value as Swimlanes)}
+              className={cn(
+                "h-7 rounded-md border border-neutral-200 bg-transparent px-1 text-xs dark:border-neutral-800",
+                swimlanes !== "none" && "border-violet-400 text-violet-700 dark:border-violet-500 dark:text-violet-300",
+              )}
+            >
+              <option value="none">None</option>
+              <option value="assignee">Assignee</option>
+              <option value="priority">Priority</option>
             </select>
           </label>
         )}

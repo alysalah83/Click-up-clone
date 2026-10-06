@@ -2,10 +2,10 @@ import TaskProvider from "@/features/task/context/TaskProvider";
 import TaskCard from "./TaskCard";
 import { Task } from "@/features/task/types";
 
-const TaskItem = function TaskItem({ task }: { task: Task }) {
+const TaskItem = function TaskItem({ task, laneKey }: { task: Task; laneKey?: string }) {
   return (
     <TaskProvider task={task} key={task.id}>
-      <TaskCard task={task} />
+      <TaskCard task={task} laneKey={laneKey} />
     </TaskProvider>
   );
 };

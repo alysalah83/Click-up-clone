@@ -4,6 +4,7 @@ import {
   getStatuses,
   getStatusesCountsSummery,
   deleteStatus,
+  setStatusWipLimit,
 } from "../api/status.server";
 
 export const statusServices = {
@@ -16,4 +17,5 @@ export const statusServices = {
   },
   getStatusesCountsSummery,
   deleteStatus,
+  setStatusWipLimit,
 };

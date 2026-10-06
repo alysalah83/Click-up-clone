@@ -19,6 +19,8 @@ export interface DemoStatus {
   type: StatusType;
   order: number;
   isDefault: boolean;
+  /** Board column WIP limit. */
+  wipLimit?: number;
 }
 
 export interface DemoTask {
@@ -128,7 +130,10 @@ const SPRINT_BOARD: DemoList = {
   key: "sprint",
   name: "Sprint 14",
   sprint: { number: 14, start: -6, end: 7, state: "active" },
-  statuses: sprintStatuses("sprint"),
+  // WIP limits: "in progress" (4 tasks) is over its limit on landing, "in review" (3) sits at it.
+  statuses: sprintStatuses("sprint").map((st) =>
+    st.key === "sprint.active" ? { ...st, wipLimit: 3 } : st.key === "sprint.custom" ? { ...st, wipLimit: 3 } : st,
+  ),
   tasks: [
     sprint("sso", "Add Google SSO to the login page", "active", "high", 2, -3),
     sprint("onboarding-checklist", "Build onboarding checklist for new workspaces", "open", "normal", 5, 3),

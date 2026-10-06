@@ -1,5 +1,6 @@
 import { useDeleteStatus } from "@/features/status/hooks/useDeleteStatus";
 import { Status } from "@/features/status/types";
+import ColumnMenu from "./ColumnMenu";
 import AddButton from "@/shared/components/AddButton";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Button, ButtonIcon } from "@/shared/ui/Button";
@@ -19,8 +20,11 @@ function ColumnFeaturesBtn({
   statusId,
   statusName,
   isDefault,
+  status,
 }: {
   handleActiveColumn: () => void;
+  /** Enables the "…" menu (WIP limit). */
+  status?: Status;
   statusId: Status["id"];
   statusName: Status["name"];
   isDefault: Status["isDefault"];
@@ -48,6 +52,7 @@ function ColumnFeaturesBtn({
         </Modal>
       )}
 
+      {status && <ColumnMenu status={status} />}
       <AddButton
         onClick={handleActiveColumn}
         toolTipMessage="Add Task"

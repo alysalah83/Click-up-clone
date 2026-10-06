@@ -9,6 +9,7 @@ declare global {
     toast?: {
       success: (message: string, duration?: number) => string;
       error: (message: string, duration?: number) => string;
+      warning?: (message: string, duration?: number) => string;
       loading: (message: string) => string;
       dismiss: (id: string) => void;
     };
@@ -26,6 +27,7 @@ export default function Toaster() {
     window.toast = {
       success: (message, duration) => String(toast.success(message, { duration: toMs(duration) })),
       error: (message, duration) => String(toast.error(message, { duration: toMs(duration) })),
+      warning: (message, duration) => String(toast.warning(message, { duration: toMs(duration) })),
       loading: (message) => String(toast.loading(message)),
       dismiss: (id) => toast.dismiss(id),
     };

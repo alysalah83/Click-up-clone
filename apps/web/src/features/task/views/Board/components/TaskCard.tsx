@@ -5,18 +5,21 @@ import { useTask } from "@/features/task/context/TaskProvider";
 import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { shouldOpenTaskDetail } from "@/features/task/lib/shouldOpenTaskDetail";
 import TaskCardView from "./TaskCardView";
+import { laneCardId } from "../lib/swimlanes";
 
 interface TaskCardProps {
   task: Task;
+  /** Swimlane the card is rendered in; a task with several assignees has one card per lane. */
+  laneKey?: string;
 }
 
-function TaskCard({ task }: TaskCardProps) {
+function TaskCard({ task, laneKey }: TaskCardProps) {
   const { isRenameOpen, taskContainerRef, isTempTask } = useTask();
   const { id, statusId } = task;
   const openTask = useOpenTask();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id,
-    data: { statusId },
+    id: laneKey === undefined ? id : laneCardId(id, laneKey),
+    data: { statusId, laneKey, taskId: id },
   });
 
   const setRefs = useCallback(

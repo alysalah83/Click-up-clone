@@ -173,6 +173,8 @@ model Status {
   order     Int
   type      StatusType @default(active)
   isDefault Boolean    @default(false)
+  /// Max tasks in this board column (null = no WIP limit).
+  wipLimit  Int?
   userId    String
   listId    String
   createdAt DateTime   @default(now())
