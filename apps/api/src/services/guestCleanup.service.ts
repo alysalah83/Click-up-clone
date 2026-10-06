@@ -1,4 +1,6 @@
 import { prisma } from "../lib/prisma.js";
+import { deleteBlobsBestEffort } from "../lib/blobStorage.js";
+import { storedBlobUrls } from "./attachment.service.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const BATCH_SIZE = 500;
@@ -24,6 +26,14 @@ export async function deleteStaleGuests(olderThanDays = 7, now = new Date()) {
     select: { avatarId: true },
   });
   const byOwner = { userId: { in: userIds } };
+  // Uploaded files of everything about to go; seeded demo files are not on the blob store.
+  const blobs = await storedBlobUrls({
+    OR: [
+      { uploaderId: { in: userIds } },
+      { task: byOwner },
+      { task: { list: { workspace: byOwner } } },
+    ],
+  });
 
   // Workspaces cascade to lists, statuses and tasks; workspaces block avatars (RESTRICT).
   await prisma.$transaction([
@@ -40,6 +50,7 @@ export async function deleteStaleGuests(olderThanDays = 7, now = new Date()) {
     prisma.avatar.deleteMany({ where: { id: { in: workspaces.map((w) => w.avatarId) } } }),
     prisma.user.deleteMany({ where: { id: { in: userIds } } }),
   ]);
+  await deleteBlobsBestEffort(blobs);
 
   return userIds.length;
 }

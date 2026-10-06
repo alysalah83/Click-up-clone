@@ -13,6 +13,7 @@ import { buildDemoDocs } from "../seed/demoDocs.js";
 import { buildDemoWhiteboards } from "../seed/demoWhiteboards.js";
 import { buildDemoSprints } from "../seed/demoSprints.js";
 import { buildDemoGoals } from "../seed/demoGoals.js";
+import { buildDemoAttachments } from "../seed/demoAttachments.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -77,6 +78,10 @@ export async function seedGuest({
     template === DEMO_TEMPLATE
       ? buildDemoGoals(userId, seed, team.users.map((u) => u.id))
       : undefined;
+  const attachments =
+    template === DEMO_TEMPLATE
+      ? buildDemoAttachments(seed, team.users.length > 0 ? team.users.map((u) => u.id) : [userId])
+      : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -103,6 +108,12 @@ export async function seedGuest({
           prisma.goal.createMany({ data: goals.goals }),
           prisma.goalTarget.createMany({ data: goals.targets }),
           prisma.goalTargetTask.createMany({ data: goals.targetTasks }),
+        ]
+      : []),
+    ...(attachments
+      ? [
+          prisma.attachment.createMany({ data: attachments.attachments }),
+          prisma.activity.createMany({ data: attachments.activities }),
         ]
       : []),
     prisma.timeEntry.createMany({

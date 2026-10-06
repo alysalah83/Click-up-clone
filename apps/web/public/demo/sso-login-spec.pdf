@@ -1,0 +1,54 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Length 1188 >>
+stream
+BT
+/F2 18 Tf 1 0 0 1 64 780 Tm (Google SSO - login flow spec) Tj
+/F1 11 Tf 1 0 0 1 64 754 Tm (Sprint 14 - Product space - demo attachment) Tj
+/F1 11 Tf 1 0 0 1 64 736 Tm () Tj
+/F2 12 Tf 1 0 0 1 64 718 Tm (Goal) Tj
+/F1 11 Tf 1 0 0 1 64 692 Tm (Let people sign in with their Google account from the login page.) Tj
+/F1 11 Tf 1 0 0 1 64 674 Tm () Tj
+/F2 12 Tf 1 0 0 1 64 656 Tm (Flow) Tj
+/F1 11 Tf 1 0 0 1 64 630 Tm (1. User clicks "Continue with Google" on /login.) Tj
+/F1 11 Tf 1 0 0 1 64 612 Tm (2. Redirect to Google OAuth consent \(openid, email, profile\).) Tj
+/F1 11 Tf 1 0 0 1 64 594 Tm (3. Callback verifies the ID token and finds or creates the user.) Tj
+/F1 11 Tf 1 0 0 1 64 576 Tm (4. Existing email accounts are linked after a password check.) Tj
+/F1 11 Tf 1 0 0 1 64 558 Tm (5. Session cookie is issued; redirect to the last opened list.) Tj
+/F1 11 Tf 1 0 0 1 64 540 Tm () Tj
+/F2 12 Tf 1 0 0 1 64 522 Tm (Acceptance criteria) Tj
+/F1 11 Tf 1 0 0 1 64 496 Tm (- Works for new and existing accounts.) Tj
+/F1 11 Tf 1 0 0 1 64 478 Tm (- Errors from Google show a friendly toast, never a blank page.) Tj
+/F1 11 Tf 1 0 0 1 64 460 Tm (- Guest accounts can't be linked to Google.) Tj
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000321 00000 n 
+0000000396 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1636
+%%EOF

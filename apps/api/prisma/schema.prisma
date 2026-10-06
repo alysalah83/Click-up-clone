@@ -65,6 +65,7 @@ model User {
   timeEntries    TimeEntry[]
   checklistItems ChecklistItem[]
   comments       Comment[]
+  attachments    Attachment[]
   commentReactions CommentReaction[]
   commentMentions  CommentMention[]
   notifications  Notification[] @relation("NotificationRecipient")
@@ -200,6 +201,7 @@ model Task {
   tags         TaskTag[]
   activities   Activity[]
   comments     Comment[]
+  attachments  Attachment[]
   notifications Notification[]
   blockedBy     TaskDependency[] @relation("TaskBlockedBy")
   blocking      TaskDependency[] @relation("TaskBlocks")
@@ -363,6 +365,27 @@ model Comment {
   @@index([taskId, createdAt])
   @@index([parentId])
   @@index([authorId])
+}
+
+/// A file attached to a task, stored on Vercel Blob. Seeded demo files point at public web assets
+/// and have an empty `pathname`, so they are never deleted from the blob store.
+model Attachment {
+  id          String   @id @default(uuid())
+  taskId      String
+  uploaderId  String
+  fileName    String
+  contentType String
+  size        Int
+  url         String
+  /// Blob store pathname ("attachments/<workspaceId>/<taskId>/..."); empty for files not on the store.
+  pathname    String   @default("")
+  createdAt   DateTime @default(now())
+
+  task     Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  uploader User @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+  @@index([uploaderId])
 }
 
 model CommentReaction {

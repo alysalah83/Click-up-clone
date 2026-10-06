@@ -20,6 +20,8 @@ import {
   type ActivityRow,
 } from "./activity.service.js";
 import { runAutomations } from "./automation.service.js";
+import { storedBlobUrls } from "./attachment.service.js";
+import { deleteBlobsBestEffort } from "../lib/blobStorage.js";
 import { syncCompletedAt } from "./completion.service.js";
 import { spawnNextOccurrence } from "./recurrence.service.js";
 import { notifyAssigned, notifyTaskChanges } from "./notification.service.js";
@@ -202,7 +204,10 @@ export async function updateTasks(
 
 export async function deleteTask(userId: string, id: string) {
   await assertCanAccess(userId, { taskId: id });
-  return prisma.task.delete({ where: { id } });
+  const blobs = await storedBlobUrls({ OR: [{ taskId: id }, { task: { parentTaskId: id } }] });
+  const deleted = await prisma.task.delete({ where: { id } });
+  await deleteBlobsBestEffort(blobs);
+  return deleted;
 }
 
 export async function deleteTasksInList(
@@ -210,9 +215,10 @@ export async function deleteTasksInList(
   listId: string,
   ids: string[],
 ) {
-  const result = await prisma.task.deleteMany({
-    where: { ...inMyWorkspaces(userId), listId, id: { in: ids } },
-  });
+  const where = { ...inMyWorkspaces(userId), listId, id: { in: ids } };
+  const blobs = await storedBlobUrls({ OR: [{ task: where }, { task: { parentTask: where } }] });
+  const result = await prisma.task.deleteMany({ where });
+  await deleteBlobsBestEffort(blobs);
   return result.count;
 }
 

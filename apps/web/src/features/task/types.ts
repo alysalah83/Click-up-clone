@@ -57,6 +57,7 @@ type Task = {
   subtaskDoneCount?: number;
   checklistTotal?: number;
   checklistDone?: number;
+  attachmentCount?: number;
   recurrenceType?: RecurrenceType;
   recurrenceInterval?: number;
   /** Sprint points (null = not estimated). */

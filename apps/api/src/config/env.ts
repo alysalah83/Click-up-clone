@@ -20,6 +20,8 @@ export function loadEnv() {
     GUEST_POOL_SIZE: Number(
       process.env.GUEST_POOL_SIZE ?? (process.env.NODE_ENV === "test" ? 0 : 3),
     ),
+    /** Vercel Blob store token (production/preview only); without it attachments uploads answer 503. */
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN || undefined,
     LOGIN_ATTEMPTS_PER_15_MIN: Number(process.env.LOGIN_ATTEMPTS_PER_15_MIN ?? 10),
   };
 }

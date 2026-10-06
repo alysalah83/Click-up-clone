@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import AiActions from "@/features/ai/components/AiActions";
+import AttachmentsDropTarget from "@/features/attachments/components/AttachmentsDropTarget";
+import AttachmentsSection from "@/features/attachments/components/AttachmentsSection";
+import { useAttachmentUploads } from "@/features/attachments/hooks";
 import CommentsSection from "@/features/comments/components/CommentsSection";
 import useTasks from "@/features/task/hooks/useTasks";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
@@ -19,12 +22,11 @@ import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
 import BlockedBySection from "./BlockedBySection";
 
+const PANEL_SHELL =
+  "flex h-[min(88vh,860px)] w-[min(1120px,calc(100vw-2rem))] flex-col overflow-y-auto md:flex-row md:overflow-hidden";
+
 function PanelShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-[min(88vh,860px)] w-[min(1120px,calc(100vw-2rem))] flex-col overflow-y-auto md:flex-row md:overflow-hidden">
-      {children}
-    </div>
-  );
+  return <div className={PANEL_SHELL}>{children}</div>;
 }
 
 function TitleEditor({ task }: { task: TaskDetail }) {
@@ -104,6 +106,7 @@ function TaskDetailPanel({
 }) {
   const { detail, isPending, error } = useTaskDetail(taskId);
   const { tasks } = useTasks();
+  const attachments = useAttachmentUploads(taskId, detail?.listId ?? "");
 
   if (isPending)
     return (
@@ -154,7 +157,7 @@ function TaskDetailPanel({
 
   return (
     <TaskProvider task={task}>
-      <PanelShell>
+      <AttachmentsDropTarget className={PANEL_SHELL} onFiles={attachments.upload}>
         <section className="flex min-w-0 flex-1 flex-col gap-6 px-6 py-6 md:overflow-y-auto md:px-10">
           <Breadcrumb task={task} onOpenTask={onOpenTask} />
           <div className="-mt-3 flex flex-col gap-4">
@@ -182,6 +185,12 @@ function TaskDetailPanel({
           />
           <TimeTrackingSection taskId={task.id} />
           <ChecklistsSection detail={detail} />
+          <AttachmentsSection
+            taskId={task.id}
+            listId={task.listId}
+            upload={attachments.upload}
+            pending={attachments.pending}
+          />
           <CommentsSection taskId={task.id} listId={task.listId} />
           <p className="mt-auto text-xs text-neutral-400">
             Created {format(new Date(task.createdAt), "MMM d, yyyy")} · Updated{" "}
@@ -196,7 +205,7 @@ function TaskDetailPanel({
             <ActivityFeed activity={detail.activity} />
           </div>
         </aside>
-      </PanelShell>
+      </AttachmentsDropTarget>
     </TaskProvider>
   );
 }
