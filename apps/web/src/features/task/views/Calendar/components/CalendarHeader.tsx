@@ -11,6 +11,7 @@ interface CalendarHeaderProps {
   onViewChange: (view: CalendarView) => void;
   onPrev: () => void;
   onNext: () => void;
+  onToday: () => void;
 }
 
 function CalendarHeader({
@@ -19,6 +20,7 @@ function CalendarHeader({
   onViewChange,
   onPrev,
   onNext,
+  onToday,
 }: CalendarHeaderProps) {
   const title =
     view === "month"
@@ -30,8 +32,8 @@ function CalendarHeader({
         })();
 
   return (
-    <div className="flex w-full items-center justify-between gap-2 border-b border-neutral-300 px-4 py-3 dark:border-neutral-700">
-      <div className="flex items-center rounded-md border border-neutral-300 p-0.5 dark:border-neutral-700">
+    <div className="flex w-full flex-wrap items-center justify-between gap-2 border-b border-neutral-300 px-3 py-2 md:flex-nowrap md:px-4 md:py-3 dark:border-neutral-700">
+      <div className="order-1 flex items-center rounded-md border border-neutral-300 p-0.5 dark:border-neutral-700">
         {(["month", "week"] as CalendarView[]).map((v) => (
           <button
             key={v}
@@ -47,7 +49,16 @@ function CalendarHeader({
         ))}
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Phones only: jump back to today. */}
+      <button
+        type="button"
+        onClick={onToday}
+        className="order-2 rounded-md border border-neutral-300 px-3 py-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 md:hidden dark:border-neutral-700 dark:text-neutral-300 dark:hover:text-neutral-100"
+      >
+        Today
+      </button>
+
+      <div className="order-3 flex w-full items-center justify-between gap-2 md:order-2 md:w-auto md:justify-start">
         <ButtonIcon
           icon="leftArrow2"
           ariaLabel="Previous"
@@ -56,7 +67,7 @@ function CalendarHeader({
           padding="small"
           size={4}
         />
-        <h2 className="min-w-[220px] text-center text-base font-semibold text-neutral-800 dark:text-neutral-100">
+        <h2 className="min-w-0 truncate text-center md:min-w-[220px] text-base font-semibold text-neutral-800 dark:text-neutral-100">
           {title}
         </h2>
         <ButtonIcon
@@ -70,7 +81,7 @@ function CalendarHeader({
       </div>
 
       {/* Spacer to balance flex layout */}
-      <div className="w-[116px]" />
+      <div className="hidden w-[116px] md:order-3 md:block" />
     </div>
   );
 }

@@ -47,11 +47,15 @@ export function nextOccurrenceDates(
   };
 }
 
+const shiftBy = (date: Date | null, ms: number) => (date ? new Date(date.getTime() + ms) : null);
+
 /**
  * Called after a task moved into a done-type status. If the task repeats, creates the next
  * occurrence (name, description, priority, assignees, tags; dates shifted; first open status of the
- * list) and clears the recurrence on the completed task. The rule is claimed with a conditional
- * update, so two concurrent completions create only one copy. Returns the new task id, or null.
+ * list) and clears the recurrence on the completed task. Checklists are copied with every item
+ * unchecked, and direct subtasks are copied in the open status with their dates moved by the same
+ * offset as the parent's. The rule is claimed with a conditional update, so two concurrent
+ * completions create only one copy. Returns the new task id, or null.
  * Failures never fail the status change that triggered it.
  */
 export async function spawnNextOccurrence(actorId: string, taskId: string): Promise<string | null> {
@@ -61,6 +65,17 @@ export async function spawnNextOccurrence(actorId: string, taskId: string): Prom
       include: {
         assignees: { select: { userId: true } },
         tags: { select: { tagId: true } },
+        checklists: {
+          orderBy: { order: "asc" },
+          include: { items: { orderBy: { order: "asc" } } },
+        },
+        subtasks: {
+          orderBy: { createdAt: "asc" },
+          include: {
+            assignees: { select: { userId: true } },
+            tags: { select: { tagId: true } },
+          },
+        },
       },
     });
     if (!task || task.recurrenceType === "none") return null;
@@ -80,22 +95,73 @@ export async function spawnNextOccurrence(actorId: string, taskId: string): Prom
     if (!openStatus) return null;
 
     const dates = nextOccurrenceDates(task, task.recurrenceType, task.recurrenceInterval);
-    const next = await prisma.task.create({
-      data: {
-        name: task.name,
-        userId: task.userId,
-        listId: task.listId,
-        statusId: openStatus.id,
-        priority: task.priority,
-        parentTaskId: task.parentTaskId,
-        ...(task.description !== null && { description: task.description as Prisma.InputJsonValue }),
-        ...dates,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        assignees: { createMany: { data: task.assignees.map(({ userId }) => ({ userId })) } },
-        tags: { createMany: { data: task.tags.map(({ tagId }) => ({ tagId })) } },
-      },
-      select: { id: true },
+    // Subtasks move by the parent's own shift; when the parent has no dates, by the rule itself.
+    const anchor = task.endDate ?? task.startDate;
+    const nextAnchor = dates.endDate ?? dates.startDate;
+    const subtaskDates = (sub: { startDate: Date | null; endDate: Date | null }) =>
+      anchor && nextAnchor
+        ? {
+            startDate: shiftBy(sub.startDate, nextAnchor.getTime() - anchor.getTime()),
+            endDate: shiftBy(sub.endDate, nextAnchor.getTime() - anchor.getTime()),
+          }
+        : nextOccurrenceDates(sub, task.recurrenceType, task.recurrenceInterval);
+
+    const next = await prisma.$transaction(async (tx) => {
+      const created = await tx.task.create({
+        data: {
+          name: task.name,
+          userId: task.userId,
+          listId: task.listId,
+          statusId: openStatus.id,
+          priority: task.priority,
+          parentTaskId: task.parentTaskId,
+          ...(task.description !== null && { description: task.description as Prisma.InputJsonValue }),
+          ...dates,
+          recurrenceType: task.recurrenceType,
+          recurrenceInterval: task.recurrenceInterval,
+          assignees: { createMany: { data: task.assignees.map(({ userId }) => ({ userId })) } },
+          tags: { createMany: { data: task.tags.map(({ tagId }) => ({ tagId })) } },
+        },
+        select: { id: true },
+      });
+
+      for (const checklist of task.checklists) {
+        await tx.checklist.create({
+          data: {
+            taskId: created.id,
+            name: checklist.name,
+            order: checklist.order,
+            items: {
+              createMany: {
+                data: checklist.items.map(({ text, order, assigneeId }) => ({
+                  text,
+                  order,
+                  assigneeId,
+                  done: false,
+                })),
+              },
+            },
+          },
+        });
+      }
+
+      for (const sub of task.subtasks) {
+        await tx.task.create({
+          data: {
+            name: sub.name,
+            userId: sub.userId,
+            listId: sub.listId,
+            statusId: openStatus.id,
+            priority: sub.priority,
+            parentTaskId: created.id,
+            ...(sub.description !== null && { description: sub.description as Prisma.InputJsonValue }),
+            ...subtaskDates(sub),
+            assignees: { createMany: { data: sub.assignees.map(({ userId }) => ({ userId })) } },
+            tags: { createMany: { data: sub.tags.map(({ tagId }) => ({ tagId })) } },
+          },
+        });
+      }
+      return created;
     });
     await logActivity([
       {

@@ -87,6 +87,62 @@ describe("recurring tasks", () => {
     expect(activity).toHaveLength(1);
   });
 
+  it("copies checklists (unchecked) and direct subtasks (open status, dates shifted) to the next occurrence", async () => {
+    const { user, ws, task } = await setup();
+    const active = ws.statuses.find((s) => s.type === "active")!;
+    await prisma.checklist.create({
+      data: {
+        taskId: task.id,
+        name: "Steps",
+        items: {
+          createMany: {
+            data: [
+              { text: "Collect numbers", done: true, order: 0 },
+              { text: "Send", done: false, order: 1 },
+            ],
+          },
+        },
+      },
+    });
+    await prisma.task.create({
+      data: {
+        name: "Draft",
+        userId: user.user.id,
+        listId: ws.list.id,
+        statusId: active.id,
+        parentTaskId: task.id,
+        endDate: utc("2026-10-06"),
+      },
+    });
+    await prisma.task.create({
+      data: { name: "Review", userId: user.user.id, listId: ws.list.id, statusId: ws.doneStatus.id, parentTaskId: task.id },
+    });
+
+    await setStatus(user.cookie, task.id, ws.doneStatus.id);
+
+    const next = await prisma.task.findFirstOrThrow({
+      where: { listId: ws.list.id, parentTaskId: null, id: { not: task.id } },
+      include: {
+        checklists: { include: { items: { orderBy: { order: "asc" } } } },
+        subtasks: { orderBy: { name: "asc" } },
+      },
+    });
+    expect(next.checklists).toHaveLength(1);
+    expect(next.checklists[0]!.name).toBe("Steps");
+    expect(next.checklists[0]!.items.map((i) => [i.text, i.done])).toEqual([
+      ["Collect numbers", false],
+      ["Send", false],
+    ]);
+    expect(next.subtasks.map((s) => s.name)).toEqual(["Draft", "Review"]);
+    expect(next.subtasks.every((s) => s.statusId === ws.openStatus.id)).toBe(true);
+    expect(next.subtasks[0]!.endDate).toEqual(utc("2026-10-13"));
+    expect(next.subtasks[1]!.startDate).toBeNull();
+    expect(next.subtasks[1]!.endDate).toBeNull();
+    // The originals are untouched.
+    expect(await prisma.task.count({ where: { parentTaskId: task.id } })).toBe(2);
+    expect(await prisma.checklistItem.count({ where: { checklist: { taskId: task.id }, done: true } })).toBe(1);
+  });
+
   it("does not spawn for non-done statuses, nor again when the completed task is reopened and closed", async () => {
     const { user, ws, task } = await setup();
     const active = ws.statuses.find((s) => s.type === "active")!;

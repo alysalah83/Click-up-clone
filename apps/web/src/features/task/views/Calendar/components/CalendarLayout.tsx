@@ -6,6 +6,7 @@ import CalendarHeader from "./CalendarHeader";
 import { useState } from "react";
 import { addDays } from "date-fns";
 import DragProvider from "./DragProvider";
+import CalendarMobileView from "./CalendarMobileView";
 
 export type CalendarView = "month" | "week";
 
@@ -35,6 +36,11 @@ function CalendarLayout() {
     else setCurrentDate((prev) => addDays(prev, 7));
   };
 
+  const handleToday = () => {
+    const now = new Date();
+    setCurrentDate(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+  };
+
   return (
     <DragProvider>
       <section className="flex h-full min-h-0 flex-col overflow-hidden">
@@ -44,13 +50,26 @@ function CalendarLayout() {
           onViewChange={setView}
           onPrev={handlePrev}
           onNext={handleNext}
+          onToday={handleToday}
         />
         {!isPending && (
-          <CalendarGrid
-            currentDate={currentDate}
-            tasks={tasksHasDates ?? []}
-            view={view}
-          />
+          <>
+            {/* Desktop grid (drag & drop); phones get the compact view below. */}
+            <div className="hidden min-h-0 flex-1 flex-col md:flex">
+              <CalendarGrid
+                currentDate={currentDate}
+                tasks={tasksHasDates ?? []}
+                view={view}
+              />
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col md:hidden">
+              <CalendarMobileView
+                currentDate={currentDate}
+                tasks={tasksHasDates ?? []}
+                view={view}
+              />
+            </div>
+          </>
         )}
       </section>
     </DragProvider>

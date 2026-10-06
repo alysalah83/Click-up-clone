@@ -1,0 +1,34 @@
+import { describe, expect, it } from "vitest";
+import { prisma } from "../src/lib/prisma.js";
+import { seedGuest } from "../src/services/user.service.js";
+import { claimPooledGuest, countPooledGuests, refillGuestPool } from "../src/services/guestPool.service.js";
+
+const DAY = 24 * 60 * 60 * 1000;
+
+describe("guest pool", () => {
+  it("claims a pre-seeded guest once and moves its dates to the claim day", async () => {
+    const { user, landingListId } = await seedGuest({ pooled: true });
+    expect(await countPooledGuests()).toBe(1);
+    const before = await prisma.task.findFirstOrThrow({
+      where: { userId: user.id, endDate: { not: null } },
+      select: { id: true, endDate: true, createdAt: true },
+    });
+
+    const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
+    expect(claimed).toEqual({ id: user.id, landingListId });
+    expect(await countPooledGuests()).toBe(0);
+    expect(await claimPooledGuest()).toBeUndefined();
+
+    const after = await prisma.task.findUniqueOrThrow({ where: { id: before.id } });
+    expect(after.endDate!.getTime() - before.endDate!.getTime()).toBe(3 * DAY);
+    const shift = after.createdAt.getTime() - before.createdAt.getTime();
+    expect(shift).toBeGreaterThan(3 * DAY - 60_000);
+    expect(shift).toBeLessThan(3 * DAY + 60_000);
+  });
+
+  it("refills the pool up to the target size", async () => {
+    expect(await refillGuestPool(2)).toBe(2);
+    expect(await refillGuestPool(2)).toBe(0);
+    expect(await countPooledGuests()).toBe(2);
+  });
+});

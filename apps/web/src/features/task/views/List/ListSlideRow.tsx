@@ -1,3 +1,4 @@
+import { Repeat } from "lucide-react";
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { useTask } from "../../context/TaskProvider";
 import { TASK_PRIORITIES_LIST } from "../../constants/tasks.const";
@@ -26,6 +27,7 @@ function ListSlideRow() {
   const {
     id,
     name,
+    recurrenceType,
     status: { icon, iconColor },
   } = task;
 
@@ -50,6 +52,12 @@ function ListSlideRow() {
       <div className="col-span-10 flex items-center gap-2 p-2">
         <Icon className={`${iconColorClass} size-4 shrink-0`} />
         <span className="line-clamp-1 truncate">{name}</span>
+        {recurrenceType && recurrenceType !== "none" && (
+          <Repeat
+            className="size-3 shrink-0 text-muted-foreground"
+            aria-label="repeating task"
+          />
+        )}
       </div>
       <div className={`col-span-2 flex items-center px-2 py-1 ${listSlotHover}`}>
         <AssigneesButton task={task} size="sm" />

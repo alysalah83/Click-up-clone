@@ -38,6 +38,10 @@ model User {
   avatarColor  String?
   /// Set on fake demo teammates: the guest they were seeded for (cascade delete).
   demoOwnerId  String?
+  /// Pre-seeded guest waiting in the pool (null once claimed). See guestPool.service.ts.
+  pooledAt      DateTime?
+  /// The seeded Sprint Board a pooled guest lands on.
+  landingListId String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   workspaces   Workspace[]

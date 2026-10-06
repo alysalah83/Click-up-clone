@@ -25,4 +25,18 @@ const CALENDER_PRIORITY_COLORS: Record<Task["priority"], string> = {
   none: "bg-neutral-200/60 border-neutral-400 text-neutral-600 dark:bg-neutral-700/40 dark:border-neutral-500 dark:text-neutral-300",
 } as const;
 
-export { MONTH_NAMES, DAY_NAMES, CALENDER_PRIORITY_COLORS };
+/** Solid dot per task in the compact (phone) month grid. */
+const CALENDAR_PRIORITY_DOTS: Record<Task["priority"], string> = {
+  urgent: "bg-pink-500",
+  high: "bg-amber-500",
+  normal: "bg-blue-500",
+  low: "bg-stone-500",
+  none: "bg-neutral-400 dark:bg-neutral-500",
+} as const;
+
+export {
+  MONTH_NAMES,
+  DAY_NAMES,
+  CALENDER_PRIORITY_COLORS,
+  CALENDAR_PRIORITY_DOTS,
+};
