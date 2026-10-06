@@ -11,7 +11,9 @@ export const statusFieldsSchema = z.object({
 });
 
 export const createStatusSchema = statusFieldsSchema.extend({ listId: idSchema });
-export const updateStatusSchema = statusFieldsSchema.partial();
+/** Max tasks in a board column; null clears the limit. */
+export const wipLimitSchema = z.number().int().min(1).max(999).nullable();
+export const updateStatusSchema = statusFieldsSchema.partial().extend({ wipLimit: wipLimitSchema.optional() });
 
 export type StatusType = z.infer<typeof statusTypeSchema>;
 export type CreateStatusInput = z.infer<typeof createStatusSchema>;

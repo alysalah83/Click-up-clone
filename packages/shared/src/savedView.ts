@@ -17,6 +17,8 @@ export const savedViewConfigSchema = z.object({
     due: dueFilterSchema.nullable().default(null),
   }),
   groupBy: z.enum(["status", "assignee", "priority", "tag"]).default("status"),
+  /** Board swimlanes (ClickUp "Subgroup"): rows of the status board. */
+  swimlanes: z.enum(["none", "assignee", "priority"]).default("none"),
 });
 
 const nameSchema = z.string().trim().min(1).max(80);

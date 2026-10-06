@@ -9,7 +9,7 @@ export const EMPTY_FILTERS: ViewFilters = {
   due: null,
 };
 
-export const DEFAULT_CONFIG: ViewConfig = { filters: EMPTY_FILTERS, groupBy: "status" };
+export const DEFAULT_CONFIG: ViewConfig = { filters: EMPTY_FILTERS, groupBy: "status", swimlanes: "none" };
 
 export const UNASSIGNED = "__unassigned__";
 export const NO_TAG = "__no_tag__";

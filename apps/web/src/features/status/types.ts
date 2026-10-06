@@ -12,6 +12,8 @@ interface Status {
   userId: string;
   type: "open" | "active" | "done";
   isDefault: boolean;
+  /** Board column WIP limit (null = none). */
+  wipLimit?: number | null;
 }
 
 type CreateStatusInputs = z.infer<typeof createStatusSchema>;

@@ -23,3 +23,8 @@ export async function deleteStatus(statusId: Status["id"]) {
   const serverAxios = await createServerAxios();
   return await serverAxios.delete<Status>(`/statuses/${statusId}`);
 }
+
+export async function setStatusWipLimit(statusId: Status["id"], wipLimit: number | null) {
+  const serverAxios = await createServerAxios();
+  return await serverAxios.patch<Status>(`/statuses/${statusId}`, { wipLimit });
+}

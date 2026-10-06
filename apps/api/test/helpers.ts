@@ -25,7 +25,7 @@ export async function signUp(
   };
 }
 
-type StatusJson = { id: string; name: string; type: "open" | "active" | "done"; order: number };
+type StatusJson = { id: string; name: string; type: "open" | "active" | "done"; order: number; wipLimit?: number | null };
 
 export async function seedWorkspace(cookie: string, name = "Engineering") {
   const workspace = await api()

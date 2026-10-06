@@ -9,16 +9,20 @@ import BoardSkeleton from "./BoardSkeleton";
 import { ViewToolbar } from "@/features/viewConfig/components/ViewToolbar";
 import GroupedBoardColumns from "@/features/viewConfig/components/GroupedBoardColumns";
 import { useViewConfigStore } from "@/features/viewConfig/store";
+import SwimlaneBoard from "./SwimlaneBoard";
 
 function Columns() {
   const { statuses, isPending } = useStatuses();
   const groupBy = useViewConfigStore((s) => s.groupBy);
+  const swimlanes = useViewConfigStore((s) => s.swimlanes);
 
   return (
     <div className="flex h-full flex-col">
-      <ViewToolbar groupable />
+      <ViewToolbar groupable swimlanable />
       {groupBy !== "status" ? (
         <GroupedBoardColumns groupBy={groupBy} />
+      ) : swimlanes !== "none" ? (
+        <SwimlaneBoard mode={swimlanes} />
       ) : (
       <section className="min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto scroll-px-3 p-3 sm:snap-none sm:p-4">
         <main className="flex h-full min-w-fit flex-row gap-4 sm:flex-col after:min-w-[0.1px] after:content-[''] lg:flex-row">
