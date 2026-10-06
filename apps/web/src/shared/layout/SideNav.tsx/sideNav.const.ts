@@ -34,7 +34,8 @@ export const SIDE_NAV_ITEMS = [
   },
   {
     icon: "paintBrush" as IconsMap,
-    label: "Whiteboard",
-    href: "/home/whiteboard",
+    label: "Whiteboards",
+    href: "/home/whiteboards",
+    includedRoutes: ["/home/whiteboard"],
   },
 ];

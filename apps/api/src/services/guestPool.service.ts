@@ -16,6 +16,14 @@ import { env } from "../config/env.js";
 
 type Claimed = { id: string; landingListId: string | null };
 
+/**
+ * Guests pooled before this instant were seeded by an older demo seed. They are never
+ * claimed or counted, so the pool refills with the current seed after each deploy that
+ * changes it, and the leftovers age out through the normal guest cleanup.
+ * Bump it whenever the guest seed gains new demo data.
+ */
+export const POOL_SEED_EPOCH = "2026-10-06T14:45:00.000Z";
+
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();
 
@@ -24,7 +32,7 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
   const rows = await prisma.$queryRaw<Claimed[]>`
     WITH pick AS (
       SELECT id, "pooledAt" FROM "User"
-      WHERE "pooledAt" IS NOT NULL
+      WHERE "pooledAt" >= ${POOL_SEED_EPOCH}::timestamp
       ORDER BY "pooledAt" DESC
       LIMIT 1
       FOR UPDATE SKIP LOCKED
@@ -62,6 +70,9 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
     ), docs AS (
       UPDATE "Doc" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
+    ), whiteboards AS (
+      UPDATE "Whiteboard" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
+      FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
     )
     SELECT id, "landingListId" FROM claimed`;
   return rows[0];
@@ -76,7 +87,7 @@ export function markPooled(userId: string, landingListId: string, now = new Date
 
 export async function countPooledGuests() {
   const [row] = await prisma.$queryRaw<{ n: number }[]>`
-    SELECT count(*)::int AS n FROM "User" WHERE "pooledAt" IS NOT NULL`;
+    SELECT count(*)::int AS n FROM "User" WHERE "pooledAt" >= ${POOL_SEED_EPOCH}::timestamp`;
   return row?.n ?? 0;
 }
 

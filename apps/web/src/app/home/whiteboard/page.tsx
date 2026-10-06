@@ -1,16 +1,17 @@
-import Whiteboard from "@/features/whiteboard/components/Whiteboard";
-import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { createServerAxios } from "@/shared/lib/axios/server";
 
-export const metadata: Metadata = {
-  title: "Whiteboard",
-};
-
-function page() {
-  return (
-    <div className="h-full w-full">
-      <Whiteboard />
-    </div>
-  );
+/** The old single-board route: opens the first board, or the whiteboards index. */
+async function LegacyWhiteboardPage() {
+  let firstId: string | undefined;
+  try {
+    const axios = await createServerAxios();
+    const boards = await axios.get<{ id: string }[]>("/whiteboards");
+    firstId = boards[0]?.id;
+  } catch {
+    firstId = undefined;
+  }
+  redirect(firstId ? `/home/whiteboards/${firstId}` : "/home/whiteboards");
 }
 
-export default page;
+export default LegacyWhiteboardPage;

@@ -10,6 +10,7 @@ import { buildDemoCollab } from "../seed/demoCollab.js";
 import { applyDemoRecurrence, buildDemoTimeEntries } from "../seed/demoTime.js";
 import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 import { buildDemoDocs } from "../seed/demoDocs.js";
+import { buildDemoWhiteboards } from "../seed/demoWhiteboards.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -87,6 +88,7 @@ export async function seedGuest({
       : []),
     prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
     prisma.doc.createMany({ data: buildDemoDocs(userId, seed) }),
+    prisma.whiteboard.createMany({ data: buildDemoWhiteboards(userId, seed) }),
     prisma.timeEntry.createMany({
       data: buildDemoTimeEntries({ ownerUserId: userId, seed, teammates: team.users }),
     }),

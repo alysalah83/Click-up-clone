@@ -54,6 +54,7 @@ model User {
   memberships    WorkspaceMember[]
   savedViews     SavedView[]
   docs           Doc[]
+  whiteboards    Whiteboard[]
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
   activities     Activity[]
@@ -69,17 +70,18 @@ model User {
 }
 
 model Workspace {
-  id        String            @id @default(uuid())
-  name      String
-  userId    String?
-  avatarId  String
-  lists     List[]
-  members   WorkspaceMember[]
-  invites   WorkspaceInvite[]
-  tags      Tag[]
-  docs      Doc[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  id          String            @id @default(uuid())
+  name        String
+  userId      String?
+  avatarId    String
+  lists       List[]
+  members     WorkspaceMember[]
+  invites     WorkspaceInvite[]
+  tags        Tag[]
+  docs        Doc[]
+  whiteboards Whiteboard[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   user   User?  @relation(fields: [userId], references: [id])
   avatar Avatar @relation(fields: [avatarId], references: [id])
@@ -469,5 +471,23 @@ model Doc {
   createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, parentId])
+  @@index([createdById])
+}
+
+/// An Excalidraw board in a space. `scene` is the serialized scene `{ elements, appState, files }`,
+/// or `{ skeleton: true, elements }` for seeded boards that the client converts on first open.
+model Whiteboard {
+  id          String   @id @default(uuid())
+  workspaceId String
+  title       String   @default("")
+  scene       String   @default("")
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
   @@index([createdById])
 }
