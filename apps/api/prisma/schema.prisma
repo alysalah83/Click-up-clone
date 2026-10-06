@@ -67,6 +67,8 @@ model User {
   comments       Comment[]
   attachments    Attachment[]
   taskTemplates  TaskTemplate[]
+  createdForms   Form[]          @relation("FormCreator")
+  assigneeForms  Form[]          @relation("FormAssignee")
   commentReactions CommentReaction[]
   commentMentions  CommentMention[]
   notifications  Notification[] @relation("NotificationRecipient")
@@ -115,6 +117,7 @@ model List {
   status      Status[]
   automations Automation[]
   savedViews  SavedView[]
+  forms       Form[]
   /// Set on sprint lists (null = a regular list). Dates are calendar days at 12:00 UTC.
   sprintNumber Int?
   sprintStart  DateTime?
@@ -174,6 +177,7 @@ model Status {
   listId    String
   createdAt DateTime   @default(now())
   tasks     Task[]
+  forms     Form[]
 
   list List @relation(fields: [listId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
@@ -622,4 +626,38 @@ model TaskTemplate {
 
   @@index([workspaceId])
   @@index([createdById])
+}
+
+/// A public form on a list (ClickUp Form view): each submission creates a task in the list.
+/// `fields` is the ordered field list validated by `formFieldsSchema` (@clickup/shared); `slug` is
+/// the unguessable public link token. Tasks are created by `createdById` (the form owner).
+model Form {
+  id              String    @id @default(uuid())
+  listId          String
+  createdById     String
+  title           String
+  description     String    @default("")
+  slug            String    @unique
+  isActive        Boolean   @default(true)
+  /// Status of the created tasks (null = the list's open status).
+  statusId        String?
+  /// Priority of the created tasks when no field sets one.
+  priority        Priority  @default(none)
+  assigneeId      String?
+  tagIds          String[]  @default([])
+  fields          Json
+  submissionCount Int       @default(0)
+  lastSubmittedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  list      List    @relation(fields: [listId], references: [id], onDelete: Cascade)
+  createdBy User    @relation("FormCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  status    Status? @relation(fields: [statusId], references: [id], onDelete: SetNull)
+  assignee  User?   @relation("FormAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  @@index([listId])
+  @@index([createdById])
+  @@index([statusId])
+  @@index([assigneeId])
 }

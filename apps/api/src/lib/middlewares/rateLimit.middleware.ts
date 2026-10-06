@@ -41,3 +41,21 @@ export const guestLimiter = rateLimit({
   limit: env.GUEST_SIGNUPS_PER_MINUTE,
   keyGenerator: () => "all-guests",
 });
+
+/**
+ * Public form submissions: the web proxy forwards the visitor's IP as X-Client-Ip, so each
+ * visitor gets FORM_SUBMISSIONS_PER_MINUTE per form, and a form takes at most 10x that overall.
+ */
+const formSlug = (req: Request) => String(req.params?.slug ?? "");
+export const formSubmitLimiter = rateLimit({
+  ...shared,
+  windowMs: 60 * 1000,
+  limit: env.FORM_SUBMISSIONS_PER_MINUTE,
+  keyGenerator: (req) => `${formSlug(req)}:${String(req.get("x-client-ip") ?? "anonymous").slice(0, 64)}`,
+});
+export const formSubmitGlobalLimiter = rateLimit({
+  ...shared,
+  windowMs: 60 * 1000,
+  limit: env.FORM_SUBMISSIONS_PER_MINUTE * 10,
+  keyGenerator: formSlug,
+});

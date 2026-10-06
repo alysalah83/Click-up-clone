@@ -79,6 +79,8 @@ export function activitySentence({
       return [plain("attached "), strong(data.name)];
     case "created_from_template":
       return [plain("created this task from template "), strong(data.name)];
+    case "submitted_via_form":
+      return [plain("submitted via form "), strong(data.name)];
     default:
       return [plain("updated this task")];
   }

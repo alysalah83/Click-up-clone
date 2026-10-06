@@ -22,6 +22,8 @@ export function loadEnv() {
     ),
     /** Vercel Blob store token (production/preview only); without it attachments uploads answer 503. */
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN || undefined,
+    /** Public form submissions per visitor per form per minute (see formSubmitLimiter). */
+    FORM_SUBMISSIONS_PER_MINUTE: Number(process.env.FORM_SUBMISSIONS_PER_MINUTE ?? 5),
     LOGIN_ATTEMPTS_PER_15_MIN: Number(process.env.LOGIN_ATTEMPTS_PER_15_MIN ?? 10),
   };
 }

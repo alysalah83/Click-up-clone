@@ -77,6 +77,7 @@ export const ACTIVITY_TYPES = [
   "sprint_carried",
   "attachment_added",
   "created_from_template",
+  "submitted_via_form",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 

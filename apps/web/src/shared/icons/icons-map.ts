@@ -7,6 +7,7 @@ import {
   FaRegFileAlt,
   FaSignOutAlt,
   FaUsers,
+  FaWpforms,
 } from "react-icons/fa";
 import {
   FaArrowDownLong,
@@ -107,4 +108,5 @@ export const ICONS_MAP = {
   copy: FiCopy,
   link: FiLink,
   externalLink: FiExternalLink,
+  form: FaWpforms,
 } as const;
