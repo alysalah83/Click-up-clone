@@ -25,6 +25,8 @@ mkdirSync(SHOTS, { recursive: true });
 
 const NO_MOTION = "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}";
 const TASK = /Export tasks to CSV/;
+// Has a description, subtasks, tags and activity: the best-looking task panel.
+const RICH_TASK = /Add Google SSO to the login page/;
 
 async function newPage(browser, { theme = "dark", width = 1440, height = 900, mobile = false } = {}) {
   const context = await browser.newContext({
@@ -67,9 +69,9 @@ async function go(page, url) {
 const view = (boardUrl, name) => boardUrl.replace(/\/board.*$/, `/${name}`);
 
 async function openTask(page) {
-  await page.getByRole("button", { name: TASK }).first().click();
+  await page.getByRole("button", { name: RICH_TASK }).first().click();
   const panel = page.getByRole("dialog", { name: "Task details" });
-  await panel.getByRole("textbox", { name: "task name" }).waitFor();
+  await panel.getByRole("textbox", { name: "task name", exact: true }).waitFor();
   await panel.getByText("Activity", { exact: true }).first().waitFor();
   await settle(page, 1500);
 }
@@ -176,15 +178,13 @@ async function gif(browser) {
   await page.getByRole("button", { name: TASK }).first().waitFor();
   const board = page.url();
   await hold(2200);
-  await page.getByRole("button", { name: TASK }).first().hover();
+  await page.getByRole("button", { name: RICH_TASK }).first().hover();
   await hold(500);
   await openTask(page);
   await hold(2600);
   await page.keyboard.press("Escape");
   await go(page, view(board, "timeline"));
   await hold(2200);
-  await go(page, view(board, "calendar"));
-  await hold(1600);
   await go(page, `${BASE}/home/dashboard`);
   await hold(2400);
   await context.close();
