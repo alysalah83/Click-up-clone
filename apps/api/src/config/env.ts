@@ -16,6 +16,10 @@ export function loadEnv() {
     /** Public web origin, used to build invite links. */
     WEB_URL: (process.env.WEB_URL ?? "https://click-up-clone-two.vercel.app").replace(/\/$/, ""),
     GUEST_SIGNUPS_PER_MINUTE: Number(process.env.GUEST_SIGNUPS_PER_MINUTE ?? 30),
+    /** Pre-seeded guest accounts kept ready so guest login is instant. Off in tests. */
+    GUEST_POOL_SIZE: Number(
+      process.env.GUEST_POOL_SIZE ?? (process.env.NODE_ENV === "test" ? 0 : 3),
+    ),
     LOGIN_ATTEMPTS_PER_15_MIN: Number(process.env.LOGIN_ATTEMPTS_PER_15_MIN ?? 10),
   };
 }

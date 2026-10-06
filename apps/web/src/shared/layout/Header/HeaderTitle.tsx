@@ -29,6 +29,7 @@ function HeaderTitle() {
   else if (pathname.startsWith("/home/teams")) title = "Teams";
   else if (pathname.startsWith("/home/my-work")) title = "My Work";
   else if (pathname.startsWith("/home/inbox")) title = "Inbox";
+  else if (pathname.startsWith("/home/docs")) title = "Docs";
   else if (pathname === "/home/lists") title = "Lists Overview";
   else if (isListPage && list?.name) title = list.name;
 

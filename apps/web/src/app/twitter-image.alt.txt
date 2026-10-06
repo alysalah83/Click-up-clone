@@ -1,0 +1,1 @@
+ClickUp Clone: a Kanban board with statuses, assignees and priorities, next to the headline 'All your team's work in one place.'

@@ -10,6 +10,8 @@ import { buildDemoCollab } from "../seed/demoCollab.js";
 import { applyDemoRecurrence, buildDemoTimeEntries } from "../seed/demoTime.js";
 import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 import { buildDemoDocs } from "../seed/demoDocs.js";
+import { env } from "../config/env.js";
+import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
 const publicUser = {
   id: true,
@@ -40,7 +42,10 @@ export async function registerUser({ name, email, password }: RegisterInput) {
  * gets rich descriptions, subtasks, checklists, tags and a backdated activity history.
  * Seeded guests skip the onboarding wizard.
  */
-export async function registerGuest(template = DEMO_TEMPLATE) {
+export async function seedGuest({
+  template = DEMO_TEMPLATE,
+  pooled = false,
+}: { template?: typeof DEMO_TEMPLATE; pooled?: boolean } = {}) {
   const userId = randomUUID();
   const seed = buildDemoWorkspace(userId, new Date(), template);
   const team = buildDemoTeammates({
@@ -105,8 +110,24 @@ export async function registerGuest(template = DEMO_TEMPLATE) {
           prisma.notification.createMany({ data: collab.notifications }),
         ]
       : []),
+    ...(pooled ? [markPooled(userId, seed.landingListId)] : []),
   ]);
   return { user, landingListId: seed.landingListId };
+}
+
+/**
+ * Hands out a pre-seeded guest from the pool when one is ready (one SQL statement), else seeds
+ * one on the spot. Either way the pool is topped up after the response is sent.
+ */
+export async function registerGuest(template = DEMO_TEMPLATE) {
+  if (env.GUEST_POOL_SIZE <= 0 || template !== DEMO_TEMPLATE) return seedGuest({ template });
+
+  const claimed = await claimPooledGuest();
+  runAfterResponse(refillGuestPool());
+  if (!claimed?.landingListId) return seedGuest({ template });
+
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: claimed.id }, select: publicUser });
+  return { user, landingListId: claimed.landingListId };
 }
 
 export async function verifyCredentials({ email, password }: LoginInput) {

@@ -1,5 +1,6 @@
 import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { memo } from "react";
+import { Repeat } from "lucide-react";
 import {
   iconsSize,
   slotBorderClasses,
@@ -18,7 +19,7 @@ function TaskNameSlot() {
   const {
     toggleIsRenameOpen,
     isRenameOpen,
-    task: { id, name, status },
+    task: { id, name, status, recurrenceType },
     isTempTask,
   } = useTask();
   const { updateTask } = useUpdateTask();
@@ -51,6 +52,12 @@ function TaskNameSlot() {
         <div className={`flex w-full items-center gap-1.5`}>
           <Icon className={`${iconColor} ${iconsSize} shrink-0`} />
           <span className="line-clamp-1 truncate">{name}</span>
+          {recurrenceType && recurrenceType !== "none" && (
+            <Repeat
+              className="size-3 shrink-0 text-muted-foreground"
+              aria-label="repeating task"
+            />
+          )}
         </div>
       )}
     </div>

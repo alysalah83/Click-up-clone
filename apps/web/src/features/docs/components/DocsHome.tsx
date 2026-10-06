@@ -11,7 +11,7 @@ import { useCreateDoc, useDocs, useWorkspaceNames } from "../hooks/useDocs";
 import { docTitle } from "../lib";
 
 function relativeDate(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function DocsHome() {

@@ -106,7 +106,7 @@ function Section({
 
 function TaskRow({ task }: { task: MyWorkTask }) {
   const due = task.dueDate
-    ? new Date(task.dueDate).toLocaleDateString(undefined, { month: "short", day: "numeric" })
+    ? new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })
     : null;
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
