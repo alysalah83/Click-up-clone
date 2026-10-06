@@ -53,6 +53,9 @@ const todo = (...items: string[]): Node => ({
 });
 const doc = (...content: Node[]): Node => ({ type: "doc", content });
 
+/** The builders, for other demo content (task templates). */
+export const tiptap = { h, p, ul, ol, todo, doc };
+
 export const DEMO_DESCRIPTIONS: Record<string, Node> = {
   "sprint.sso": doc(
     h(2, "Goal"),

@@ -16,6 +16,8 @@ import { getFormattedRangeDate } from "@/shared/lib/utils/getFormattedRangeDate"
 import PriorityMenu from "@/features/task/components/PriorityMenu";
 import ErrorMessage from "@/shared/ui/ErrorMessage/ErrorMessage";
 import { Controller, useWatch } from "react-hook-form";
+import { useParams } from "next/navigation";
+import UseTemplateButton from "@/features/taskTemplates/components/UseTemplateButton";
 
 interface AddTaskFormProps {
   columnStatusId: Task["statusId"];
@@ -23,6 +25,7 @@ interface AddTaskFormProps {
 
 function AddTaskForm({ columnStatusId }: AddTaskFormProps) {
   const { handleCloseForm } = useActiveColumnForm();
+  const { listId } = useParams<{ listId: string }>();
   const {
     register,
     handleSubmit,
@@ -137,6 +140,12 @@ function AddTaskForm({ columnStatusId }: AddTaskFormProps) {
             />
           </MenuContent>
         </Menu>
+        <UseTemplateButton
+          target={{ listId, statusId: columnStatusId }}
+          onOpen={handleCloseForm}
+          label="Use template"
+          className="w-full border-0 px-1 py-1 text-sm font-normal text-inherit dark:text-inherit"
+        />
       </div>
     </form>
   );

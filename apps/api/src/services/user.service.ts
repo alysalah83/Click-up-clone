@@ -14,6 +14,7 @@ import { buildDemoWhiteboards } from "../seed/demoWhiteboards.js";
 import { buildDemoSprints } from "../seed/demoSprints.js";
 import { buildDemoGoals } from "../seed/demoGoals.js";
 import { buildDemoAttachments } from "../seed/demoAttachments.js";
+import { buildDemoTaskTemplates } from "../seed/demoTaskTemplates.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -102,6 +103,7 @@ export async function seedGuest({
     prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
     prisma.doc.createMany({ data: buildDemoDocs(userId, seed) }),
     prisma.whiteboard.createMany({ data: buildDemoWhiteboards(userId, seed) }),
+    prisma.taskTemplate.createMany({ data: buildDemoTaskTemplates(userId, seed) }),
     prisma.activity.createMany({ data: sprints.activities }),
     ...(goals
       ? [

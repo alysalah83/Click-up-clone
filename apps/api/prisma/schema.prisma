@@ -66,6 +66,7 @@ model User {
   checklistItems ChecklistItem[]
   comments       Comment[]
   attachments    Attachment[]
+  taskTemplates  TaskTemplate[]
   commentReactions CommentReaction[]
   commentMentions  CommentMention[]
   notifications  Notification[] @relation("NotificationRecipient")
@@ -86,6 +87,7 @@ model Workspace {
   docs        Doc[]
   whiteboards Whiteboard[]
   goals       Goal[]
+  taskTemplates TaskTemplate[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -600,4 +602,24 @@ model GoalTargetTask {
 
   @@id([targetId, taskId])
   @@index([taskId])
+}
+
+/// A reusable task in a space: `snapshot` is the task with its subtasks and checklists, validated by
+/// `taskTemplateSnapshotSchema` (@clickup/shared). Templates of every space the user belongs to can
+/// be applied in any list they can reach.
+model TaskTemplate {
+  id          String   @id @default(uuid())
+  workspaceId String
+  name        String
+  description String   @default("")
+  snapshot    Json
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([createdById])
 }

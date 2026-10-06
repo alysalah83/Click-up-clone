@@ -12,6 +12,8 @@ import { ColorsToken } from "@/shared/ui/ColorPicker/types";
 import { sizeClasses } from "@/shared/constants/styles";
 import { useStatuses } from "@/features/status/hooks/useStatuses";
 import { useWatch } from "react-hook-form";
+import { useParams } from "next/navigation";
+import UseTemplateButton from "@/features/taskTemplates/components/UseTemplateButton";
 
 function OpenedAddTaskRow({
   statusId,
@@ -23,6 +25,7 @@ function OpenedAddTaskRow({
   onClose: () => void;
 }) {
   const { statuses } = useStatuses();
+  const { listId } = useParams<{ listId: string }>();
   const curStatus = statuses?.find((status) => status.id === statusId);
   const { formRef, register, isValid, handleSubmit, setValue, control } =
     useAddTaskForm({ onClose, statusId });
@@ -79,6 +82,7 @@ function OpenedAddTaskRow({
           onPriorityChange={(priority) => setValue("priority", priority)}
         />
         <div className="flex items-center gap-2">
+          <UseTemplateButton target={{ listId, statusId }} onOpen={onClose} />
           <Button
             type="secondary"
             size="small"

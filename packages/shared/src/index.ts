@@ -17,3 +17,4 @@ export * from "./whiteboard.js";
 export * from "./sprint.js";
 export * from "./goal.js";
 export * from "./attachment.js";
+export * from "./taskTemplate.js";

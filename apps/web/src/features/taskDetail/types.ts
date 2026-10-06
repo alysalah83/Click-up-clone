@@ -18,7 +18,8 @@ type ActivityType =
   | "time_logged"
   | "points"
   | "sprint_carried"
-  | "attachment_added";
+  | "attachment_added"
+  | "created_from_template";
 
 interface ChecklistItem {
   id: string;

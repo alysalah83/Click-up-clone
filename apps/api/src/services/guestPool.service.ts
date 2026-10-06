@@ -23,7 +23,7 @@ type Claimed = { id: string; landingListId: string | null };
  * and the leftovers age out through the normal guest cleanup.
  * Increment it whenever the guest seed gains new demo data.
  */
-export const POOL_SEED_VERSION = 5;
+export const POOL_SEED_VERSION = 6;
 
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();
@@ -81,6 +81,9 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
     ), whiteboards AS (
       UPDATE "Whiteboard" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
+      FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
+    ), templates AS (
+      UPDATE "TaskTemplate" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
     ), goals AS (
       UPDATE "Goal" x

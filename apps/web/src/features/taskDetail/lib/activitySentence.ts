@@ -77,6 +77,8 @@ export function activitySentence({
       return [plain("carried this task over from "), strong(data.from), plain(" to "), strong(data.to)];
     case "attachment_added":
       return [plain("attached "), strong(data.name)];
+    case "created_from_template":
+      return [plain("created this task from template "), strong(data.name)];
     default:
       return [plain("updated this task")];
   }

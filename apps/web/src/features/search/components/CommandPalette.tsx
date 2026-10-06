@@ -30,6 +30,7 @@ const QUICK_NAV: Item[] = [
   { key: "nav-home", group: "Go to", label: "Home", href: "/home/my-work" },
   { key: "nav-inbox", group: "Go to", label: "Inbox", href: "/home/inbox" },
   { key: "nav-goals", group: "Go to", label: "Goals", href: "/home/goals" },
+  { key: "nav-templates", group: "Go to", label: "Templates", href: "/home/templates" },
   { key: "nav-docs", group: "Go to", label: "Docs", href: "/home/docs" },
   { key: "nav-whiteboards", group: "Go to", label: "Whiteboards", href: "/home/whiteboards" },
   { key: "nav-teams", group: "Go to", label: "Teams", href: "/home/teams" },
