@@ -8,6 +8,6 @@ export const myWork = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const search = catchAsync(async (req: Request, res: Response) => {
-  const { q } = req.query as { q: string };
-  res.status(200).json(await service.search(req.userId, q));
+  const { q, workspaceId } = req.query as { q: string; workspaceId?: string };
+  res.status(200).json(await service.search(req.userId, q, workspaceId));
 });

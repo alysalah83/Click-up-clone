@@ -23,6 +23,12 @@ export const SIDE_NAV_ITEMS = [
     href: "/home/dashboard",
   },
   {
+    icon: "bullEye" as IconsMap,
+    label: "Goals",
+    href: "/home/goals",
+    includedRoutes: ["/home/goals"],
+  },
+  {
     icon: "doc" as IconsMap,
     label: "Docs",
     href: "/home/docs",
