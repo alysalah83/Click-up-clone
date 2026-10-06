@@ -7,7 +7,7 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
 **[Try the live demo →](https://click-up-clone-two.vercel.app)** One click, no sign-up: you get a private, pre-filled workspace with six teammates, ~80 tasks, docs, comments and notifications.
 
 <p align="center">
-  <a href="https://click-up-clone-two.vercel.app"><img src="assets/demo.gif" alt="Demo: landing page, one-click guest demo, board, task panel, timeline, calendar and dashboard" width="880" /></a>
+  <a href="https://click-up-clone-two.vercel.app"><img src="assets/demo.gif" alt="Demo: landing page, one-click guest demo, board, task panel, timeline and dashboard" width="880" /></a>
 </p>
 
 ## Screenshots

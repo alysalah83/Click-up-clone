@@ -1,6 +1,6 @@
 # Handoff: next steps for new chats
 
-Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, AI shipped). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
+Last updated: 2026-10-06 (fifth sprint: portfolio pass: instant guest login, mobile calendar, OG card, README GIF). **Every new chat starts by reading this file.** At the end of each chat, update the "Current state" table and tick the step you finished.
 
 ## Current state
 
@@ -30,12 +30,24 @@ Last updated: 2026-09-30 (second sprint: Steps 4–6, shadcn restyle, palette, A
 | E3 | Docs: nested pages per space, Tiptap editor with autosave, sidebar tree, Ctrl+K | ✅ shipped 2026-10-01, not eyeballed |
 | E4 | Mobile layout: sidebar drawer, snap-scroll board, wrapped My Work rows, capped modals | ✅ shipped 2026-10-01 (Playwright at 390px) |
 | E4b | Landing page refresh: hero, "Try the live demo", screenshots (`public/landing/`), feature grid | ✅ shipped 2026-10-01 |
+| F1 | Instant guest login: pre-seeded guest pool (`guestPool.service.ts`), claim = 1 SQL statement, refill after response | ✅ live 2026-10-06 (API 3.6 s → ~0.8 s; click → board ~2 s) |
+| F2 | Calendar on phones: compact month grid with dots + day list, week = day list | ✅ live 2026-10-06 (screenshot at 390px) |
+| F3 | Recurrence copies checklists (unchecked) and subtasks; repeat icon in List/Table | ✅ live 2026-10-06 |
+| F4 | Portfolio: page titles/description, Open Graph + Twitter card image, README rewrite with demo GIF and fresh screenshots | ✅ live 2026-10-06 |
 
 - **Repo:** `D:\projects\click-up\click-up-clone`. GitHub `alysalah83/Click-up-clone`. Production branch `master`.
 - **Live:**
   - Web: https://click-up-clone-two.vercel.app
   - API: https://click-up-clone-back-end.vercel.app (`/health`)
 - **Deploys:** pushing `master` deploys both apps. The API build **applies Prisma migrations to Neon automatically** (`apps/api/scripts/migrate-on-deploy.mjs`). Never ask the owner to run migrations.
+
+## Fifth sprint (2026-10-06): portfolio pass
+
+F1–F4 above, plus two bugs found while capturing: the Docs header said "List", and My Work/Docs dates followed the browser locale (now `en-US`).
+- **Guest pool:** `User.pooledAt` / `User.landingListId` (migration `20261008120000_guest_pool`). Pool size is `GUEST_POOL_SIZE` (default 3, 0 in tests). `registerGuest` claims the newest pooled guest with `FOR UPDATE SKIP LOCKED` and shifts its seeded dates (task dates by whole UTC days, other timestamps exactly) to the claim time; if the pool is empty it seeds inline (~4–7 s) as before. Refill runs through Vercel's request-context `waitUntil` (no `@vercel/functions` dependency). The pool code is raw SQL only. The schema has no index on `pooledAt` (the pool is tiny). Unclaimed pool guests older than 7 days are removed by the normal guest cleanup.
+- Three guest logins returned 500 while the deploy was rolling out; none since (sequential and 5 concurrent all 201). If 500s reappear, check the API logs on Vercel.
+- **Images:** `node apps/web/scripts/capture-screenshots.mjs [baseUrl] [--only=landing,readme,gif,og]` re-captures `public/landing/*.webp`, `assets/screenshots/*.png`, `assets/demo.gif` and `src/app/opengraph-image.png` / `twitter-image.png` from the live demo. Re-run after visible UI changes.
+- **Known gaps:** at desktop widths around 1280px with the sidebar open, the Calendar month grid scrolls sideways (Saturday is clipped), and continuation chips of multi-day tasks have no text. The "Guest xxxx" name shows in activity feeds. Not checked: link previews on LinkedIn (use https://www.linkedin.com/post-inspector/ after deploy to refresh its cache).
 
 ## Fourth sprint (2026-10-01)
 
@@ -60,11 +72,7 @@ D1–D5 built by parallel subagents, merged, then walked through on the live gue
 ## Rules for every chat
 
 - **One step per chat.** Chats run out of context; small steps finish cleanly.
-- **Process:**
-  1. `superpowers:brainstorming`: short, and ask the owner only what matters.
-  2. Spec in `docs/superpowers/specs/`.
-  3. `superpowers:writing-plans`: plan in `docs/superpowers/plans/`.
-  4. `superpowers:subagent-driven-development`: one implementer and one reviewer per task, a final review, one fix wave.
+- **Process:** minimal. No spec or plan docs, at most 2 agents at once (sharing one checkout and one install), run the checks, ship.
 - **Owner preferences:**
   - This is a portfolio flagship; recruiters click the **guest demo** alone, so **visible features first**.
   - Keep the ClickUp look.
