@@ -15,6 +15,7 @@ import { buildDemoSprints } from "../seed/demoSprints.js";
 import { buildDemoGoals } from "../seed/demoGoals.js";
 import { buildDemoAttachments } from "../seed/demoAttachments.js";
 import { buildDemoTaskTemplates } from "../seed/demoTaskTemplates.js";
+import { buildDemoForms } from "../seed/demoForms.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -79,6 +80,8 @@ export async function seedGuest({
     template === DEMO_TEMPLATE
       ? buildDemoGoals(userId, seed, team.users.map((u) => u.id))
       : undefined;
+  // Sets the submitted bugs' descriptions on seed.tasks, so it runs before the tasks are written.
+  const forms = template === DEMO_TEMPLATE ? buildDemoForms(userId, seed) : undefined;
   const attachments =
     template === DEMO_TEMPLATE
       ? buildDemoAttachments(seed, team.users.length > 0 ? team.users.map((u) => u.id) : [userId])
@@ -111,6 +114,9 @@ export async function seedGuest({
           prisma.goalTarget.createMany({ data: goals.targets }),
           prisma.goalTargetTask.createMany({ data: goals.targetTasks }),
         ]
+      : []),
+    ...(forms
+      ? [prisma.form.createMany({ data: forms.forms }), prisma.activity.createMany({ data: forms.activities })]
       : []),
     ...(attachments
       ? [

@@ -49,14 +49,25 @@ async function statusName(statusId: string | undefined) {
   return status?.name;
 }
 
-export async function createTask(userId: string, input: CreateTaskInput) {
+/**
+ * `extra` is for server-side callers (form submissions): a description written with the task and
+ * activity entries logged after "created".
+ */
+export async function createTask(
+  userId: string,
+  input: CreateTaskInput,
+  extra: { description?: Prisma.InputJsonObject; activities?: Omit<ActivityRow, "taskId" | "actorId">[] } = {},
+) {
   await assertCanAccess(userId, { listId: input.listId });
   await assertStatusInList(userId, input.statusId, input.listId);
   const task = await prisma.task.create({
-    data: { ...input, userId },
+    data: { ...input, userId, ...(extra.description && { description: extra.description }) },
     include: taskInclude,
   });
-  await logActivity([{ taskId: task.id, actorId: userId, type: "created" }]);
+  await logActivity([
+    { taskId: task.id, actorId: userId, type: "created" },
+    ...(extra.activities ?? []).map((a) => ({ ...a, taskId: task.id, actorId: userId })),
+  ]);
   if (task.status.type === "done") await syncCompletedAt([task.id]);
   await runAutomations(userId, { type: "task_created", taskId: task.id });
   return toTaskDto(

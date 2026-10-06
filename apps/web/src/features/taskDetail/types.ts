@@ -19,7 +19,8 @@ type ActivityType =
   | "points"
   | "sprint_carried"
   | "attachment_added"
-  | "created_from_template";
+  | "created_from_template"
+  | "submitted_via_form";
 
 interface ChecklistItem {
   id: string;

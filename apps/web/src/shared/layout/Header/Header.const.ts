@@ -38,6 +38,12 @@ export const HEADER_MENU = [
     label: "Timeline",
   },
   {
+    icon: "form",
+    iconBgColor: "bg-violet-500",
+    href: "/form",
+    label: "Form",
+  },
+  {
     icon: "exclamationMark",
     iconBgColor: "bg-gray-500",
     href: "/lists",
