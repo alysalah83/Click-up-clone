@@ -12,6 +12,7 @@ import { buildDemoSavedViews } from "../seed/demoSavedViews.js";
 import { buildDemoDocs } from "../seed/demoDocs.js";
 import { buildDemoWhiteboards } from "../seed/demoWhiteboards.js";
 import { buildDemoSprints } from "../seed/demoSprints.js";
+import { buildDemoGoals } from "../seed/demoGoals.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -72,6 +73,10 @@ export async function seedGuest({
       : undefined;
   // Sets the completed sprints' velocity snapshots on seed.lists, so it runs before lists are written.
   const sprints = buildDemoSprints(seed, team.users[0]?.id ?? userId);
+  const goals =
+    template === DEMO_TEMPLATE
+      ? buildDemoGoals(userId, seed, team.users.map((u) => u.id))
+      : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -93,6 +98,13 @@ export async function seedGuest({
     prisma.doc.createMany({ data: buildDemoDocs(userId, seed) }),
     prisma.whiteboard.createMany({ data: buildDemoWhiteboards(userId, seed) }),
     prisma.activity.createMany({ data: sprints.activities }),
+    ...(goals
+      ? [
+          prisma.goal.createMany({ data: goals.goals }),
+          prisma.goalTarget.createMany({ data: goals.targets }),
+          prisma.goalTargetTask.createMany({ data: goals.targetTasks }),
+        ]
+      : []),
     prisma.timeEntry.createMany({
       data: buildDemoTimeEntries({ ownerUserId: userId, seed, teammates: team.users }),
     }),

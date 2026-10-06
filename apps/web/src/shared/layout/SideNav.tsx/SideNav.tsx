@@ -29,7 +29,7 @@ function SideNav({ horizontal = false }: { horizontal?: boolean }) {
       className={
         horizontal
           ? "flex w-full flex-wrap items-start justify-between gap-x-2 gap-y-3 rounded-xl bg-neutral-200/60 px-2 py-3 dark:bg-neutral-800/60"
-          : "mr-2 flex w-fit flex-col items-center gap-6 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900"
+          : "mr-2 flex w-fit flex-col items-center gap-4 rounded-2xl bg-neutral-100 px-1 py-4 shadow-xs md:px-2 dark:bg-neutral-900"
       }
     >
       <SearchButton />

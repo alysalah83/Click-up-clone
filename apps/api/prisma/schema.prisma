@@ -57,6 +57,8 @@ model User {
   savedViews     SavedView[]
   docs           Doc[]
   whiteboards    Whiteboard[]
+  createdGoals   Goal[]            @relation("GoalCreator")
+  ownedGoals     Goal[]            @relation("GoalOwner")
   assignedTasks  TaskAssignee[]
   createdInvites WorkspaceInvite[]
   activities     Activity[]
@@ -82,6 +84,7 @@ model Workspace {
   tags        Tag[]
   docs        Doc[]
   whiteboards Whiteboard[]
+  goals       Goal[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -200,6 +203,7 @@ model Task {
   notifications Notification[]
   blockedBy     TaskDependency[] @relation("TaskBlockedBy")
   blocking      TaskDependency[] @relation("TaskBlocks")
+  goalTargets   GoalTargetTask[]
   /// Repeat rule: when the task is completed the next occurrence is created. custom = every N days.
   recurrenceType     RecurrenceType @default(none)
   recurrenceInterval Int            @default(1)
@@ -510,4 +514,67 @@ model Whiteboard {
 
   @@index([workspaceId])
   @@index([createdById])
+}
+
+enum GoalTargetType {
+  number
+  currency
+  boolean
+  tasks
+}
+
+/// A goal (OKR) in a space. Progress is never stored: it is the average of its targets'
+/// progress, computed on read. `dueDate` is a calendar day at 12:00 UTC.
+model Goal {
+  id          String    @id @default(uuid())
+  workspaceId String
+  name        String
+  description String    @default("")
+  color       String    @default("violet")
+  ownerId     String?
+  dueDate     DateTime?
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  workspace Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner     User?        @relation("GoalOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy User         @relation("GoalCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  targets   GoalTarget[]
+
+  @@index([workspaceId])
+  @@index([ownerId])
+  @@index([createdById])
+}
+
+/// A key result. Number/currency: start -> target value (`unit` is the currency symbol or a
+/// unit label). Boolean: done when currentValue >= 1. Tasks: done linked tasks / linked tasks.
+model GoalTarget {
+  id           String         @id @default(uuid())
+  goalId       String
+  name         String
+  type         GoalTargetType
+  startValue   Float          @default(0)
+  currentValue Float          @default(0)
+  targetValue  Float          @default(1)
+  unit         String?
+  order        Int            @default(0)
+  createdAt    DateTime       @default(now())
+
+  goal  Goal             @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  tasks GoalTargetTask[]
+
+  @@index([goalId])
+}
+
+model GoalTargetTask {
+  targetId  String
+  taskId    String
+  createdAt DateTime @default(now())
+
+  target GoalTarget @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  task   Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@id([targetId, taskId])
+  @@index([taskId])
 }

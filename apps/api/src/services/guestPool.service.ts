@@ -8,7 +8,7 @@ import { env } from "../config/env.js";
  * A pooled guest is a normal guest whose `pooledAt` is set. Claiming it clears `pooledAt`,
  * resets `createdAt` (guest cleanup counts from the claim), and moves its seeded dates
  * forward so "overdue", "today" and "2h ago" still read correctly however long it waited:
- * task start/due dates and sprint dates by whole UTC days (they sit at 12:00 UTC), other
+ * task start/due dates, sprint dates and goal due dates by whole UTC days (they sit at 12:00 UTC), other
  * timestamps exactly.
  *
  * Raw SQL on purpose: one round trip, and `FOR UPDATE SKIP LOCKED` keeps concurrent
@@ -23,7 +23,7 @@ type Claimed = { id: string; landingListId: string | null };
  * and the leftovers age out through the normal guest cleanup.
  * Increment it whenever the guest seed gains new demo data.
  */
-export const POOL_SEED_VERSION = 3;
+export const POOL_SEED_VERSION = 4;
 
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();
@@ -78,6 +78,10 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
     ), whiteboards AS (
       UPDATE "Whiteboard" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
+      FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
+    ), goals AS (
+      UPDATE "Goal" x
+      SET "dueDate" = x."dueDate" + c.days, "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
     )
     SELECT id, "landingListId" FROM claimed`;

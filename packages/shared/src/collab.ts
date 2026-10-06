@@ -74,7 +74,8 @@ export type MyWorkTaskDto = {
 
 // --- Search -----------------------------------------------------------------------------------
 
-export const searchQuerySchema = z.object({ q: z.string().trim().min(1).max(100) });
+/** `workspaceId` narrows task results to one space (the goal target task picker). */
+export const searchQuerySchema = z.object({ q: z.string().trim().min(1).max(100), workspaceId: idSchema.optional() });
 
 export type SearchResultDto = {
   tasks: { id: string; name: string; listId: string; status: { id: string; name: string; type: "open" | "active" | "done" } }[];

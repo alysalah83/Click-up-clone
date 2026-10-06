@@ -12,6 +12,7 @@ import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { Menu, MenuContent, MenuTrigger } from "@/shared/ui/Menu/MenuCompound";
 import RepeatField from "./RepeatField";
 import PointsPicker from "@/features/sprint/components/PointsPicker";
+import TaskGoalsRow from "@/features/goals/components/TaskGoalsRow";
 import DateUpdater from "../DateUpdater";
 import PriorityUpdater from "../PriorityUpdater";
 import { TASK_PRIORITIES_LIST } from "../../constants/tasks.const";
@@ -165,6 +166,8 @@ function PropertiesGrid({ task }: { task: TaskDetail }) {
           <TagsField detail={task} />
         </Property>
       </div>
+
+      <TaskGoalsRow taskId={task.id} statusId={task.status.id} />
     </div>
   );
 }

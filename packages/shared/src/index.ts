@@ -15,3 +15,4 @@ export * from "./timeEntry.js";
 export * from "./doc.js";
 export * from "./whiteboard.js";
 export * from "./sprint.js";
+export * from "./goal.js";
