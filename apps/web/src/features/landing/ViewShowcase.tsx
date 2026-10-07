@@ -5,8 +5,11 @@ import { useState } from "react";
 import {
   ChartColumn,
   ChartGantt,
+  MessagesSquare,
+  Network,
   PanelRight,
   SquareKanban,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -40,6 +43,30 @@ const VIEWS: {
     caption:
       "Subtasks, checklists, comments with @mentions, time tracking and an activity log, all on one task.",
     alt: "Task panel with description, subtasks and activity",
+  },
+  {
+    key: "workload",
+    label: "Workload",
+    Icon: UsersRound,
+    caption:
+      "See who is overloaded this week against their capacity, then drag a task to someone with room.",
+    alt: "Workload view with an overloaded teammate highlighted in red",
+  },
+  {
+    key: "mindmap",
+    label: "Mind Map",
+    Icon: Network,
+    caption:
+      "Tasks and their subtasks as a zoomable tree. Add a child node and it becomes a subtask.",
+    alt: "Mind map of a sprint's tasks and nested subtasks",
+  },
+  {
+    key: "chat",
+    label: "Chat",
+    Icon: MessagesSquare,
+    caption:
+      "Channels per space with @mentions and threads. Turn any message into a task in one click.",
+    alt: "Product chat channel with mentions, reactions and a linked task",
   },
   {
     key: "dashboard",
