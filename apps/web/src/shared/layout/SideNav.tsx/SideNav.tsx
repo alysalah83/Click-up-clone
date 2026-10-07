@@ -66,11 +66,11 @@ function SideNav({ horizontal = false }: { horizontal?: boolean }) {
 function SideMenuLink({ menuItem }: { menuItem: MenuItem }) {
   const { icon, label, href, includedRoutes } = menuItem;
   const pathname = usePathname();
-  let isActive = false;
-
-  if (pathname === href) isActive = true;
-  else if (includedRoutes)
-    isActive = includedRoutes.some((path) => pathname.includes(path));
+  // Match whole path segments: a substring test made "Lists" (which listed
+  // "/board") light up on /home/whiteboards.
+  const isActive = [href, ...(includedRoutes ?? [])].some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
 
   return (
     <li className="relative">
