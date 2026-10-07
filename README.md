@@ -1,6 +1,6 @@
 # ClickUp Clone
 
-A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed as a Board, List, Table, Calendar or Gantt Timeline, with a rich task panel, comments, docs, dashboards, automations, time tracking and Claude AI. Built as a pnpm + Turborepo monorepo with a Next.js front end, an Express + Prisma API and a shared zod schema package.
+A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed as a Board, List, Table, Calendar, Gantt Timeline, Workload or Mind Map, with custom fields, sprints, goals, chat, docs, whiteboards, forms, dashboards, automations, time tracking and Claude AI. Built as a pnpm + Turborepo monorepo with a Next.js front end, an Express + Prisma API and a shared zod schema package.
 
 [![CI](https://github.com/alysalah83/Click-up-clone/actions/workflows/ci.yml/badge.svg)](https://github.com/alysalah83/Click-up-clone/actions/workflows/ci.yml)
 
@@ -22,7 +22,7 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
     <td align="center"><img src="assets/screenshots/dashboard.png" alt="Dashboard" /><br><strong>Dashboard</strong>: workload, overdue, burndown, time tracked</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/table.png" alt="Table view" /><br><strong>Table</strong> with bulk edit</td>
+    <td align="center"><img src="assets/screenshots/table.png" alt="Table view" /><br><strong>Table</strong>: custom fields (dropdown, people, progress, formula) and bulk edit</td>
     <td align="center"><img src="assets/screenshots/calendar.png" alt="Calendar view" /><br><strong>Calendar</strong>: month and week, drag to reschedule</td>
   </tr>
   <tr>
@@ -31,6 +31,22 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/inbox.png" alt="Inbox" /><br><strong>Inbox</strong>: mentions, assignments, status changes</td>
+    <td align="center"><img src="assets/screenshots/teams.png" alt="Teams" /><br><strong>Teams</strong>: members, roles, invite links</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/screenshots/workload.png" alt="Workload view" /><br><strong>Workload</strong>: capacity per person, overloads in red, drag to reassign</td>
+    <td align="center"><img src="assets/screenshots/mindmap.png" alt="Mind Map view" /><br><strong>Mind Map</strong>: zoomable task tree, add a node to create a subtask</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/screenshots/sprint.png" alt="Sprint report" /><br><strong>Sprints</strong>: points, carry-over, burndown and velocity</td>
+    <td align="center"><img src="assets/screenshots/goals.png" alt="Goals" /><br><strong>Goals</strong>: OKR targets that move as tasks complete</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/screenshots/chat.png" alt="Chat channel" /><br><strong>Chat</strong>: channels per space, @mentions, threads, message to task</td>
+    <td align="center"><img src="assets/screenshots/whiteboard.png" alt="Whiteboard" /><br><strong>Whiteboards</strong>: saved per space, sticky note to task</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/screenshots/form.png" alt="Form builder" /><br><strong>Forms</strong>: public form links whose submissions create tasks</td>
     <td align="center"><img src="assets/screenshots/board-light.png" alt="Light theme" /><br><strong>Light theme</strong></td>
   </tr>
 </table>
@@ -44,12 +60,13 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
 
 ## Features
 
-- **Views:** Board, List, Table, Calendar (month/week) and Timeline (Gantt) over the same tasks; drag and drop on Board, Calendar and Timeline.
-- **Tasks:** custom statuses per list, priorities, dates, assignees, Tiptap rich-text descriptions, subtasks, checklists, colored tags, "blocked by" dependencies, recurring tasks, activity log.
-- **Collaboration:** workspace members and roles, invite links, threaded comments with @mentions and emoji reactions, Inbox with unread badge (polling, no WebSockets), My Work.
+- **Views:** Board (swimlanes by assignee or priority, WIP limits), List, Table, Calendar (month/week), Timeline (Gantt), Workload, Mind Map and Form over the same tasks; drag and drop on Board, Calendar, Timeline and Workload.
+- **Tasks:** custom statuses per list, custom fields (8 types including formulas), priorities, dates, assignees, sprint points, Tiptap rich-text descriptions, nested subtasks, checklists, colored tags, file attachments (Vercel Blob), "blocked by" dependencies, recurring tasks, templates, activity log.
+- **Collaboration:** workspace members and roles, invite links, threaded comments with @mentions and emoji reactions, chat channels per space, Inbox with unread badge (polling, no WebSockets), My Work, public read-only share links for lists and docs, public forms.
 - **Organize:** filters, group by and saved views with a default per list; Ctrl+K command palette across tasks, lists, docs and members.
-- **Automate and measure:** per-list automation rules (trigger, condition, action), time tracking with a live timer, dashboards with workload, overdue, completed this week and burndown.
-- **Docs and whiteboard:** nested pages per space with autosave; an Excalidraw whiteboard.
+- **Plan and measure:** sprints with carry-over, burndown and velocity; Goals/OKRs with live progress; per-list automation rules; time tracking with a live timer; dashboards with workload, overdue, completed this week and burndown.
+- **Docs and whiteboards:** nested pages per space with autosave; Excalidraw whiteboards saved per space, with sticky notes that become tasks.
+- **Import:** CSV (column mapping) and Trello JSON exports into a new list.
 - **AI:** Claude summarizes a task or generates subtasks from it.
 - **Polish:** dark and light themes, phone layout, accessible Radix/shadcn menus and dialogs, instant guest demo from a pre-seeded account pool.
 

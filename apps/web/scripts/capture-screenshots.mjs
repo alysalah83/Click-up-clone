@@ -76,6 +76,22 @@ async function openTask(page) {
   await settle(page, 1500);
 }
 
+/** Opens the first sidebar link whose href contains `part` (e.g. a chat channel or whiteboard). */
+async function goToLink(page, part, ms = 1500) {
+  const link = page.locator(`a[href*="${part}"]`).first();
+  await link.waitFor({ state: "attached" });
+  await go(page, new URL(await link.getAttribute("href"), BASE).href);
+  await settle(page, ms);
+}
+
+/** Opens a list by its sidebar name and returns its board URL. */
+async function goToList(page, name) {
+  const link = page.locator('a[href*="/home/lists/"]', { hasText: name }).first();
+  await link.waitFor({ state: "attached" });
+  await go(page, new URL(await link.getAttribute("href"), BASE).href);
+  return page.url();
+}
+
 async function save(page, file, { webp = false } = {}) {
   const buffer = await page.screenshot();
   if (webp) await sharp(buffer).resize({ width: 1920 }).webp({ quality: 82 }).toFile(file);
@@ -97,6 +113,13 @@ async function landing(browser) {
     await save(page, out("task"), { webp: true });
     await go(page, `${BASE}/home/dashboard`);
     await save(page, out("dashboard"), { webp: true });
+    await go(page, view(board, "workload"));
+    await save(page, out("workload"), { webp: true });
+    await go(page, view(board, "mindmap"));
+    await settle(page, 1500);
+    await save(page, out("mindmap"), { webp: true });
+    await goToLink(page, "/home/chat/");
+    await save(page, out("chat"), { webp: true });
     await page.context().close();
   }
 }
@@ -109,11 +132,11 @@ async function readme(browser) {
   await shot("board");
   await openTask(page);
   await shot("task-panel");
-  for (const name of ["list", "table", "calendar", "timeline"]) {
+  for (const name of ["list", "table", "calendar", "timeline", "workload", "mindmap", "sprint"]) {
     await go(page, view(board, name));
     await shot(name);
   }
-  for (const name of ["dashboard", "my-work", "inbox", "docs", "teams"]) {
+  for (const name of ["dashboard", "my-work", "inbox", "docs", "teams", "goals"]) {
     await go(page, `${BASE}/home/${name}`);
     if (name === "docs") {
       // open the first doc in the sidebar tree so the editor shows
@@ -122,6 +145,14 @@ async function readme(browser) {
     }
     await shot(name);
   }
+  await goToLink(page, "/home/chat/");
+  await shot("chat");
+  // Excalidraw needs a moment to convert the seeded scene and zoom to fit.
+  await goToLink(page, "/home/whiteboards/", 5000);
+  await shot("whiteboard");
+  const bugTracker = await goToList(page, "Bug Tracker");
+  await go(page, view(bugTracker, "form"));
+  await shot("form");
   await go(page, `${BASE}/login`);
   await page.context().close();
 
