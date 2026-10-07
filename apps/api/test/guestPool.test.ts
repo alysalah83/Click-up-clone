@@ -22,6 +22,12 @@ describe("guest pool", () => {
     const attachmentBefore = await prisma.attachment.findFirstOrThrow({ where: { task: { userId: user.id } } });
     const templateBefore = await prisma.taskTemplate.findFirstOrThrow({ where: { createdById: user.id } });
     const formBefore = await prisma.form.findFirstOrThrow({ where: { createdById: user.id } });
+    const dateValueBefore = await prisma.customFieldValue.findFirstOrThrow({
+      where: { field: { listId: landingListId, type: "date" } },
+    });
+    const textValueBefore = await prisma.customFieldValue.findFirstOrThrow({
+      where: { field: { listId: landingListId, type: "text" } },
+    });
 
     const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
     expect(claimed).toEqual({ id: user.id, landingListId });
@@ -56,6 +62,16 @@ describe("guest pool", () => {
     const formShift = formAfter.lastSubmittedAt!.getTime() - formBefore.lastSubmittedAt!.getTime();
     expect(formShift).toBeGreaterThan(3 * DAY - 60_000);
     expect(formShift).toBeLessThan(3 * DAY + 60_000);
+    // Date custom fields are calendar days: they move by whole days, other values stay.
+    const dateValueAfter = await prisma.customFieldValue.findUniqueOrThrow({
+      where: { taskId_fieldId: { taskId: dateValueBefore.taskId, fieldId: dateValueBefore.fieldId } },
+    });
+    const dayOf = (v: unknown) => Date.parse(`${v as string}T12:00:00Z`);
+    expect(dayOf(dateValueAfter.value) - dayOf(dateValueBefore.value)).toBe(3 * DAY);
+    const textValueAfter = await prisma.customFieldValue.findUniqueOrThrow({
+      where: { taskId_fieldId: { taskId: textValueBefore.taskId, fieldId: textValueBefore.fieldId } },
+    });
+    expect(textValueAfter.value).toEqual(textValueBefore.value);
   });
 
   it("refills the pool up to the target size", async () => {

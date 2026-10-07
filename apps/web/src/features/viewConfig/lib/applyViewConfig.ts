@@ -7,9 +7,10 @@ export const EMPTY_FILTERS: ViewFilters = {
   priorities: [],
   tags: [],
   due: null,
+  custom: [],
 };
 
-export const DEFAULT_CONFIG: ViewConfig = { filters: EMPTY_FILTERS, groupBy: "status", swimlanes: "none" };
+export const DEFAULT_CONFIG: ViewConfig = { filters: EMPTY_FILTERS, groupBy: "status", swimlanes: "none", sort: null };
 
 export const UNASSIGNED = "__unassigned__";
 export const NO_TAG = "__no_tag__";
@@ -20,7 +21,8 @@ export function countActiveFilters(f: ViewFilters) {
     (f.statuses.length ? 1 : 0) +
     (f.priorities.length ? 1 : 0) +
     (f.tags.length ? 1 : 0) +
-    (f.due ? 1 : 0)
+    (f.due ? 1 : 0) +
+    (f.custom?.length ?? 0)
   );
 }
 

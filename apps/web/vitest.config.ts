@@ -13,6 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@clickup/shared/formula": path.resolve(__dirname, "../../packages/shared/src/formula.ts"),
     },
   },
 });

@@ -81,6 +81,12 @@ export function activitySentence({
       return [plain("created this task from template "), strong(data.name)];
     case "submitted_via_form":
       return [plain("submitted via form "), strong(data.name)];
+    case "custom_field": {
+      if (data.fieldType === "checkbox") return [plain(data.to ? "checked " : "unchecked "), strong(data.field)];
+      if (!data.to) return [plain("cleared "), strong(data.field)];
+      const to = data.fieldType === "date" ? format(new Date(`${data.to}T12:00:00`), "MMM d") : data.to;
+      return [plain("set "), strong(data.field), plain(" to "), strong(to)];
+    }
     default:
       return [plain("updated this task")];
   }

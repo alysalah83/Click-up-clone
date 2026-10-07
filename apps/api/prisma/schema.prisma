@@ -118,6 +118,7 @@ model List {
   automations Automation[]
   savedViews  SavedView[]
   forms       Form[]
+  customFields CustomField[]
   /// Set on sprint lists (null = a regular list). Dates are calendar days at 12:00 UTC.
   sprintNumber Int?
   sprintStart  DateTime?
@@ -214,6 +215,7 @@ model Task {
   blockedBy     TaskDependency[] @relation("TaskBlockedBy")
   blocking      TaskDependency[] @relation("TaskBlocks")
   goalTargets   GoalTargetTask[]
+  customFieldValues CustomFieldValue[]
   /// Repeat rule: when the task is completed the next occurrence is created. custom = every N days.
   recurrenceType     RecurrenceType @default(none)
   recurrenceInterval Int            @default(1)
@@ -662,4 +664,48 @@ model Form {
   @@index([createdById])
   @@index([statusId])
   @@index([assigneeId])
+}
+
+enum CustomFieldType {
+  text
+  number
+  dropdown
+  date
+  checkbox
+  people
+  progress
+  formula
+}
+
+/// A per-list custom field (Table columns, task panel). `config` is validated by
+/// `customFieldConfigSchema` (@clickup/shared): dropdown options `{ id, name, color }` or a formula
+/// `expression`. Formula values are never stored; they are computed on read.
+model CustomField {
+  id        String          @id @default(uuid())
+  listId    String
+  name      String
+  type      CustomFieldType
+  order     Int             @default(0)
+  config    Json            @default("{}")
+  createdAt DateTime        @default(now())
+
+  list   List               @relation(fields: [listId], references: [id], onDelete: Cascade)
+  values CustomFieldValue[]
+
+  @@index([listId, order])
+}
+
+/// A task's value for a custom field: a JSON string, number, `true` or array of user ids, shaped
+/// by the field type (see `parseCustomFieldValue`). Dates are "YYYY-MM-DD". Clearing deletes the row.
+model CustomFieldValue {
+  taskId    String
+  fieldId   String
+  value     Json
+  updatedAt DateTime @default(now()) @updatedAt
+
+  task  Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  field CustomField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, fieldId])
+  @@index([fieldId])
 }

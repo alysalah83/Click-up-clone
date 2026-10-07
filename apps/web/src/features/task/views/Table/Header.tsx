@@ -9,9 +9,17 @@ import {
   slotPadding,
 } from "./table.styles";
 import SortRowField from "../../components/Sort/SortRowField";
+import { useCustomFields } from "@/features/customFields/hooks";
+import { AddFieldButton, FieldHeader } from "@/features/customFields/components/FieldHeader";
+import useTasks from "../../hooks/useTasks";
+import { useTasksQueryKey } from "../../hooks/useTasksQueryKey";
 
 function Header() {
   const { handleCheckAll, isAllChecked } = useCheckTask();
+  const { listId } = useTasksQueryKey();
+  const { fields = [] } = useCustomFields(listId);
+  const { tasks } = useTasks();
+  const sampleTask = tasks?.find((t) => t.points != null) ?? tasks?.[0];
 
   if (isAllChecked === undefined) return;
 
@@ -52,10 +60,18 @@ function Header() {
         Points
       </div>
       <div
-        className={`col-span-3 flex items-center gap-2 ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Created at</span>
         <SortRowField sortField="createdAt" />
+      </div>
+      {fields.map((field) => (
+        <div key={field.id} className={`min-w-0 ${slotBorderClasses} ${headerSlotHoverClasses}`}>
+          <FieldHeader field={field} fields={fields} listId={listId} sampleTask={sampleTask} />
+        </div>
+      ))}
+      <div className="flex items-center justify-center">
+        <AddFieldButton listId={listId} fields={fields} sampleTask={sampleTask} className="size-7" />
       </div>
     </header>
   );

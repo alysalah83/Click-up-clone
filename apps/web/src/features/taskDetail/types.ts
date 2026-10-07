@@ -20,7 +20,8 @@ type ActivityType =
   | "sprint_carried"
   | "attachment_added"
   | "created_from_template"
-  | "submitted_via_form";
+  | "submitted_via_form"
+  | "custom_field";
 
 interface ChecklistItem {
   id: string;

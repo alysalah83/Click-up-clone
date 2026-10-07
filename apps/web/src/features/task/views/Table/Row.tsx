@@ -13,8 +13,10 @@ import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 import { containerGridClasses, slotBorderClasses, slotHoverClasses } from "./table.styles";
 import PointsPicker from "@/features/sprint/components/PointsPicker";
+import ValueEditor from "@/features/customFields/components/ValueEditor";
+import type { CustomField } from "@/features/customFields/types";
 
-function Row({ task, sortNum }: { task: Task; sortNum: number }) {
+function Row({ task, sortNum, fields = [] }: { task: Task; sortNum: number; fields?: CustomField[] }) {
   const { id, priority, status, endDate, startDate, createdAt } = task;
   const { checkedTasksIdSet } = useCheckTask();
   const { isRenameOpen, isTempTask } = useTask();
@@ -55,6 +57,16 @@ function Row({ task, sortNum }: { task: Task; sortNum: number }) {
         <PointsPicker taskId={id} points={task.points} className="h-full w-full" />
       </div>
       <TaskCreatedAtSlot createdAt={createdAt} />
+      {fields.map((field) => (
+        <div
+          key={field.id}
+          data-no-card-click
+          className={`flex min-h-9 min-w-0 items-stretch ${slotBorderClasses} ${slotHoverClasses}`}
+        >
+          <ValueEditor field={field} fields={fields} task={task} listId={task.listId} variant="cell" />
+        </div>
+      ))}
+      <div aria-hidden />
     </main>
   );
 }

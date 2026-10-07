@@ -21,6 +21,7 @@ import { shouldOpenTaskDetail } from "../../lib/shouldOpenTaskDetail";
 import { useOpenTask } from "@/features/taskDetail/hooks/useTaskParam";
 import { AssigneesButton } from "@/features/members/components/AssigneePicker";
 import PointsPicker from "@/features/sprint/components/PointsPicker";
+import CompactFieldBadges from "@/features/customFields/components/CompactFieldBadges";
 
 function ListSlideRow() {
   const { task, isTempTask, isRenameOpen } = useTask();
@@ -59,6 +60,7 @@ function ListSlideRow() {
             aria-label="repeating task"
           />
         )}
+        <CompactFieldBadges task={task} />
       </div>
       <div className={`col-span-2 flex items-center px-2 py-1 ${listSlotHover}`}>
         <AssigneesButton task={task} size="sm" />
