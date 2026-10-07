@@ -180,7 +180,8 @@ export async function seedGuest({
         ]
       : []),
     ...(pooled ? [markPooled(userId, seed.landingListId)] : []),
-  ]);
+    // ~40 batched writes: past Prisma's 5 s default on a cold serverless Postgres connection.
+  ], { maxWait: 10_000, timeout: 30_000 });
   return { user, landingListId: seed.landingListId };
 }
 
