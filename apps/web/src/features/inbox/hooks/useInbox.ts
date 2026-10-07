@@ -5,12 +5,15 @@ export type Notification = {
   id: string;
   type: "ASSIGNED" | "MENTIONED" | "TASK_UPDATED" | "COMMENTED";
   message: string;
-  taskId: string;
+  /** Null for chat mentions. */
+  taskId: string | null;
   commentId: string | null;
   readAt: string | null;
   createdAt: string;
   actor: { id: string; name: string | null; email: string | null; avatarColor: string | null };
-  task: { id: string; name: string; listId: string };
+  task: { id: string; name: string; listId: string } | null;
+  /** Set on chat mentions (optional while the API deploy catches up). */
+  chatMessage?: { id: string; channelId: string; channel: { name: string } } | null;
 };
 
 const POLL_MS = 30_000;

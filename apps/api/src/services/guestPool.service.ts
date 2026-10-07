@@ -9,7 +9,7 @@ import { env } from "../config/env.js";
  * resets `createdAt` (guest cleanup counts from the claim), and moves its seeded dates
  * forward so "overdue", "today" and "2h ago" still read correctly however long it waited:
  * task start/due dates, sprint dates, goal due dates and date custom fields by whole UTC days (they sit at 12:00 UTC), other
- * timestamps exactly.
+ * timestamps (comments, notifications, chat messages and read markers...) exactly.
  *
  * Raw SQL on purpose: one round trip, and `FOR UPDATE SKIP LOCKED` keeps concurrent
  * claims from taking the same account.
@@ -23,7 +23,7 @@ type Claimed = { id: string; landingListId: string | null };
  * and the leftovers age out through the normal guest cleanup.
  * Increment it whenever the guest seed gains new demo data.
  */
-export const POOL_SEED_VERSION = 11;
+export const POOL_SEED_VERSION = 12;
 
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();
@@ -100,6 +100,23 @@ export async function claimPooledGuest(now = new Date()): Promise<Claimed | unde
       UPDATE "Goal" x
       SET "dueDate" = x."dueDate" + c.days, "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
       FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
+    ), chat_channels AS (
+      UPDATE "ChatChannel" x SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift
+      FROM claimed c, "Workspace" w WHERE x."workspaceId" = w.id AND w."userId" = c.id
+    ), chat_messages AS (
+      UPDATE "ChatMessage" x
+      SET "createdAt" = x."createdAt" + c.shift, "updatedAt" = x."updatedAt" + c.shift,
+          "editedAt" = x."editedAt" + c.shift, "deletedAt" = x."deletedAt" + c.shift
+      FROM claimed c, "ChatChannel" ch, "Workspace" w
+      WHERE x."channelId" = ch.id AND ch."workspaceId" = w.id AND w."userId" = c.id
+    ), chat_reactions AS (
+      UPDATE "ChatReaction" x SET "createdAt" = x."createdAt" + c.shift
+      FROM claimed c, "ChatMessage" m, "ChatChannel" ch, "Workspace" w
+      WHERE x."messageId" = m.id AND m."channelId" = ch.id AND ch."workspaceId" = w.id AND w."userId" = c.id
+    ), chat_reads AS (
+      UPDATE "ChatChannelRead" x SET "lastReadAt" = x."lastReadAt" + c.shift
+      FROM claimed c, "ChatChannel" ch, "Workspace" w
+      WHERE x."channelId" = ch.id AND ch."workspaceId" = w.id AND w."userId" = c.id
     )
     SELECT id, "landingListId" FROM claimed`;
   return rows[0];

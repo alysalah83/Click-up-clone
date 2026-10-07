@@ -39,10 +39,10 @@ export async function myWork(userId: string, tz = 0, now = new Date()) {
 
 const LIMIT = 8;
 
-/** Case-insensitive search over tasks, lists, teammates, docs, boards and goals in my workspaces. */
+/** Case-insensitive search over tasks, lists, teammates, docs, boards, goals and channels in my workspaces. */
 export async function search(userId: string, q: string, workspaceId?: string) {
   const contains = { contains: q, mode: "insensitive" as const };
-  const [tasks, lists, members, docs, whiteboards, goals] = await Promise.all([
+  const [tasks, lists, members, docs, whiteboards, goals, channels] = await Promise.all([
     prisma.task.findMany({
       where: {
         list: { workspace: memberOf(userId), ...(workspaceId && { workspaceId }) },
@@ -91,6 +91,12 @@ export async function search(userId: string, q: string, workspaceId?: string) {
       orderBy: { updatedAt: "desc" },
       take: LIMIT,
     }),
+    prisma.chatChannel.findMany({
+      where: { workspace: memberOf(userId), name: { contains: q.replace(/^#/, ""), mode: "insensitive" } },
+      select: { id: true, name: true, workspaceId: true },
+      orderBy: { name: "asc" },
+      take: LIMIT,
+    }),
   ]);
-  return { tasks, lists, members, docs, whiteboards, goals };
+  return { tasks, lists, members, docs, whiteboards, goals, channels };
 }

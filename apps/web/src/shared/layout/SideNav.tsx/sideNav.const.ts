@@ -32,6 +32,11 @@ export const SIDE_NAV_ITEMS = [
     href: "/home/docs",
   },
   {
+    icon: "chat" as IconsMap,
+    label: "Chat",
+    href: "/home/chat",
+  },
+  {
     icon: "team" as IconsMap,
     label: "Teams",
     href: "/home/teams",

@@ -11,6 +11,7 @@ import RowAddNew from "@/shared/components/RowAddNew";
 import CreateListForm from "@/features/list/components/CreateListForm";
 import DocsTree from "@/features/docs/components/DocsTree";
 import WhiteboardsTree from "@/features/whiteboard/components/WhiteboardsTree";
+import ChannelsTree from "@/features/chat/components/ChannelsTree";
 import SprintsTree from "@/features/sprint/components/SprintsTree";
 import { splitSprintLists } from "@/features/sprint/lib";
 
@@ -51,6 +52,7 @@ function SpaceItem({ workspace, lists }: SpaceItemProps) {
         </Modal>
       </menu>
       <SprintsTree workspaceId={workspace.id} sprints={sprints} />
+      <ChannelsTree workspaceId={workspace.id} />
       <DocsTree workspaceId={workspace.id} />
       <WhiteboardsTree workspaceId={workspace.id} />
     </li>

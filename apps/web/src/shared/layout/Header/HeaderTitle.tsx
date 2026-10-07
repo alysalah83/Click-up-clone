@@ -32,6 +32,7 @@ function HeaderTitle() {
   else if (pathname.startsWith("/home/my-work")) title = "My Work";
   else if (pathname.startsWith("/home/inbox")) title = "Inbox";
   else if (pathname.startsWith("/home/docs")) title = "Docs";
+  else if (pathname.startsWith("/home/chat")) title = "Chat";
   else if (pathname.startsWith("/home/goals")) title = "Goals";
   else if (pathname.startsWith("/home/templates")) title = "Templates";
   else if (pathname === "/home/lists") title = "Lists Overview";

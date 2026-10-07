@@ -15,6 +15,7 @@ type SearchResult = {
   docs?: { id: string; title: string; icon: string | null }[];
   whiteboards?: { id: string; title: string }[];
   goals?: { id: string; name: string }[];
+  channels?: { id: string; name: string }[];
   members: { id: string; name: string | null; email: string | null; avatarColor: string | null }[];
 };
 
@@ -32,6 +33,7 @@ const QUICK_NAV: Item[] = [
   { key: "nav-goals", group: "Go to", label: "Goals", href: "/home/goals" },
   { key: "nav-templates", group: "Go to", label: "Templates", href: "/home/templates" },
   { key: "nav-docs", group: "Go to", label: "Docs", href: "/home/docs" },
+  { key: "nav-chat", group: "Go to", label: "Chat", href: "/home/chat" },
   { key: "nav-whiteboards", group: "Go to", label: "Whiteboards", href: "/home/whiteboards" },
   { key: "nav-teams", group: "Go to", label: "Teams", href: "/home/teams" },
   { key: "nav-dashboard", group: "Go to", label: "Dashboard", href: "/home/dashboard" },
@@ -105,6 +107,12 @@ function CommandPalette() {
         label: w.title.trim() || "Untitled whiteboard",
         href: `/home/whiteboards/${w.id}`,
       })),
+      ...(results.channels ?? []).map((c) => ({
+        key: `c-${c.id}`,
+        group: "Channels",
+        label: `# ${c.name}`,
+        href: `/home/chat/${c.id}`,
+      })),
       ...(results.goals ?? []).map((g) => ({
         key: `g-${g.id}`,
         group: "Goals",
@@ -166,7 +174,7 @@ function CommandPalette() {
               setQuery(e.target.value);
               setActive(0);
             }}
-            placeholder="Search tasks, lists, docs, boards, goals, people..."
+            placeholder="Search tasks, lists, docs, boards, goals, channels, people..."
             aria-label="Search"
             className="w-full border-b border-neutral-300 bg-transparent px-4 py-3 text-sm outline-none dark:border-neutral-700"
           />

@@ -41,12 +41,15 @@ export type NotificationDto = {
   id: string;
   type: NotificationType;
   message: string;
-  taskId: string;
+  /** Null for chat notifications. */
+  taskId: string | null;
   commentId: string | null;
   readAt: string | null;
   createdAt: string;
   actor: CommentUser;
-  task: { id: string; name: string; listId: string };
+  task: { id: string; name: string; listId: string } | null;
+  /** Set on chat mentions: the message and its channel. */
+  chatMessage: { id: string; channelId: string; channel: { name: string } } | null;
 };
 export type UnreadCountDto = { count: number };
 
