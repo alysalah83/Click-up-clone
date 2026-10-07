@@ -6,6 +6,7 @@ import {
   FaRegUserCircle,
   FaRegFileAlt,
   FaSignOutAlt,
+  FaSitemap,
   FaUsers,
   FaWpforms,
 } from "react-icons/fa";
@@ -109,4 +110,5 @@ export const ICONS_MAP = {
   link: FiLink,
   externalLink: FiExternalLink,
   form: FaWpforms,
+  mindmap: FaSitemap,
 } as const;

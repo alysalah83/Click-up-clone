@@ -12,6 +12,9 @@ export const recurrenceIntervalSchema = z.number().int().min(1).max(365);
 export const SPRINT_POINTS = [1, 2, 3, 5, 8, 13] as const;
 export const taskPointsSchema = z.number().int().min(0).max(999).nullable();
 
+/** How deep subtasks can nest under a top-level task (1 = subtasks only, 3 = sub-sub-subtasks). */
+export const MAX_SUBTASK_DEPTH = 3;
+
 export const taskNameSchema = z.string().trim().min(1).max(128);
 
 /** Fields a client may set when creating a task (without placement). */
@@ -51,6 +54,8 @@ export const tasksQuerySchema = z.object({
   dueDate: optionalSortOrderSchema,
   createdAt: optionalSortOrderSchema,
   count: booleanStringSchema.optional(),
+  /** "true" also returns subtasks at every depth (the Mind Map view); top-level views leave it out. */
+  subtasks: booleanStringSchema.optional(),
   limit: z.coerce.number().int().min(1).max(1000).default(500),
   cursor: idSchema.optional(),
 });

@@ -44,6 +44,12 @@ export const HEADER_MENU = [
     label: "Workload",
   },
   {
+    icon: "mindmap",
+    iconBgColor: "bg-indigo-500",
+    href: "/mindmap",
+    label: "Mind Map",
+  },
+  {
     icon: "form",
     iconBgColor: "bg-violet-500",
     href: "/form",

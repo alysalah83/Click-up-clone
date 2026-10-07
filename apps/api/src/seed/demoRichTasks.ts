@@ -303,6 +303,51 @@ export const DEMO_SUBTASKS: Record<string, Sub[]> = {
   ],
 };
 
+type NestedSub = [
+  name: string,
+  status: "open" | "active" | "done",
+  priority?: Priority,
+  children?: NestedSub[],
+];
+
+/**
+ * Deeper subtasks under the subtasks above (parent key -> subtask name -> children), so the
+ * Mind Map view shows a few branches three levels deep on Sprint 14.
+ */
+export const DEMO_NESTED_SUBTASKS: Record<string, Record<string, NestedSub[]>> = {
+  "sprint.sso": {
+    "Callback endpoint and account linking": [
+      ["Verify the ID token signature", "done"],
+      [
+        "Link to existing accounts by email",
+        "active",
+        "high",
+        [
+          ["Handle email collisions", "active"],
+          ["Ask to confirm the password once", "open"],
+        ],
+      ],
+    ],
+    "Sign in with Google button": [
+      ["Button states and loading spinner", "active"],
+      ["Dark mode variant", "open", "low"],
+    ],
+  },
+  "sprint.board-virtualization": {
+    "Keep drag and drop working": [
+      ["Auto-scroll while dragging", "active", "high"],
+      ["Drop into offscreen columns", "open", "high", [["Measure column offsets lazily", "open"]]],
+    ],
+  },
+  "sprint.billing-webhooks": {
+    "Transactional handlers": [
+      ["invoice.paid", "done"],
+      ["customer.subscription.updated", "active"],
+      ["charge.refunded", "open"],
+    ],
+  },
+};
+
 /** Checklist name -> items (`[x] ` = done). */
 export const DEMO_CHECKLISTS: Record<string, Record<string, string[]>> = {
   "sprint.release-notes": {
@@ -509,11 +554,16 @@ export function buildDemoRichTasks({
   const subtasks: (DemoRows["tasks"][number] & { parentTaskId: string })[] = [];
   const subtaskAssignees: { taskId: string; userId: string }[] = [];
   const subtaskNamesByParent = new Map<string, string[]>();
-  for (const [key, subs] of Object.entries(DEMO_SUBTASKS)) {
-    const parent = need(key);
-    subs.forEach(([name, type, priority], i) => {
+  // Parents come before their children, so one createMany satisfies the self-reference.
+  const addSubtasks = (
+    parent: { id: string; listId: string; endDate: Date | null; createdAt: Date },
+    key: string,
+    subs: NestedSub[],
+  ) =>
+    subs.forEach(([name, type, priority, children], i) => {
       const id = randomUUID();
-      subtasks.push({
+      const createdAt = new Date(parent.createdAt.getTime() + (i + 1) * 17 * MINUTE);
+      const row = {
         id,
         name,
         userId: ownerUserId,
@@ -522,12 +572,19 @@ export function buildDemoRichTasks({
         priority: priority ?? "normal",
         startDate: null,
         endDate: parent.endDate,
-        createdAt: new Date(parent.createdAt.getTime() + (i + 1) * 17 * MINUTE),
-        updatedAt: new Date(parent.createdAt.getTime() + (i + 1) * 17 * MINUTE),
+        createdAt,
+        updatedAt: createdAt,
         parentTaskId: parent.id,
-      });
+      };
+      subtasks.push(row);
       subtaskAssignees.push({ taskId: id, userId: nextPerson().id });
+      // Children given inline, or (for direct subtasks) from DEMO_NESTED_SUBTASKS.
+      const nested = children ?? (parent.id === need(key).id ? DEMO_NESTED_SUBTASKS[key]?.[name] : undefined);
+      if (nested) addSubtasks(row, key, nested);
     });
+  for (const [key, subs] of Object.entries(DEMO_SUBTASKS)) {
+    const parent = need(key);
+    addSubtasks(parent, key, subs);
     subtaskNamesByParent.set(
       parent.id,
       subs.map(([name]) => name),
