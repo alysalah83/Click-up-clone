@@ -63,6 +63,7 @@ function ListViewSkeleton() {
     case "calendar":
       return <CalendarSkeleton />;
     case "timeline":
+    case "workload":
       return <TimelineSkeleton />;
     default:
       // Form, Sprint report and anything new: two content blocks.

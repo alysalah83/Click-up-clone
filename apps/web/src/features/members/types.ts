@@ -16,6 +16,9 @@ interface WorkspaceMember {
   email: string | null;
   avatarColor: string | null;
   isDemo: boolean;
+  /** Workload capacity per day (null = the view's default). */
+  capacityTasks?: number | null;
+  capacityPoints?: number | null;
   createdAt: string;
 }
 

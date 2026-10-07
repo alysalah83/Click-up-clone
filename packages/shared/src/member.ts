@@ -11,6 +11,14 @@ export const updateMemberRoleSchema = z.object({ role: assignableRoleSchema });
 
 export const setAssigneesSchema = z.object({ userIds: z.array(idSchema).max(50) });
 
+/** Workload capacity per day (null resets to the view's default). */
+const capacitySchema = z.number().int().min(1).max(100).nullable();
+export const updateMemberCapacitySchema = z
+  .object({ capacityTasks: capacitySchema.optional(), capacityPoints: capacitySchema.optional() })
+  .refine((v) => v.capacityTasks !== undefined || v.capacityPoints !== undefined, {
+    message: "Nothing to update",
+  });
+
 export const createInviteSchema = z.object({ role: assignableRoleSchema.default("member") });
 
 export const inviteTokenParamsSchema = z.object({
@@ -21,4 +29,5 @@ export type MemberRole = z.infer<typeof memberRoleSchema>;
 export type AssignableRole = z.infer<typeof assignableRoleSchema>;
 export type UpdateMemberRoleInput = z.infer<typeof updateMemberRoleSchema>;
 export type SetAssigneesInput = z.infer<typeof setAssigneesSchema>;
+export type UpdateMemberCapacityInput = z.infer<typeof updateMemberCapacitySchema>;
 export type CreateInviteInput = z.infer<typeof createInviteSchema>;

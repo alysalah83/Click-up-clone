@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import type { CreateInviteInput, UpdateMemberRoleInput } from "@clickup/shared";
+import type { CreateInviteInput, UpdateMemberCapacityInput, UpdateMemberRoleInput } from "@clickup/shared";
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors/appError.js";
 import { ForbiddenError, NotFoundError } from "../lib/errors/index.js";
@@ -15,7 +15,14 @@ export async function listWorkspaceMembers(userId: string, workspaceId: string) 
   await assertCanAccess(userId, { workspaceId });
   const members = await prisma.workspaceMember.findMany({
     where: { workspaceId },
-    select: { id: true, role: true, createdAt: true, user: { select: memberUserSelect } },
+    select: {
+      id: true,
+      role: true,
+      capacityTasks: true,
+      capacityPoints: true,
+      createdAt: true,
+      user: { select: memberUserSelect },
+    },
     orderBy: { createdAt: "asc" },
   });
   return members.map(({ user, ...member }) => ({
@@ -99,6 +106,23 @@ export async function updateMemberRole(
   const target = await targetMembership(workspaceId, targetUserId);
   if (target.role === "owner") throw new ForbiddenError("The owner's role cannot be changed");
   return prisma.workspaceMember.update({ where: { id: target.id }, data: { role } });
+}
+
+/** Workload capacity of a member (any member may plan the team's capacity; guests may not). */
+export async function updateMemberCapacity(
+  userId: string,
+  workspaceId: string,
+  targetUserId: string,
+  input: UpdateMemberCapacityInput,
+) {
+  await assertCanAccess(userId, { workspaceId }, "member");
+  const target = await targetMembership(workspaceId, targetUserId);
+  const { capacityTasks, capacityPoints } = await prisma.workspaceMember.update({
+    where: { id: target.id },
+    data: input,
+    select: { capacityTasks: true, capacityPoints: true },
+  });
+  return { userId: targetUserId, capacityTasks, capacityPoints };
 }
 
 /** Owners/admins remove others; any non-owner may leave. Their assignments in the workspace go too. */

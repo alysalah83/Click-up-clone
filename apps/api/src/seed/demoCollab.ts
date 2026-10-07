@@ -103,7 +103,7 @@ export const GUEST_TASKS = [
   "sprint.api-rate-limit", // today
   "sprint.release-notes", // today
   "content.launch-thread", // today
-  "sprint.sso", // upcoming
+  "sprint.sso", // today
   "sprint.board-virtualization", // upcoming
   "content.newsletter", // upcoming
   "sprint.notification-prefs", // no date

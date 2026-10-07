@@ -5,6 +5,7 @@ import { prisma } from "../lib/prisma.js";
 import { ConflictError, UnauthorizedError } from "../lib/errors/index.js";
 import { DEMO_TEMPLATE, buildDemoAutomations, buildDemoDependencies, buildDemoWorkspace } from "../seed/demoWorkspace.js";
 import { buildDemoTeammates } from "../seed/demoTeammates.js";
+import { applyDemoWorkload } from "../seed/demoWorkload.js";
 import { buildDemoRichTasks } from "../seed/demoRichTasks.js";
 import { buildDemoCollab } from "../seed/demoCollab.js";
 import { applyDemoRecurrence, buildDemoTimeEntries } from "../seed/demoTime.js";
@@ -60,6 +61,8 @@ export async function seedGuest({
     workspaceIds: seed.workspaces.map((w) => w.id),
     taskIds: seed.tasks.map((t) => t.id),
   });
+  // Deterministic Sprint 14 assignees and capacities (Workload view); before collab reads the assignees.
+  if (template === DEMO_TEMPLATE) applyDemoWorkload(seed, team);
   // Sets descriptions on seed.tasks in place, so it runs before the tasks are written.
   const rich =
     template === DEMO_TEMPLATE
