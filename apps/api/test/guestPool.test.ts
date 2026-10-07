@@ -30,6 +30,7 @@ describe("guest pool", () => {
     });
     const chatBefore = await prisma.chatMessage.findFirstOrThrow({ where: { channel: { workspace: { userId: user.id } } } });
     const readBefore = await prisma.chatChannelRead.findFirstOrThrow({ where: { userId: user.id } });
+    const shareBefore = await prisma.shareLink.findFirstOrThrow({ where: { createdById: user.id } });
 
     const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
     expect(claimed).toEqual({ id: user.id, landingListId });
@@ -83,6 +84,8 @@ describe("guest pool", () => {
       where: { channelId_userId: { channelId: readBefore.channelId, userId: user.id } },
     });
     expect(readAfter.lastReadAt.getTime() - readBefore.lastReadAt.getTime()).toBe(chatShift);
+    const shareAfter = await prisma.shareLink.findUniqueOrThrow({ where: { id: shareBefore.id } });
+    expect(shareAfter.lastViewedAt!.getTime() - shareBefore.lastViewedAt!.getTime()).toBe(chatShift);
   });
 
   it("refills the pool up to the target size", async () => {

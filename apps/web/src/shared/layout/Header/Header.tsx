@@ -15,7 +15,9 @@ import HeaderFeatures from "./HeaderFeatures";
 import NavButtons from "./NavButtons";
 import HeaderTitle from "./HeaderTitle";
 import SprintBar from "@/features/sprint/components/SprintBar";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import SharePopover from "@/features/share/components/SharePopover";
+import { LIST_ID_RESERVED_ROUTES } from "@/shared/constants/layout";
 
 function Header({
   userPromise,
@@ -26,6 +28,8 @@ function Header({
 }) {
   const { isSideBarOpened, setOpenSideBar } = useSideBarStore();
   const showViewTabs = usePathname().startsWith("/home/lists");
+  const { listId } = useParams<{ listId?: string }>();
+  const isListPage = showViewTabs && !!listId && !LIST_ID_RESERVED_ROUTES.has(listId);
 
   return (
     <header
@@ -60,6 +64,13 @@ function Header({
           <HeaderTitle />
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-1">
+          {isListPage && (
+            <SharePopover
+              key={listId}
+              target={{ resourceType: "list", resourceId: listId }}
+              className="mr-1"
+            />
+          )}
           <ThemeButton />
           <UserLogo userPromise={userPromise} />
         </div>

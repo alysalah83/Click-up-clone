@@ -64,6 +64,7 @@ describe("GET /internal/cron/cleanup-guests", () => {
     expect(await prisma.customFieldValue.count()).toBeGreaterThan(0);
     expect(await prisma.chatMessage.count()).toBeGreaterThan(0);
     expect(await prisma.chatChannelRead.count()).toBeGreaterThan(0);
+    expect(await prisma.shareLink.count()).toBeGreaterThan(0);
     await prisma.user.update({ where: { id }, data: { createdAt: EIGHT_DAYS_AGO } });
 
     const cleanup = await api()
@@ -98,6 +99,7 @@ describe("GET /internal/cron/cleanup-guests", () => {
     expect(await prisma.chatReaction.count()).toBe(0);
     expect(await prisma.chatMention.count()).toBe(0);
     expect(await prisma.chatChannelRead.count()).toBe(0);
+    expect(await prisma.shareLink.count()).toBe(0);
     expect(await prisma.notification.count()).toBe(0);
   });
 });
