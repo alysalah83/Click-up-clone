@@ -21,7 +21,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@clickup/shared/formula": ["../../packages/shared/src/formula.ts"]
+      "@clickup/shared/formula": ["../../packages/shared/src/formula.ts"],
+      "@clickup/shared/importParse": ["../../packages/shared/src/importParse.ts"]
     },
     "types": ["vitest/globals", "@testing-library/jest-dom/vitest"]
   },

@@ -21,7 +21,8 @@ type ActivityType =
   | "attachment_added"
   | "created_from_template"
   | "submitted_via_form"
-  | "custom_field";
+  | "custom_field"
+  | "imported";
 
 interface ChecklistItem {
   id: string;

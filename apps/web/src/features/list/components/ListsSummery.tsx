@@ -5,6 +5,7 @@ import Link from "next/link";
 import { workspaceServices } from "@/features/workspace/services/workspace.service";
 import { listServices } from "@/features/list/services/list.service";
 import EmptySpaces from "@/features/workspace/components/EmptySpaces";
+import ImportButton from "@/features/import/components/ImportButton";
 
 async function ListsSummery() {
   const [workspacesCount, lists] = await Promise.all([
@@ -23,7 +24,8 @@ async function ListsSummery() {
         <span className="text-sm font-medium text-neutral-700 dark:text-neutral-500">
           Select a list
         </span>
-        <span className="ml-auto text-sm font-medium text-neutral-700 dark:text-neutral-500">
+        <span className="ml-auto flex items-center gap-3 text-sm font-medium text-neutral-700 dark:text-neutral-500">
+          <ImportButton />
           (Total/Complete) Tasks
         </span>
       </h2>

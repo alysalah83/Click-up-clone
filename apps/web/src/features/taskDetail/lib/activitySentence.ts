@@ -81,6 +81,8 @@ export function activitySentence({
       return [plain("created this task from template "), strong(data.name)];
     case "submitted_via_form":
       return [plain("submitted via form "), strong(data.name)];
+    case "imported":
+      return [plain("imported this task from "), strong(data.source)];
     case "custom_field": {
       if (data.fieldType === "checkbox") return [plain(data.to ? "checked " : "unchecked "), strong(data.field)];
       if (!data.to) return [plain("cleared "), strong(data.field)];

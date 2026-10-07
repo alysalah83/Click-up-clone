@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@clickup/shared/formula": path.resolve(__dirname, "../../packages/shared/src/formula.ts"),
+      "@clickup/shared/importParse": path.resolve(__dirname, "../../packages/shared/src/importParse.ts"),
     },
   },
 });

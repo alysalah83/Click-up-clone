@@ -18,7 +18,7 @@ import {
   FaPlus,
   FaSort,
 } from "react-icons/fa6";
-import { FiCopy, FiExternalLink, FiLink, FiMail } from "react-icons/fi";
+import { FiCopy, FiExternalLink, FiLink, FiMail, FiUpload } from "react-icons/fi";
 import { HiOutlineTrash } from "react-icons/hi";
 import { ImSpinner9 } from "react-icons/im";
 import {
@@ -112,4 +112,5 @@ export const ICONS_MAP = {
   form: FaWpforms,
   mindmap: FaSitemap,
   chat: BsChatDots,
+  upload: FiUpload,
 } as const;

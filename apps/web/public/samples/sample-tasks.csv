@@ -1,0 +1,24 @@
+Title,Description,Status,Priority,Due date,Assignee,Labels,Story points
+Set up product analytics,"Track signup, activation and the first project created.",In progress,High,10/12/2026,Noah Kim,"analytics, growth",5
+Onboarding checklist for new users,"Five steps shown after signup:
+1. Create a project
+2. Invite a teammate
+3. Add a task",To do,Urgent,10/14/2026,Maya Chen,"onboarding, ux",8
+Fix password reset email link,"The link in the reset email expires after 10 minutes instead of 24 hours.",In review,Urgent,10/09/2026,Liam Patel,bug,2
+Pricing page experiment,"Test annual-first toggle vs monthly-first.",To do,Normal,10/21/2026,Sofia Garcia,"growth, pricing",3
+Dark mode for dashboards,,In progress,Normal,10/16/2026,Ethan Brooks,"ux, frontend",5
+Slack integration,"Post task updates to a channel; let users pick the channel per list.",To do,High,10/28/2026,Liam Patel,integrations,8
+Weekly product newsletter,"Template + first issue: what shipped, what's next, one customer story.",Done,Low,10/02/2026,Sofia Garcia,content,1
+Reduce API p95 latency,"Target p95 < 300 ms on /tasks; add the missing index on status_id.",In progress,High,10/13/2026,Noah Kim,"backend, performance",5
+Accessibility audit,"Keyboard navigation and screen reader labels on Board and List views.",To do,Normal,10/30/2026,Ava Johnson,"ux, a11y",3
+Customer interviews round 3,"Talk to 6 teams that churned in Q3.",In progress,Normal,10/15/2026,Maya Chen,research,2
+Export to CSV,"Export any list view with the visible columns.",Done,Normal,09/30/2026,Ethan Brooks,"frontend, data",3
+Mobile app push notifications,"Due today, mentions and assignments.",To do,Low,11/06/2026,Liam Patel,mobile,8
+Update privacy policy,"Reflect the new EU data residency option.",In review,High,10/10/2026,Ava Johnson,legal,1
+Billing: proration on plan change,"Upgrade mid-cycle charges the prorated difference.",To do,High,10/23/2026,Noah Kim,"billing, backend",5
+Landing page for Q4 launch,"Hero, three features, testimonials, pricing teaser.",In progress,Urgent,10/11/2026,Sofia Garcia,"marketing, launch",3
+Bulk edit tasks,"Select many tasks, change status, priority or assignee at once.",Done,Normal,10/05/2026,Ethan Brooks,"frontend, ux",5
+SSO with Google Workspace,,In review,High,10/12/2026,Liam Patel,"auth, backend",5
+Help center search,"Search articles by title and body, highlight matches.",To do,Normal,2026-11-02,Maya Chen,"support, frontend",3
+Quarterly roadmap review,"Share the Q1 roadmap with the team and collect feedback.",To do,Normal,2026-10-27 14:00,Maya Chen,planning,1
+Flaky end-to-end test on Board drag,"Retries hide a real race when dropping into an empty column.",In progress,Medium,10/09/2026,Noah Kim,"bug, testing",2
