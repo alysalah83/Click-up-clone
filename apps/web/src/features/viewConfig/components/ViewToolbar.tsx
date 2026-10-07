@@ -12,6 +12,7 @@ import { useSavedViews } from "../hooks/useSavedViews";
 import { countActiveFilters, DEFAULT_CONFIG, UNASSIGNED } from "../lib/applyViewConfig";
 import { useViewConfigStore } from "../store";
 import type { DueKind, GroupBy, Swimlanes } from "../types";
+import { CustomFieldFilters } from "@/features/customFields/components/CustomFieldFilters";
 
 const chip =
   "inline-flex h-7 cursor-pointer items-center gap-1 rounded-md border border-neutral-200 px-2 text-xs font-medium text-neutral-600 transition hover:bg-neutral-100 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-800";
@@ -122,7 +123,7 @@ function DueFilterControl() {
 
 function SavedViewsMenu({ listId }: { listId: string }) {
   const { views, create, update, remove } = useSavedViews(listId);
-  const { filters, groupBy, swimlanes, activeViewId, load } = useViewConfigStore();
+  const { filters, groupBy, swimlanes, sort, activeViewId, load } = useViewConfigStore();
   const [name, setName] = useState("");
   const active = views?.find((v) => v.id === activeViewId);
 
@@ -130,7 +131,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
     const trimmed = name.trim();
     if (!trimmed) return;
     create.mutate(
-      { name: trimmed, config: { filters, groupBy, swimlanes } },
+      { name: trimmed, config: { filters, groupBy, swimlanes, sort } },
       {
         onSuccess: (view) => {
           load(view.config, view.id);
@@ -167,7 +168,7 @@ function SavedViewsMenu({ listId }: { listId: string }) {
                   type="button"
                   aria-label={`Delete ${v.name}`}
                   className="shrink-0 cursor-pointer rounded px-1.5 text-xs text-red-600"
-                  onClick={() => remove.mutate(v.id, { onSuccess: () => v.id === activeViewId && load({ filters, groupBy, swimlanes }, null) })}
+                  onClick={() => remove.mutate(v.id, { onSuccess: () => v.id === activeViewId && load({ filters, groupBy, swimlanes, sort }, null) })}
                 >
                   Delete
                 </button>
@@ -250,6 +251,7 @@ export function ViewToolbar({ groupable = false, swimlanable = false }: { groupa
       />
       <MultiFilter label="Tag" options={tagOptions} selected={filters.tags} onChange={(tags) => setFilters({ tags })} />
       <DueFilterControl />
+      <CustomFieldFilters listId={listId} />
       {activeCount > 0 && (
         <button type="button" onClick={clearFilters} className="cursor-pointer text-xs text-neutral-500 hover:underline">
           Clear

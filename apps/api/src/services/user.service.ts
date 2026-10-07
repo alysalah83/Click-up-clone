@@ -16,6 +16,7 @@ import { buildDemoGoals } from "../seed/demoGoals.js";
 import { buildDemoAttachments } from "../seed/demoAttachments.js";
 import { buildDemoTaskTemplates } from "../seed/demoTaskTemplates.js";
 import { buildDemoForms } from "../seed/demoForms.js";
+import { buildDemoCustomFields } from "../seed/demoCustomFields.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -86,6 +87,10 @@ export async function seedGuest({
     template === DEMO_TEMPLATE
       ? buildDemoAttachments(seed, team.users.length > 0 ? team.users.map((u) => u.id) : [userId])
       : undefined;
+  const customFields =
+    template === DEMO_TEMPLATE
+      ? buildDemoCustomFields(userId, seed, team.users.map((u) => u.id))
+      : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -117,6 +122,13 @@ export async function seedGuest({
       : []),
     ...(forms
       ? [prisma.form.createMany({ data: forms.forms }), prisma.activity.createMany({ data: forms.activities })]
+      : []),
+    ...(customFields
+      ? [
+          prisma.customField.createMany({ data: customFields.fields }),
+          prisma.customFieldValue.createMany({ data: customFields.values }),
+          prisma.savedView.createMany({ data: customFields.savedViews }),
+        ]
       : []),
     ...(attachments
       ? [

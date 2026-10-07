@@ -24,6 +24,11 @@ import notificationRoutes from "./routes/notification.routes.js";
 import taskTemplateRoutes from "./routes/taskTemplate.routes.js";
 import { formsRouter, listFormsRouter, publicFormsRouter } from "./routes/form.routes.js";
 import { myWorkRouter, searchRouter } from "./routes/home.routes.js";
+import {
+  customFieldsRouter,
+  listCustomFieldsRouter,
+  taskCustomFieldsRouter,
+} from "./routes/customField.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import { automationsRouter, listAutomationsRouter } from "./routes/automation.routes.js";
 import internalRoutes from "./routes/internal.routes.js";
@@ -68,12 +73,15 @@ app.use("/api/workspaces/:workspaceId/tags", workspaceTagsRouter);
 app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/lists", listAutomationsRouter);
 app.use("/api/lists", listFormsRouter);
+app.use("/api/lists", listCustomFieldsRouter);
+app.use("/api/custom-fields", customFieldsRouter);
 app.use("/api/automations", automationsRouter);
 app.use("/api/lists", listsRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/tasks", taskDetailRouter);
 app.use("/api/tasks", taskCommentsRouter);
 app.use("/api/tasks", taskAttachmentsRouter);
+app.use("/api/tasks", taskCustomFieldsRouter);
 app.use("/api/tasks", aiRoutes);
 app.use("/api/tasks", taskGoalsRouter);
 app.use("/api/comments", commentsRouter);

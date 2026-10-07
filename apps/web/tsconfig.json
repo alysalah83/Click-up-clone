@@ -20,7 +20,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@clickup/shared/formula": ["../../packages/shared/src/formula.ts"]
     },
     "types": ["vitest/globals", "@testing-library/jest-dom/vitest"]
   },

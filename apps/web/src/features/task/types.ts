@@ -6,6 +6,7 @@ import {
 } from "./schema/task-action.schema";
 import { Status } from "@/features/status/types";
 import type { Assignee } from "@/features/members/types";
+import type { CustomFieldValue } from "@/features/customFields/types";
 
 interface TaskDateRange {
   startDate: Task["startDate"];
@@ -63,6 +64,8 @@ type Task = {
   /** Sprint points (null = not estimated). */
   points?: number | null;
   completedAt?: Date | string | null;
+  /** Custom field values by field id (formula fields are computed, never sent). */
+  customFields?: Record<string, CustomFieldValue>;
 };
 
 interface TaskTag {

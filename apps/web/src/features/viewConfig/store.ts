@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { DEFAULT_CONFIG, EMPTY_FILTERS } from "./lib/applyViewConfig";
-import type { GroupBy, Swimlanes, ViewConfig, ViewFilters } from "./types";
+import type { GroupBy, Swimlanes, ViewConfig, ViewFilters, ViewSort } from "./types";
 
 interface ViewConfigStore {
   /** List whose default view was already applied; the state below belongs to it. */
@@ -9,16 +9,19 @@ interface ViewConfigStore {
   filters: ViewFilters;
   groupBy: GroupBy;
   swimlanes: Swimlanes;
+  /** Sort by a custom field (null = the URL sorts only). */
+  sort: ViewSort | null;
   setFilters: (patch: Partial<ViewFilters>) => void;
   setGroupBy: (groupBy: GroupBy) => void;
   setSwimlanes: (swimlanes: Swimlanes) => void;
+  setSort: (sort: ViewSort | null) => void;
   clearFilters: () => void;
   /** Loads a config (a saved view or the empty one) and remembers which view it came from. */
   load: (config: ViewConfig, viewId: string | null, listId?: string) => void;
 }
 
 /**
- * The filters/groupBy/swimlanes of the List, Board and Table views. Kept in memory so it survives switching
+ * The filters/groupBy/swimlanes/custom field sort of the List, Board and Table views. Kept in memory so it survives switching
  * between those views; saved views are what persists it (per list, in the API).
  */
 export const useViewConfigStore = create<ViewConfigStore>((set) => ({
@@ -27,15 +30,18 @@ export const useViewConfigStore = create<ViewConfigStore>((set) => ({
   filters: EMPTY_FILTERS,
   groupBy: DEFAULT_CONFIG.groupBy,
   swimlanes: "none",
+  sort: null,
   setFilters: (patch) => set((s) => ({ filters: { ...s.filters, ...patch }, activeViewId: null })),
   setGroupBy: (groupBy) => set({ groupBy, activeViewId: null }),
   setSwimlanes: (swimlanes) => set({ swimlanes, activeViewId: null }),
+  setSort: (sort) => set({ sort, activeViewId: null }),
   clearFilters: () => set({ filters: EMPTY_FILTERS, activeViewId: null }),
   load: (config, viewId, listId) =>
     set((s) => ({
       filters: { ...EMPTY_FILTERS, ...config.filters },
       groupBy: config.groupBy ?? "status",
       swimlanes: config.swimlanes ?? "none",
+      sort: config.sort ?? null,
       activeViewId: viewId,
       appliedListId: listId ?? s.appliedListId,
     })),

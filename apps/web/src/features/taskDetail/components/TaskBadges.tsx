@@ -5,10 +5,11 @@ import { ICONS_MAP } from "@/shared/icons/icons-map";
 import { cn } from "@/shared/lib/utils/cn";
 import TagChip from "./TagChip";
 import { PointsBadge } from "@/features/sprint/components/PointsPicker";
+import CompactFieldBadges from "@/features/customFields/components/CompactFieldBadges";
 
 const MAX_TAGS = 3;
 
-/** Board card badges: sprint points, tags, subtask count, attachments and checklist progress. Renders nothing when empty. */
+/** Board card badges: sprint points, dropdown custom fields (e.g. Severity), tags, subtask count, attachments and checklist progress. Renders nothing when empty. */
 function TaskBadges({ task }: { task: Task }) {
   const tags = task.tags ?? [];
   const subtasks = task.subtaskCount ?? 0;
@@ -17,12 +18,14 @@ function TaskBadges({ task }: { task: Task }) {
   const repeats = !!task.recurrenceType && task.recurrenceType !== "none";
   const points = task.points ?? null;
   const attachments = task.attachmentCount ?? 0;
-  if (tags.length === 0 && subtasks === 0 && checklistTotal === 0 && !repeats && points === null && attachments === 0)
+  const hasFields = Object.keys(task.customFields ?? {}).length > 0;
+  if (tags.length === 0 && subtasks === 0 && checklistTotal === 0 && !repeats && points === null && attachments === 0 && !hasFields)
     return null;
 
   return (
     <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
       {points !== null && <PointsBadge points={points} />}
+      {hasFields && <CompactFieldBadges task={task} />}
       {tags.slice(0, MAX_TAGS).map((tag) => (
         <TagChip key={tag.id} tag={tag} size="xs" />
       ))}

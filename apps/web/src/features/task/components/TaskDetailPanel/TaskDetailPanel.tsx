@@ -22,6 +22,7 @@ import TaskProvider from "../../context/TaskProvider";
 import PropertiesGrid from "./PropertiesGrid";
 import BlockedBySection from "./BlockedBySection";
 import TaskTemplateMenu from "@/features/taskTemplates/components/TaskTemplateMenu";
+import CustomFieldsSection from "@/features/customFields/components/CustomFieldsSection";
 
 const PANEL_SHELL =
   "flex h-[min(88vh,860px)] w-[min(1120px,calc(100vw-2rem))] flex-col overflow-y-auto md:flex-row md:overflow-hidden";
@@ -153,6 +154,7 @@ function TaskDetailPanel({
         assignees: cached.assignees ?? detail.assignees,
         recurrenceType: cached.recurrenceType ?? detail.recurrenceType,
         recurrenceInterval: cached.recurrenceInterval ?? detail.recurrenceInterval,
+        customFields: cached.customFields ?? detail.customFields,
       }
     : detail;
 
@@ -172,6 +174,7 @@ function TaskDetailPanel({
             <TitleEditor key={`${task.id}-${task.name}`} task={task} />
             <PropertiesGrid task={task} />
           </div>
+          <CustomFieldsSection task={task} />
           <AiActions
             taskId={task.id}
             listId={task.listId}
