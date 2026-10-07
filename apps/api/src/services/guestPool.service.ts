@@ -23,7 +23,7 @@ type Claimed = { id: string; landingListId: string | null };
  * and the leftovers age out through the normal guest cleanup.
  * Increment it whenever the guest seed gains new demo data.
  */
-export const POOL_SEED_VERSION = 10;
+export const POOL_SEED_VERSION = 11;
 
 /** ISO text cast to `timestamp`: UTC wall-clock, the same convention Prisma writes. */
 const utc = (date: Date) => date.toISOString();

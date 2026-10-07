@@ -8,6 +8,7 @@ import type {
   UpdateDescriptionInput,
   UpdateTagInput,
 } from "@clickup/shared";
+import { MAX_SUBTASK_DEPTH } from "@clickup/shared";
 import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError, ValidationError } from "../lib/errors/index.js";
@@ -92,7 +93,21 @@ export async function updateDescription(
   return { id, description };
 }
 
-/** A subtask is a Task in the parent's list with `parentTaskId` set (one level deep). */
+/** How many ancestors a task has (0 = top-level). */
+async function taskDepth(parentTaskId: string | null) {
+  let depth = 0;
+  while (parentTaskId && depth <= MAX_SUBTASK_DEPTH) {
+    depth++;
+    const row = await prisma.task.findUnique({ where: { id: parentTaskId }, select: { parentTaskId: true } });
+    parentTaskId = row?.parentTaskId ?? null;
+  }
+  return depth;
+}
+
+/**
+ * A subtask is a Task in the parent's list with `parentTaskId` set. Subtasks nest up to
+ * `MAX_SUBTASK_DEPTH` levels under a top-level task (top-level views only show depth 0).
+ */
 export async function createSubtask(
   userId: string,
   parentId: string,
@@ -103,11 +118,10 @@ export async function createSubtask(
     where: { id: parentId },
     select: { listId: true, parentTaskId: true },
   });
-  if (parent.parentTaskId)
-    throw new ValidationError("Subtasks cannot have subtasks", {
-      formErrors: ["Subtasks cannot have subtasks"],
-      fieldErrors: {},
-    });
+  if ((await taskDepth(parent.parentTaskId)) + 1 > MAX_SUBTASK_DEPTH) {
+    const message = `Subtasks can nest at most ${MAX_SUBTASK_DEPTH} levels deep`;
+    throw new ValidationError(message, { formErrors: [message], fieldErrors: {} });
+  }
 
   let statusId = input.statusId;
   if (statusId) await assertStatusInList(userId, statusId, parent.listId);

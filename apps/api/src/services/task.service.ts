@@ -1,3 +1,4 @@
+import { MAX_SUBTASK_DEPTH } from "@clickup/shared";
 import type {
   BulkUpdateTasksInput,
   CreateTaskInput,
@@ -96,7 +97,7 @@ export async function listTasks(userId: string, query: TasksQuery) {
   const tasks = await prisma.task.findMany({
     where: {
       ...inMyWorkspaces(userId),
-      ...topLevel,
+      ...(query.subtasks !== "true" && topLevel),
       ...(query.listId && { listId: query.listId }),
     },
     include: taskInclude,
@@ -213,9 +214,16 @@ export async function updateTasks(
     }
 }
 
+/** Attachment filters for tasks matching `where` and their subtasks at every depth (deletes cascade). */
+function withDescendants(where: Prisma.TaskWhereInput): Prisma.AttachmentWhereInput[] {
+  const levels: Prisma.TaskWhereInput[] = [where];
+  for (let i = 0; i < MAX_SUBTASK_DEPTH; i++) levels.push({ parentTask: levels[i]! });
+  return levels.map((task) => ({ task }));
+}
+
 export async function deleteTask(userId: string, id: string) {
   await assertCanAccess(userId, { taskId: id });
-  const blobs = await storedBlobUrls({ OR: [{ taskId: id }, { task: { parentTaskId: id } }] });
+  const blobs = await storedBlobUrls({ OR: withDescendants({ id }) });
   const deleted = await prisma.task.delete({ where: { id } });
   await deleteBlobsBestEffort(blobs);
   return deleted;
@@ -227,7 +235,7 @@ export async function deleteTasksInList(
   ids: string[],
 ) {
   const where = { ...inMyWorkspaces(userId), listId, id: { in: ids } };
-  const blobs = await storedBlobUrls({ OR: [{ task: where }, { task: { parentTask: where } }] });
+  const blobs = await storedBlobUrls({ OR: withDescendants(where) });
   const result = await prisma.task.deleteMany({ where });
   await deleteBlobsBestEffort(blobs);
   return result.count;

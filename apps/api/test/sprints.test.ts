@@ -112,6 +112,11 @@ describe("sprints API", () => {
       .set("Cookie", owner.cookie)
       .send({ name: "Sub" })
       .expect(201);
+    const nested = await api()
+      .post(`/api/tasks/${subtask.body.id}/subtasks`)
+      .set("Cookie", owner.cookie)
+      .send({ name: "Nested" })
+      .expect(201);
 
     const res = await api().post(`/api/sprints/${sprint.id}/complete`).set("Cookie", owner.cookie).expect(200);
     expect(res.body).toMatchObject({ carriedCount: 2, carriedPoints: 7, doneCount: 1, nextSprint: { name: "Sprint 2" } });
@@ -120,9 +125,10 @@ describe("sprints API", () => {
     const next = await prisma.list.findUniqueOrThrow({ where: { id: nextId }, include: { status: true } });
     expect(next.sprintState).toBe("active");
     const moved = await prisma.task.findMany({
-      where: { id: { in: [doing.id, todo.id, subtask.body.id] } },
+      where: { id: { in: [doing.id, todo.id, subtask.body.id, nested.body.id] } },
       include: { status: true },
     });
+    expect(moved).toHaveLength(4);
     expect(moved.every((t) => t.listId === nextId && t.status.listId === nextId)).toBe(true);
     expect(moved.find((t) => t.id === doing.id)!.status.name).toBe("in progress");
     expect((await prisma.task.findUniqueOrThrow({ where: { id: finished.id } })).listId).toBe(sprint.id);

@@ -114,7 +114,13 @@ export async function completeSprint(userId: string, listId: string, now = new D
   const top = tasks.filter((t) => !t.parentTaskId);
   const unfinished = top.filter((t) => t.status.type !== "done");
   const unfinishedIds = new Set(unfinished.map((t) => t.id));
-  const moving = tasks.filter((t) => unfinishedIds.has(t.id) || (t.parentTaskId && unfinishedIds.has(t.parentTaskId)));
+  // Subtasks (at any depth) follow their top-level task.
+  const parentOf = new Map(tasks.map((t) => [t.id, t.parentTaskId]));
+  const rootOf = (id: string) => {
+    for (let i = 0; i < 10 && parentOf.get(id); i++) id = parentOf.get(id)!;
+    return id;
+  };
+  const moving = tasks.filter((t) => unfinishedIds.has(rootOf(t.id)));
 
   return prisma.$transaction(async (tx) => {
     const found = await findNextSprint(list.workspaceId, list.sprintNumber);
