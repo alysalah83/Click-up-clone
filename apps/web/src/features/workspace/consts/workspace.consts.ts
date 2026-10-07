@@ -1,5 +1,6 @@
 import { OptionUiItem } from "@/shared/types/types";
 import DeleteWorkspaceConfirm from "../components/WorkspaceDeleteConfirm";
+import SpaceImportModalBody from "@/features/import/components/SpaceImportModalBody";
 
 export const ICONS_SIZE = 4;
 
@@ -16,6 +17,17 @@ export const OPTIONS_UI_MENU = [
     label: "Rename",
     color: null,
     display: null,
+  },
+  {
+    id: "import",
+    icon: "upload",
+    label: "Import (CSV / Trello)",
+    color: null,
+    display: {
+      uiForAction: "modal",
+      ActionComponent: SpaceImportModalBody,
+      contentYPosition: "center",
+    },
   },
   {
     id: "delete",

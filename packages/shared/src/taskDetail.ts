@@ -79,6 +79,7 @@ export const ACTIVITY_TYPES = [
   "created_from_template",
   "submitted_via_form",
   "custom_field",
+  "imported",
 ] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 

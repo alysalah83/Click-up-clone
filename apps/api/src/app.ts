@@ -23,6 +23,7 @@ import { attachmentsRouter, taskAttachmentsRouter } from "./routes/attachment.ro
 import notificationRoutes from "./routes/notification.routes.js";
 import { chatChannelsRouter, chatMessagesRouter } from "./routes/chat.routes.js";
 import taskTemplateRoutes from "./routes/taskTemplate.routes.js";
+import importRoutes from "./routes/import.routes.js";
 import { formsRouter, listFormsRouter, publicFormsRouter } from "./routes/form.routes.js";
 import { myWorkRouter, searchRouter } from "./routes/home.routes.js";
 import {
@@ -49,6 +50,8 @@ const app = express();
 app.use(helmet());
 // Whiteboard scenes are bigger than any other payload; parsed first, the global parser then skips them.
 app.use("/api/whiteboards", express.json({ limit: "2mb" }));
+// Imports carry up to 1000 parsed tasks (CSV / Trello files are capped at 2 MB in the browser).
+app.use("/api/imports", express.json({ limit: "4mb" }));
 app.use(express.json({ limit: "100kb" }));
 
 app.use(
@@ -88,6 +91,7 @@ app.use("/api/tasks", taskGoalsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/attachments", attachmentsRouter);
 app.use("/api/task-templates", taskTemplateRoutes);
+app.use("/api/imports", importRoutes);
 app.use("/api/forms", formsRouter);
 app.use("/api/public/forms", publicFormsRouter);
 app.use("/api/dependencies", dependenciesRouter);

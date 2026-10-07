@@ -1,0 +1,1178 @@
+{
+  "id": "1145f263256c923716d2b8ea",
+  "name": "Website Relaunch",
+  "desc": "Redesign and relaunch of the marketing site.",
+  "closed": false,
+  "url": "https://trello.com/b/sample/website-relaunch",
+  "labels": [
+    {
+      "id": "cd1fcce61a87b80bd1cd41df",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Design",
+      "color": "purple"
+    },
+    {
+      "id": "3cd99f1df81ec9ccb86ca8e4",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Frontend",
+      "color": "blue"
+    },
+    {
+      "id": "ae9d1471481db4060a3cb3fe",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Content",
+      "color": "yellow"
+    },
+    {
+      "id": "b3959b174cf84725482ef2b0",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "SEO",
+      "color": "green"
+    },
+    {
+      "id": "5a136351801ba6c0d302965e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Bug",
+      "color": "red"
+    },
+    {
+      "id": "41665da136f5f903e89e46d0",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Launch",
+      "color": "orange"
+    },
+    {
+      "id": "ff1628041f3c7aa092cfb605",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Analytics",
+      "color": "sky"
+    }
+  ],
+  "lists": [
+    {
+      "id": "c2ec76d16b30290e70a91b76",
+      "name": "Backlog",
+      "closed": false,
+      "pos": 16384,
+      "idBoard": "1145f263256c923716d2b8ea"
+    },
+    {
+      "id": "954ec0d82d6bf2916e46a60e",
+      "name": "To Do",
+      "closed": false,
+      "pos": 32768,
+      "idBoard": "1145f263256c923716d2b8ea"
+    },
+    {
+      "id": "fb92eb0a9b1e8f0672518f48",
+      "name": "Doing",
+      "closed": false,
+      "pos": 49152,
+      "idBoard": "1145f263256c923716d2b8ea"
+    },
+    {
+      "id": "2d0470b48d22e0fe557bb3ef",
+      "name": "Review",
+      "closed": false,
+      "pos": 65536,
+      "idBoard": "1145f263256c923716d2b8ea"
+    },
+    {
+      "id": "2e033d42cef5d426b1c7fd93",
+      "name": "Done",
+      "closed": false,
+      "pos": 81920,
+      "idBoard": "1145f263256c923716d2b8ea"
+    },
+    {
+      "id": "29536e4f429fdca35a9c006e",
+      "name": "Old ideas",
+      "closed": true,
+      "pos": 147456,
+      "idBoard": "1145f263256c923716d2b8ea"
+    }
+  ],
+  "cards": [
+    {
+      "id": "6c46a92847fffb8a3be46290",
+      "name": "Competitor site audit",
+      "desc": "Review the top 5 competitor sites: navigation, page speed, messaging and conversion paths.",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "b3959b174cf84725482ef2b0",
+        "ff1628041f3c7aa092cfb605"
+      ],
+      "labels": [
+        {
+          "id": "b3959b174cf84725482ef2b0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "SEO",
+          "color": "green"
+        },
+        {
+          "id": "ff1628041f3c7aa092cfb605",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Analytics",
+          "color": "sky"
+        }
+      ],
+      "idMembers": [
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/6c46a928",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "55478a05934083b826379349",
+      "name": "Blog migration plan",
+      "desc": "Decide which of the 140 posts we migrate, merge or retire. Keep URLs where traffic > 100/month.",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 32768,
+      "due": "2026-11-20T17:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ae9d1471481db4060a3cb3fe"
+      ],
+      "labels": [
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        }
+      ],
+      "idMembers": [
+        "9255acef1245bd8bc02f7a4d"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/55478a05",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "f14fda33b1713791ec344621",
+      "name": "Accessibility review (WCAG 2.2 AA)",
+      "desc": "",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 49152,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [],
+      "idChecklists": [
+        "31c3fb3489c9f3dd5e3167b4"
+      ],
+      "url": "https://trello.com/c/f14fda33",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "aec1acb415c0ecbd7b23c3f6",
+      "name": "Customer stories page",
+      "desc": "Three case studies with quotes and metrics.",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 65536,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ae9d1471481db4060a3cb3fe",
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        },
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [
+        "9255acef1245bd8bc02f7a4d"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/aec1acb4",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "a2b3b72b07b78c895a1d472c",
+      "name": "Cookie consent banner",
+      "desc": "",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 81920,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/a2b3b72b",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "ff74277dd061b653706f36dc",
+      "name": "Newsletter signup A/B test",
+      "desc": "Inline form vs. exit-intent modal.",
+      "closed": false,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 98304,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ff1628041f3c7aa092cfb605"
+      ],
+      "labels": [
+        {
+          "id": "ff1628041f3c7aa092cfb605",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Analytics",
+          "color": "sky"
+        }
+      ],
+      "idMembers": [],
+      "idChecklists": [],
+      "url": "https://trello.com/c/ff74277d",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "5fe9005a649d118073b64ce9",
+      "name": "Write homepage copy",
+      "desc": "Hero headline, three value props, social proof and final CTA. Tone: confident, plain English.",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": "2026-10-14T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ae9d1471481db4060a3cb3fe"
+      ],
+      "labels": [
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        }
+      ],
+      "idMembers": [
+        "9255acef1245bd8bc02f7a4d"
+      ],
+      "idChecklists": [
+        "9b87352326ce5e719223ae96"
+      ],
+      "url": "https://trello.com/c/5fe9005a",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "d11a78b66d933e2284231b84",
+      "name": "Pricing page wireframe",
+      "desc": "Three tiers + enterprise. Monthly / yearly toggle.",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 32768,
+      "due": "2026-10-15T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/d11a78b6",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "4aca478726c7fba531a40d36",
+      "name": "Set up redirects from old URLs",
+      "desc": "Export the old sitemap and map every URL to its new home (301).",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 49152,
+      "due": "2026-10-22T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "b3959b174cf84725482ef2b0"
+      ],
+      "labels": [
+        {
+          "id": "b3959b174cf84725482ef2b0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "SEO",
+          "color": "green"
+        }
+      ],
+      "idMembers": [
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/4aca4787",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "84bfd55a08204cb768d4c3c4",
+      "name": "Image optimization pipeline",
+      "desc": "AVIF/WebP with fallbacks, responsive sizes.",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 65536,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/84bfd55a",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "4a715b4873b97c3ce3b9dcf0",
+      "name": "Footer redesign",
+      "desc": "",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 81920,
+      "due": "2026-10-17T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df",
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        },
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f",
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/4a715b48",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "7e9070339953d6a19a264233",
+      "name": "Analytics events plan",
+      "desc": "Define events for signup, pricing toggle, demo request and docs search.",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 98304,
+      "due": "2026-10-16T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ff1628041f3c7aa092cfb605"
+      ],
+      "labels": [
+        {
+          "id": "ff1628041f3c7aa092cfb605",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Analytics",
+          "color": "sky"
+        }
+      ],
+      "idMembers": [
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/7e907033",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "3231aecaa9b7f30351971ad2",
+      "name": "New navigation menu",
+      "desc": "Mega menu on desktop, drawer on mobile. Product, Solutions, Resources, Pricing.",
+      "closed": false,
+      "idList": "fb92eb0a9b1e8f0672518f48",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": "2026-10-10T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df",
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        },
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f",
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [
+        "cd245f29467a92a2650bc258"
+      ],
+      "url": "https://trello.com/c/3231aeca",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "ce80d740484866eb83bb177a",
+      "name": "Hero section animation",
+      "desc": "Subtle product loop, under 300 KB, respects prefers-reduced-motion.",
+      "closed": false,
+      "idList": "fb92eb0a9b1e8f0672518f48",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 32768,
+      "due": "2026-10-09T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df",
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        },
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/ce80d740",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "08aea67b8330605f4f62b0a6",
+      "name": "Contact form with CRM sync",
+      "desc": "Send leads to the CRM, show inline validation errors.",
+      "closed": false,
+      "idList": "fb92eb0a9b1e8f0672518f48",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 49152,
+      "due": "2026-10-12T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/08aea67b",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "9b2c77de6544137d75d6ba5a",
+      "name": "SEO meta tags for all pages",
+      "desc": "",
+      "closed": false,
+      "idList": "fb92eb0a9b1e8f0672518f48",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 65536,
+      "due": "2026-10-13T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "b3959b174cf84725482ef2b0"
+      ],
+      "labels": [
+        {
+          "id": "b3959b174cf84725482ef2b0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "SEO",
+          "color": "green"
+        }
+      ],
+      "idMembers": [
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [
+        "f058ec9f1d089f09378cd193"
+      ],
+      "url": "https://trello.com/c/9b2c77de",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "4a1c053eb3017421a54e3f6f",
+      "name": "Fix mobile menu overlap on Safari",
+      "desc": "The drawer renders under the sticky header on iOS 17 Safari.",
+      "closed": false,
+      "idList": "fb92eb0a9b1e8f0672518f48",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 81920,
+      "due": "2026-10-08T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "5a136351801ba6c0d302965e",
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "5a136351801ba6c0d302965e",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Bug",
+          "color": "red"
+        },
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/4a1c053e",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "cc717a1fe045e88a0aebc4f1",
+      "name": "Brand style guide",
+      "desc": "Colors, type scale, spacing, logo usage.",
+      "closed": false,
+      "idList": "2d0470b48d22e0fe557bb3ef",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": "2026-10-07T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/cc717a1f",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "6c16b07e0f4662d28a44e6fe",
+      "name": "Product page copy",
+      "desc": "",
+      "closed": false,
+      "idList": "2d0470b48d22e0fe557bb3ef",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 32768,
+      "due": "2026-10-09T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ae9d1471481db4060a3cb3fe"
+      ],
+      "labels": [
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        }
+      ],
+      "idMembers": [
+        "9255acef1245bd8bc02f7a4d"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/6c16b07e",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "1de71005fbe0cc2dad5c7817",
+      "name": "Lighthouse performance pass",
+      "desc": "Target 90+ on mobile for home, pricing and product.",
+      "closed": false,
+      "idList": "2d0470b48d22e0fe557bb3ef",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 49152,
+      "due": "2026-10-11T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4",
+        "ff1628041f3c7aa092cfb605"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        },
+        {
+          "id": "ff1628041f3c7aa092cfb605",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Analytics",
+          "color": "sky"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf",
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/1de71005",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "82a4dcca0274c829c2e2f4ee",
+      "name": "Kickoff meeting notes",
+      "desc": "Goals: +30% demo requests, faster pages, simpler story.",
+      "closed": false,
+      "idList": "2e033d42cef5d426b1c7fd93",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": "2026-09-28T16:00:00.000Z",
+      "dueComplete": true,
+      "start": null,
+      "idLabels": [
+        "41665da136f5f903e89e46d0"
+      ],
+      "labels": [
+        {
+          "id": "41665da136f5f903e89e46d0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Launch",
+          "color": "orange"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/82a4dcca",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "ba500c2391bef09bbeb186e5",
+      "name": "Choose CMS",
+      "desc": "Headless CMS picked; editors keep live preview.",
+      "closed": false,
+      "idList": "2e033d42cef5d426b1c7fd93",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 32768,
+      "due": "2026-10-02T16:00:00.000Z",
+      "dueComplete": true,
+      "start": null,
+      "idLabels": [
+        "3cd99f1df81ec9ccb86ca8e4"
+      ],
+      "labels": [
+        {
+          "id": "3cd99f1df81ec9ccb86ca8e4",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Frontend",
+          "color": "blue"
+        }
+      ],
+      "idMembers": [
+        "a6e778e35f5b1223f38d67bf"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/ba500c23",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "d56b5a477fece2d30b7be0e2",
+      "name": "Sitemap and page inventory",
+      "desc": "",
+      "closed": false,
+      "idList": "2e033d42cef5d426b1c7fd93",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 49152,
+      "due": "2026-10-03T16:00:00.000Z",
+      "dueComplete": true,
+      "start": null,
+      "idLabels": [
+        "b3959b174cf84725482ef2b0",
+        "ae9d1471481db4060a3cb3fe"
+      ],
+      "labels": [
+        {
+          "id": "b3959b174cf84725482ef2b0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "SEO",
+          "color": "green"
+        },
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        }
+      ],
+      "idMembers": [
+        "5081eb1431361f80f9302ea6",
+        "9255acef1245bd8bc02f7a4d"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/d56b5a47",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "e361ffb3d0cf19b4e843f355",
+      "name": "Moodboard",
+      "desc": "",
+      "closed": false,
+      "idList": "2e033d42cef5d426b1c7fd93",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 65536,
+      "due": "2026-09-30T16:00:00.000Z",
+      "dueComplete": true,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/e361ffb3",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "14f0dd2278ff0d81e098792c",
+      "name": "Old logo explorations",
+      "desc": "Superseded by the brand style guide.",
+      "closed": true,
+      "idList": "2e033d42cef5d426b1c7fd93",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 81920,
+      "due": null,
+      "dueComplete": true,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f"
+      ],
+      "idChecklists": [],
+      "url": "https://trello.com/c/14f0dd22",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "dbefc132815471c43d1ed162",
+      "name": "Flash intro page",
+      "desc": "Not doing this.",
+      "closed": true,
+      "idList": "c2ec76d16b30290e70a91b76",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 114688,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "cd1fcce61a87b80bd1cd41df"
+      ],
+      "labels": [
+        {
+          "id": "cd1fcce61a87b80bd1cd41df",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Design",
+          "color": "purple"
+        }
+      ],
+      "idMembers": [],
+      "idChecklists": [],
+      "url": "https://trello.com/c/dbefc132",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "f5d8d9e6bb924e801ec52ca8",
+      "name": "Launch day checklist",
+      "desc": "",
+      "closed": false,
+      "idList": "954ec0d82d6bf2916e46a60e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 114688,
+      "due": "2026-11-03T16:00:00.000Z",
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "41665da136f5f903e89e46d0"
+      ],
+      "labels": [
+        {
+          "id": "41665da136f5f903e89e46d0",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Launch",
+          "color": "orange"
+        }
+      ],
+      "idMembers": [
+        "63cf375ea429fdd21811445f",
+        "5081eb1431361f80f9302ea6"
+      ],
+      "idChecklists": [
+        "6accb88407e3367ac4f8d423",
+        "71e6edd0598e448f035c743f"
+      ],
+      "url": "https://trello.com/c/f5d8d9e6",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    },
+    {
+      "id": "40a487893b5591ee03004c51",
+      "name": "Translate homepage (DE)",
+      "desc": "",
+      "closed": false,
+      "idList": "29536e4f429fdca35a9c006e",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "pos": 16384,
+      "due": null,
+      "dueComplete": false,
+      "start": null,
+      "idLabels": [
+        "ae9d1471481db4060a3cb3fe"
+      ],
+      "labels": [
+        {
+          "id": "ae9d1471481db4060a3cb3fe",
+          "idBoard": "1145f263256c923716d2b8ea",
+          "name": "Content",
+          "color": "yellow"
+        }
+      ],
+      "idMembers": [],
+      "idChecklists": [],
+      "url": "https://trello.com/c/40a48789",
+      "dateLastActivity": "2026-10-07T10:00:00.000Z"
+    }
+  ],
+  "checklists": [
+    {
+      "id": "31c3fb3489c9f3dd5e3167b4",
+      "idCard": "f14fda33b1713791ec344621",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Checks",
+      "pos": 16384,
+      "checkItems": [
+        {
+          "id": "1fb3ddf0f998ba1de73bd087",
+          "name": "Color contrast",
+          "state": "incomplete",
+          "pos": 16384
+        },
+        {
+          "id": "0953c94d267249954ac33b87",
+          "name": "Keyboard navigation",
+          "state": "incomplete",
+          "pos": 32768
+        },
+        {
+          "id": "89a7f6fb37d138b1c4e14063",
+          "name": "Screen reader labels",
+          "state": "incomplete",
+          "pos": 49152
+        },
+        {
+          "id": "1216b91bf600e1c6dcbda181",
+          "name": "Focus order",
+          "state": "incomplete",
+          "pos": 65536
+        }
+      ]
+    },
+    {
+      "id": "9b87352326ce5e719223ae96",
+      "idCard": "5fe9005a649d118073b64ce9",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Sections",
+      "pos": 16384,
+      "checkItems": [
+        {
+          "id": "83f3c7103342572a1a33e5a1",
+          "name": "Hero",
+          "state": "complete",
+          "pos": 16384
+        },
+        {
+          "id": "b6945785c7890d85e9a12abb",
+          "name": "Value props",
+          "state": "incomplete",
+          "pos": 32768
+        },
+        {
+          "id": "190aca29ecdb459118090d02",
+          "name": "Social proof",
+          "state": "incomplete",
+          "pos": 49152
+        },
+        {
+          "id": "4e68593dbd678962c4763a7b",
+          "name": "CTA",
+          "state": "incomplete",
+          "pos": 65536
+        }
+      ]
+    },
+    {
+      "id": "cd245f29467a92a2650bc258",
+      "idCard": "3231aecaa9b7f30351971ad2",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Build",
+      "pos": 16384,
+      "checkItems": [
+        {
+          "id": "a494352eedbdc958f2fb878c",
+          "name": "Desktop mega menu",
+          "state": "complete",
+          "pos": 16384
+        },
+        {
+          "id": "98871bdddd45462bb71b3877",
+          "name": "Mobile drawer",
+          "state": "complete",
+          "pos": 32768
+        },
+        {
+          "id": "56c8a87705ef5433e202944f",
+          "name": "Keyboard support",
+          "state": "incomplete",
+          "pos": 49152
+        }
+      ]
+    },
+    {
+      "id": "f058ec9f1d089f09378cd193",
+      "idCard": "9b2c77de6544137d75d6ba5a",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Pages",
+      "pos": 16384,
+      "checkItems": [
+        {
+          "id": "82e4109f0fda823e28815ad7",
+          "name": "Home",
+          "state": "complete",
+          "pos": 16384
+        },
+        {
+          "id": "1731b6305d9f8f6865dfceaa",
+          "name": "Pricing",
+          "state": "complete",
+          "pos": 32768
+        },
+        {
+          "id": "7e85468720ed5e77bd1486c5",
+          "name": "Product",
+          "state": "incomplete",
+          "pos": 49152
+        },
+        {
+          "id": "93cb2e443a8d9590b948814b",
+          "name": "Blog index",
+          "state": "incomplete",
+          "pos": 65536
+        }
+      ]
+    },
+    {
+      "id": "6accb88407e3367ac4f8d423",
+      "idCard": "f5d8d9e6bb924e801ec52ca8",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Before launch",
+      "pos": 16384,
+      "checkItems": [
+        {
+          "id": "45b1a588525f2bfd050d6088",
+          "name": "Freeze content",
+          "state": "incomplete",
+          "pos": 16384
+        },
+        {
+          "id": "8937fd2e1781a578148dd116",
+          "name": "Final QA pass",
+          "state": "incomplete",
+          "pos": 32768
+        },
+        {
+          "id": "fea525c1025de3d2bfa1ef0e",
+          "name": "Redirects live",
+          "state": "incomplete",
+          "pos": 49152
+        }
+      ]
+    },
+    {
+      "id": "71e6edd0598e448f035c743f",
+      "idCard": "f5d8d9e6bb924e801ec52ca8",
+      "idBoard": "1145f263256c923716d2b8ea",
+      "name": "Launch day",
+      "pos": 32768,
+      "checkItems": [
+        {
+          "id": "93eb2e6900aa3daa25b35211",
+          "name": "Switch DNS",
+          "state": "incomplete",
+          "pos": 16384
+        },
+        {
+          "id": "afe261385d5f3f02042c2f9e",
+          "name": "Announce on social",
+          "state": "incomplete",
+          "pos": 32768
+        },
+        {
+          "id": "134ab358a86afe8be19d3929",
+          "name": "Monitor analytics",
+          "state": "incomplete",
+          "pos": 49152
+        }
+      ]
+    }
+  ],
+  "members": [
+    {
+      "id": "63cf375ea429fdd21811445f",
+      "fullName": "Maya Chen",
+      "username": "mayachen"
+    },
+    {
+      "id": "a6e778e35f5b1223f38d67bf",
+      "fullName": "Liam Patel",
+      "username": "liampatel"
+    },
+    {
+      "id": "9255acef1245bd8bc02f7a4d",
+      "fullName": "Sofia Garcia",
+      "username": "sofiagarcia"
+    },
+    {
+      "id": "5081eb1431361f80f9302ea6",
+      "fullName": "Noah Kim",
+      "username": "noahkim"
+    }
+  ],
+  "actions": []
+}
