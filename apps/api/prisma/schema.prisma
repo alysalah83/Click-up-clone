@@ -78,6 +78,7 @@ model User {
   chatReactions    ChatReaction[]
   chatMentions     ChatMention[]
   chatReads        ChatChannelRead[]
+  shareLinks       ShareLink[]
 
   @@index([demoOwnerId])
 }
@@ -96,6 +97,7 @@ model Workspace {
   goals       Goal[]
   taskTemplates TaskTemplate[]
   chatChannels ChatChannel[]
+  shareLinks  ShareLink[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -125,6 +127,7 @@ model List {
   savedViews  SavedView[]
   forms       Form[]
   customFields CustomField[]
+  shareLink   ShareLink?
   /// Set on sprint lists (null = a regular list). Dates are calendar days at 12:00 UTC.
   sprintNumber Int?
   sprintStart  DateTime?
@@ -539,6 +542,7 @@ model Doc {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   parent    Doc?      @relation("DocTree", fields: [parentId], references: [id], onDelete: Cascade)
   children  Doc[]     @relation("DocTree")
+  shareLink ShareLink?
   createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, parentId])
@@ -811,4 +815,34 @@ model ChatChannelRead {
 
   @@id([channelId, userId])
   @@index([userId])
+}
+
+enum ShareResourceType {
+  list
+  doc
+}
+
+/// Public read-only link to a list or a doc (/share/<token>). One per resource: turning it off
+/// keeps the token, "Reset link" replaces it. Exactly one of listId / docId is set, per resourceType.
+model ShareLink {
+  id           String            @id @default(uuid())
+  token        String            @unique
+  resourceType ShareResourceType
+  listId       String?           @unique
+  docId        String?           @unique
+  workspaceId  String
+  createdById  String
+  isActive     Boolean           @default(true)
+  viewCount    Int               @default(0)
+  lastViewedAt DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  list      List?     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  doc       Doc?      @relation(fields: [docId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([createdById])
 }

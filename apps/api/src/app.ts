@@ -25,6 +25,7 @@ import { chatChannelsRouter, chatMessagesRouter } from "./routes/chat.routes.js"
 import taskTemplateRoutes from "./routes/taskTemplate.routes.js";
 import importRoutes from "./routes/import.routes.js";
 import { formsRouter, listFormsRouter, publicFormsRouter } from "./routes/form.routes.js";
+import { publicShareRouter, shareLinksRouter } from "./routes/shareLink.routes.js";
 import { myWorkRouter, searchRouter } from "./routes/home.routes.js";
 import {
   customFieldsRouter,
@@ -94,6 +95,8 @@ app.use("/api/task-templates", taskTemplateRoutes);
 app.use("/api/imports", importRoutes);
 app.use("/api/forms", formsRouter);
 app.use("/api/public/forms", publicFormsRouter);
+app.use("/api/share-links", shareLinksRouter);
+app.use("/api/public/share", publicShareRouter);
 app.use("/api/dependencies", dependenciesRouter);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/my-work", myWorkRouter);

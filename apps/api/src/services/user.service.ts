@@ -19,6 +19,7 @@ import { buildDemoTaskTemplates } from "../seed/demoTaskTemplates.js";
 import { buildDemoForms } from "../seed/demoForms.js";
 import { buildDemoCustomFields } from "../seed/demoCustomFields.js";
 import { buildDemoChat } from "../seed/demoChat.js";
+import { buildDemoShareLinks } from "../seed/demoShareLinks.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -97,6 +98,8 @@ export async function seedGuest({
       : undefined;
   const chat =
     template === DEMO_TEMPLATE ? buildDemoChat({ ownerUserId: userId, seed, teammates: team.users }) : undefined;
+  const docs = buildDemoDocs(userId, seed);
+  const shareLinks = template === DEMO_TEMPLATE ? buildDemoShareLinks(userId, seed, docs) : [];
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -115,9 +118,10 @@ export async function seedGuest({
       ? [prisma.automation.createMany({ data: buildDemoAutomations(seed) })]
       : []),
     prisma.savedView.createMany({ data: buildDemoSavedViews(userId, seed.landingListId) }),
-    prisma.doc.createMany({ data: buildDemoDocs(userId, seed) }),
+    prisma.doc.createMany({ data: docs }),
     prisma.whiteboard.createMany({ data: buildDemoWhiteboards(userId, seed) }),
     prisma.taskTemplate.createMany({ data: buildDemoTaskTemplates(userId, seed) }),
+    prisma.shareLink.createMany({ data: shareLinks }),
     prisma.activity.createMany({ data: sprints.activities }),
     ...(goals
       ? [

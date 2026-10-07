@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ToolbarButton } from "@/features/taskDetail/components/DescriptionEditor";
+import SharePopover from "@/features/share/components/SharePopover";
 import { useDeleteDoc, useDoc, useUpdateDoc } from "../hooks/useDocs";
 import { parseContent } from "../lib";
 import type { Doc, DocPatch } from "../types";
@@ -173,6 +174,7 @@ function DocForm({ doc }: { doc: Doc }) {
         </Link>
         <div className="flex items-center gap-2">
           <SavedIndicator state={state} />
+          <SharePopover target={{ resourceType: "doc", resourceId: doc.id }} />
           <Button variant="ghost" size="icon" aria-label="Delete doc" disabled={isDeleting} onClick={onDelete}>
             <Trash2 />
           </Button>

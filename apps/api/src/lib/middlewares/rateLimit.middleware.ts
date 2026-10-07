@@ -59,3 +59,21 @@ export const formSubmitGlobalLimiter = rateLimit({
   limit: env.FORM_SUBMISSIONS_PER_MINUTE * 10,
   keyGenerator: formSlug,
 });
+
+/**
+ * Public share links (read-only): SHARE_VIEWS_PER_MINUTE requests per visitor (X-Client-Ip from
+ * the web proxy) per link, and at most 10x that per link overall.
+ */
+const shareToken = (req: Request) => String(req.params?.token ?? "");
+export const shareViewLimiter = rateLimit({
+  ...shared,
+  windowMs: 60 * 1000,
+  limit: env.SHARE_VIEWS_PER_MINUTE,
+  keyGenerator: (req) => `${shareToken(req)}:${String(req.get("x-client-ip") ?? "anonymous").slice(0, 64)}`,
+});
+export const shareViewGlobalLimiter = rateLimit({
+  ...shared,
+  windowMs: 60 * 1000,
+  limit: env.SHARE_VIEWS_PER_MINUTE * 10,
+  keyGenerator: shareToken,
+});
