@@ -18,6 +18,7 @@ import { buildDemoAttachments } from "../seed/demoAttachments.js";
 import { buildDemoTaskTemplates } from "../seed/demoTaskTemplates.js";
 import { buildDemoForms } from "../seed/demoForms.js";
 import { buildDemoCustomFields } from "../seed/demoCustomFields.js";
+import { buildDemoChat } from "../seed/demoChat.js";
 import { env } from "../config/env.js";
 import { claimPooledGuest, markPooled, refillGuestPool, runAfterResponse } from "./guestPool.service.js";
 
@@ -94,6 +95,8 @@ export async function seedGuest({
     template === DEMO_TEMPLATE
       ? buildDemoCustomFields(userId, seed, team.users.map((u) => u.id))
       : undefined;
+  const chat =
+    template === DEMO_TEMPLATE ? buildDemoChat({ ownerUserId: userId, seed, teammates: team.users }) : undefined;
   const [user] = await prisma.$transaction([
     prisma.user.create({
       data: { id: userId, role: "guest", hasOnBoarded: true },
@@ -160,6 +163,16 @@ export async function seedGuest({
           prisma.commentReaction.createMany({ data: collab.reactions }),
           prisma.commentMention.createMany({ data: collab.mentions }),
           prisma.notification.createMany({ data: collab.notifications }),
+        ]
+      : []),
+    ...(chat
+      ? [
+          prisma.chatChannel.createMany({ data: chat.channels }),
+          prisma.chatMessage.createMany({ data: chat.messages }),
+          prisma.chatReaction.createMany({ data: chat.reactions }),
+          prisma.chatMention.createMany({ data: chat.mentions }),
+          prisma.chatChannelRead.createMany({ data: chat.reads }),
+          prisma.notification.createMany({ data: chat.notifications }),
         ]
       : []),
     ...(pooled ? [markPooled(userId, seed.landingListId)] : []),

@@ -28,7 +28,8 @@ function InboxView() {
 
   const open = (n: Notification) => {
     if (!n.readAt) markRead.mutate(n.id);
-    router.push(`/home/lists/${n.task.listId}/board?task=${n.task.id}`);
+    if (n.chatMessage) router.push(`/home/chat/${n.chatMessage.channelId}?message=${n.chatMessage.id}`);
+    else if (n.task) router.push(`/home/lists/${n.task.listId}/board?task=${n.task.id}`);
   };
 
   if (isPending)
@@ -73,7 +74,9 @@ function InboxView() {
               <UserAvatar user={n.actor} size="md" />
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className={`text-sm ${n.readAt ? "" : "font-semibold"}`}>{n.message}</span>
-                <span className="truncate text-xs text-muted-foreground">{n.task.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {n.chatMessage ? `# ${n.chatMessage.channel.name}` : n.task?.name}
+                </span>
               </span>
               <span className="shrink-0 text-xs text-muted-foreground">{relativeTime(n.createdAt)}</span>
               {!n.readAt && <span aria-label="Unread" className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />}

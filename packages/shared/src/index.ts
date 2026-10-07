@@ -20,3 +20,4 @@ export * from "./attachment.js";
 export * from "./taskTemplate.js";
 export * from "./form.js";
 export * from "./customField.js";
+export * from "./chat.js";

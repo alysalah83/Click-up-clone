@@ -73,6 +73,11 @@ model User {
   commentMentions  CommentMention[]
   notifications  Notification[] @relation("NotificationRecipient")
   actedNotifications Notification[] @relation("NotificationActor")
+  chatChannels     ChatChannel[]
+  chatMessages     ChatMessage[]
+  chatReactions    ChatReaction[]
+  chatMentions     ChatMention[]
+  chatReads        ChatChannelRead[]
 
   @@index([demoOwnerId])
 }
@@ -90,6 +95,7 @@ model Workspace {
   whiteboards Whiteboard[]
   goals       Goal[]
   taskTemplates TaskTemplate[]
+  chatChannels ChatChannel[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
@@ -212,6 +218,7 @@ model Task {
   comments     Comment[]
   attachments  Attachment[]
   notifications Notification[]
+  chatMessages  ChatMessage[]
   blockedBy     TaskDependency[] @relation("TaskBlockedBy")
   blocking      TaskDependency[] @relation("TaskBlocks")
   goalTargets   GoalTargetTask[]
@@ -430,21 +437,25 @@ model Notification {
   userId    String
   actorId   String
   type      NotificationType
-  taskId    String
+  /// Null for chat notifications (they point at `chatMessage` instead).
+  taskId    String?
   commentId String?
+  chatMessageId String?
   message   String
   readAt    DateTime?
   createdAt DateTime         @default(now())
 
   user    User     @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
   actor   User     @relation("NotificationActor", fields: [actorId], references: [id], onDelete: Cascade)
-  task    Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task    Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
   comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  chatMessage ChatMessage? @relation(fields: [chatMessageId], references: [id], onDelete: Cascade)
 
   @@index([userId, readAt, createdAt])
   @@index([taskId])
   @@index([actorId])
   @@index([commentId])
+  @@index([chatMessageId])
 }
 
 /// `task` is blocked by `dependsOn` (a "blocked by" link; both tasks are in the same workspace).
@@ -711,4 +722,93 @@ model CustomFieldValue {
 
   @@id([taskId, fieldId])
   @@index([fieldId])
+}
+
+/// A chat channel in a space (workspace), e.g. #product. Every space member can read and post.
+model ChatChannel {
+  id          String   @id @default(uuid())
+  workspaceId String
+  /// Lowercase slug without the "#" (see `normalizeChannelName`).
+  name        String
+  topic       String   @default("")
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy User              @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+  reads     ChatChannelRead[]
+
+  @@unique([workspaceId, name])
+  @@index([createdById])
+}
+
+/// A chat message. Thread replies point at a top-level message via `parentId` (one level).
+/// `updatedAt` moves on edits, reactions, replies and deletes, so polling clients can pick up
+/// changes with `?since=`. Deleted messages are soft-deleted (`deletedAt`, empty body).
+model ChatMessage {
+  id        String    @id @default(uuid())
+  channelId String
+  authorId  String
+  parentId  String?
+  body      String
+  /// The task this message was turned into.
+  taskId    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  editedAt  DateTime?
+  deletedAt DateTime?
+
+  channel       ChatChannel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent        ChatMessage?   @relation("ChatThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       ChatMessage[]  @relation("ChatThread")
+  task          Task?          @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  reactions     ChatReaction[]
+  mentions      ChatMention[]
+  notifications Notification[]
+
+  @@index([channelId, createdAt])
+  @@index([channelId, updatedAt])
+  @@index([parentId])
+  @@index([authorId])
+  @@index([taskId])
+}
+
+model ChatReaction {
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId, emoji])
+  @@index([userId])
+}
+
+model ChatMention {
+  messageId String
+  userId    String
+
+  message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId])
+  @@index([userId])
+}
+
+/// Read state of a member in a channel: messages after `lastReadAt` count as unread.
+model ChatChannelRead {
+  channelId  String
+  userId     String
+  lastReadAt DateTime
+
+  channel ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([channelId, userId])
+  @@index([userId])
 }

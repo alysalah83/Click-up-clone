@@ -28,6 +28,8 @@ describe("guest pool", () => {
     const textValueBefore = await prisma.customFieldValue.findFirstOrThrow({
       where: { field: { listId: landingListId, type: "text" } },
     });
+    const chatBefore = await prisma.chatMessage.findFirstOrThrow({ where: { channel: { workspace: { userId: user.id } } } });
+    const readBefore = await prisma.chatChannelRead.findFirstOrThrow({ where: { userId: user.id } });
 
     const claimed = await claimPooledGuest(new Date(Date.now() + 3 * DAY));
     expect(claimed).toEqual({ id: user.id, landingListId });
@@ -72,6 +74,15 @@ describe("guest pool", () => {
       where: { taskId_fieldId: { taskId: textValueBefore.taskId, fieldId: textValueBefore.fieldId } },
     });
     expect(textValueAfter.value).toEqual(textValueBefore.value);
+    // Chat messages and read markers keep their distance to "now", so unread badges stay the same.
+    const chatAfter = await prisma.chatMessage.findUniqueOrThrow({ where: { id: chatBefore.id } });
+    const chatShift = chatAfter.createdAt.getTime() - chatBefore.createdAt.getTime();
+    expect(chatShift).toBeGreaterThan(3 * DAY - 60_000);
+    expect(chatShift).toBeLessThan(3 * DAY + 60_000);
+    const readAfter = await prisma.chatChannelRead.findUniqueOrThrow({
+      where: { channelId_userId: { channelId: readBefore.channelId, userId: user.id } },
+    });
+    expect(readAfter.lastReadAt.getTime() - readBefore.lastReadAt.getTime()).toBe(chatShift);
   });
 
   it("refills the pool up to the target size", async () => {

@@ -1,4 +1,4 @@
-import { BsPencil, BsThreeDots } from "react-icons/bs";
+import { BsChatDots, BsPencil, BsThreeDots } from "react-icons/bs";
 import {
   FaBullseye,
   FaMoon,
@@ -111,4 +111,5 @@ export const ICONS_MAP = {
   externalLink: FiExternalLink,
   form: FaWpforms,
   mindmap: FaSitemap,
+  chat: BsChatDots,
 } as const;

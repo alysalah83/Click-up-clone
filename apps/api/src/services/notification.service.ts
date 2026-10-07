@@ -8,8 +8,10 @@ type NotificationRow = {
   userId: string;
   actorId: string;
   type: NotificationType;
-  taskId: string;
+  /** Unset for chat notifications, which point at `chatMessageId`. */
+  taskId?: string;
   commentId?: string;
+  chatMessageId?: string;
   message: string;
 };
 
@@ -90,6 +92,7 @@ const notificationSelect = {
   createdAt: true,
   actor: { select: assigneeUserSelect },
   task: { select: { id: true, name: true, listId: true } },
+  chatMessage: { select: { id: true, channelId: true, channel: { select: { name: true } } } },
 } as const;
 
 export function listNotifications(userId: string) {
