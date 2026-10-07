@@ -11,6 +11,7 @@ import {
   startOfDay,
 } from "date-fns";
 import useTasks from "@/features/task/hooks/useTasks";
+import { TimelineSkeleton } from "@/features/list/components/ListViewSkeleton";
 import { useUpdateTask } from "@/features/task/hooks/useUpdateTask";
 import {
   useDependencies,
@@ -159,7 +160,7 @@ function TimelineView() {
   };
 
   if (isPending)
-    return <div className="p-6 text-sm text-neutral-500">Loading timeline...</div>;
+    return <TimelineSkeleton />;
   if (!rows.length)
     return (
       <div className="p-6 text-sm text-neutral-500">

@@ -112,7 +112,12 @@ function SwimlaneBoard({ mode }: { mode: Exclude<Swimlanes, "none"> }) {
       return next;
     });
 
-  if (isPending || statusesPending) return <BoardSkeleton columnCount={4} />;
+  if (isPending || statusesPending)
+    return (
+      <div className="p-3 sm:p-4">
+        <BoardSkeleton columnCount={4} />
+      </div>
+    );
 
   return (
     <section className="min-h-0 flex-1 snap-x snap-mandatory scroll-px-3 overflow-auto sm:snap-none">

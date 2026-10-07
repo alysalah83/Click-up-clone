@@ -1,11 +1,4 @@
-import MiniSpinner from "@/shared/ui/MiniSpinner";
+import ListViewSkeleton from "@/features/list/components/ListViewSkeleton";
 
-function SpinnerLoader() {
-  return (
-    <div className="flex h-full w-full items-center justify-center">
-      <MiniSpinner width="xLarge" />
-    </div>
-  );
-}
-
-export default SpinnerLoader;
+// Shown when switching views inside a list (Board -> Table, Calendar, ...).
+export default ListViewSkeleton;

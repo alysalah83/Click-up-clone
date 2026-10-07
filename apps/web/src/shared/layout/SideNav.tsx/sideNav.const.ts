@@ -14,8 +14,7 @@ export const SIDE_NAV_ITEMS = [
   {
     icon: "list" as IconsMap,
     label: "Lists",
-    href: "/home",
-    includedRoutes: ["/board", "/table", "/list", "/home/lists"],
+    href: "/home/lists",
   },
   {
     icon: "dashboard" as IconsMap,
@@ -26,7 +25,6 @@ export const SIDE_NAV_ITEMS = [
     icon: "bullEye" as IconsMap,
     label: "Goals",
     href: "/home/goals",
-    includedRoutes: ["/home/goals"],
   },
   {
     icon: "doc" as IconsMap,
@@ -42,6 +40,7 @@ export const SIDE_NAV_ITEMS = [
     icon: "paintBrush" as IconsMap,
     label: "Whiteboards",
     href: "/home/whiteboards",
+    // The legacy /home/whiteboard route redirects into this section.
     includedRoutes: ["/home/whiteboard"],
   },
 ];
