@@ -37,6 +37,18 @@ function LoginForm() {
   return (
     <LogAndSignLayout page="login">
       <div className="flex flex-col gap-5">
+        <SignupGuestBtn
+          stretch
+          label="Continue as guest (demo workspace)"
+          extraClasses="!normal-case !rounded-lg !py-3 !text-[15px] !font-semibold !bg-white !border-[#d9d9e3] !text-[#1f1f2e] hover:!bg-[#f7f7fa] !shadow-none"
+        />
+        <div className="flex items-center gap-3">
+          <span className="grow border-t border-[#ececf2]" />
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#9a9aab]">
+            or
+          </p>
+          <span className="grow border-t border-[#ececf2]" />
+        </div>
         <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
           <FormInputWithLabel
             icon="mail"
@@ -65,12 +77,12 @@ function LoginForm() {
             size="large"
             rounded="large"
             ariaLabel="login button"
-            extraClasses="mt-1 shadow-md shadow-indigo-500/25"
+            extraClasses="mt-1 !normal-case !rounded-lg !py-3 !bg-[#7b68ee] hover:!bg-[#6a57e3] !shadow-none"
             disabled={isPending}
             pending={isPending}
             pendingSpinnerWidth="medium"
           >
-            Login
+            Log in
           </Button>
 
           {state?.error && (
@@ -80,12 +92,6 @@ function LoginForm() {
             />
           )}
         </form>
-        <div className="flex items-center gap-4">
-          <span className="grow border-t border-gray-100" />
-          <p className="text-sm font-semibold text-gray-400">or</p>
-          <span className="grow border-t border-gray-100" />
-        </div>
-        <SignupGuestBtn stretch={true} />
       </div>
     </LogAndSignLayout>
   );

@@ -2,92 +2,52 @@ import SignupGuestBtn from "@/features/auth/components/SignupGuestBtn";
 import ApiWarmup from "@/shared/components/ApiWarmup";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Bookmark,
-  Bot,
-  CalendarClock,
-  ChevronRight,
-  FileText,
-  Inbox,
-  Repeat,
-  Timer,
-  Users,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
+import ViewShowcase from "@/features/landing/ViewShowcase";
+import { jakarta } from "@/features/landing/font";
 import icon from "./icon.png";
 
 const REPO_URL = "https://github.com/alysalah83/Click-up-clone";
 
-const SHOWCASE = [
+const NAV_LINK =
+  "rounded-lg px-3 py-2 hover:bg-[#f4f4f8] hover:text-[#1f1f2e] dark:hover:bg-neutral-800 dark:hover:text-white";
+
+const PRIMARY_BTN =
+  "!bg-[#7b68ee] hover:!bg-[#6a57e3] !normal-case !rounded-lg !px-7 !py-3.5 !shadow-none";
+
+const FEATURES = [
   {
-    key: "board",
-    title: "Boards your team will actually use",
-    desc: "Drag cards across custom statuses, see assignees, priorities and due dates at a glance, then filter, group and save the view you like.",
-    alt: "Kanban board with statuses, assignees and priorities",
+    title: "Automations",
+    desc: "When a status changes, assign someone, move the task or send a notification.",
   },
   {
-    key: "timeline",
-    title: "Plan on a Timeline",
-    desc: 'A Gantt view with drag-to-reschedule, resizable bars and "blocked by" dependency arrows, so slips are visible before they hurt.',
-    alt: "Timeline Gantt view with dependency arrows",
+    title: "Claude AI",
+    desc: "Summarize a long task or split it into subtasks.",
   },
   {
-    key: "task",
-    title: "A task panel with everything in it",
-    desc: "Rich-text descriptions, subtasks, checklists, tags, comments with @mentions, an activity log, and AI to summarize or break work down.",
-    alt: "Task panel with description, subtasks and activity log",
+    title: "Sprints",
+    desc: "Story points, a burndown chart and velocity across sprints.",
   },
   {
-    key: "dashboard",
-    title: "Dashboards that answer questions",
-    desc: "Workload by assignee, overdue work, what shipped this week and a sprint burndown, straight from your tasks.",
-    alt: "Dashboard with workload, priorities and assignee charts",
+    title: "Goals",
+    desc: "Targets that fill up as the linked tasks get done.",
+  },
+  {
+    title: "Whiteboards",
+    desc: "Sketch a plan, then turn sticky notes into tasks.",
+  },
+  {
+    title: "Forms",
+    desc: "A public form for a list. Every submission becomes a task.",
+  },
+  {
+    title: "Docs",
+    desc: "Write specs and notes next to the work they describe.",
+  },
+  {
+    title: "Time tracking",
+    desc: "Start a timer on a task and see where the hours went.",
   },
 ] as const;
-
-const FEATURES: { Icon: LucideIcon; title: string; desc: string }[] = [
-  {
-    Icon: Zap,
-    title: "Automations",
-    desc: "Trigger, condition and action rules per list: set a status, assign or notify automatically.",
-  },
-  {
-    Icon: Bot,
-    title: "Claude AI",
-    desc: "Summarize a task or generate subtasks in one click.",
-  },
-  {
-    Icon: Bookmark,
-    title: "Saved views",
-    desc: "Filters, grouping and sorting saved per list, with a default view.",
-  },
-  {
-    Icon: Inbox,
-    title: "My Work and Inbox",
-    desc: "Everything assigned to you by due date, plus notifications for mentions and assignments.",
-  },
-  {
-    Icon: Users,
-    title: "Teams",
-    desc: "Members, roles and invite links, so you can try it with a second account.",
-  },
-  {
-    Icon: Timer,
-    title: "Time tracking",
-    desc: "Log time against a task and see where the hours go.",
-  },
-  {
-    Icon: Repeat,
-    title: "Recurring tasks",
-    desc: "Daily, weekly or monthly tasks that recreate themselves.",
-  },
-  {
-    Icon: FileText,
-    title: "Docs",
-    desc: "Write docs next to the work they describe.",
-  },
-];
 
 function GithubMark({ className }: { className?: string }) {
   return (
@@ -102,72 +62,49 @@ function GithubMark({ className }: { className?: string }) {
   );
 }
 
-function Shot({
-  name,
-  alt,
-  priority = false,
-}: {
-  name: string;
-  alt: string;
-  priority?: boolean;
-}) {
-  const sizes = "(min-width: 1152px) 1100px, 100vw";
-  return (
-    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-indigo-500/10 ring-1 ring-black/5 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-indigo-500/20">
-      <Image
-        width={1440}
-        height={900}
-        alt={alt}
-        sizes={sizes}
-        priority={priority}
-        src={`/landing/${name}-light.webp`}
-        className="h-auto w-full dark:hidden"
-      />
-      <Image
-        width={1440}
-        height={900}
-        alt={alt}
-        sizes={sizes}
-        priority={priority}
-        src={`/landing/${name}-dark.webp`}
-        className="hidden h-auto w-full dark:block"
-      />
-    </div>
-  );
-}
-
 function Page() {
   return (
-    <div className="relative min-h-dvh w-full overflow-x-hidden bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+    <div
+      className={`${jakarta.className} relative min-h-dvh w-full overflow-x-hidden bg-white text-[#1f1f2e] dark:bg-neutral-950 dark:text-neutral-100`}
+    >
       <ApiWarmup />
 
-      <header className="sticky top-0 z-30 border-b border-neutral-200/70 bg-white/80 backdrop-blur dark:border-neutral-800/70 dark:bg-neutral-950/80">
-        <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src={icon} alt="" width={28} height={28} />
-            <span className="text-lg font-extrabold tracking-tight">
-              Click Up
-            </span>
-          </Link>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub repository"
-              className="hidden size-10 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 sm:flex dark:text-neutral-300 dark:hover:bg-neutral-800"
-            >
-              <GithubMark className="size-5" />
-            </a>
+      <header className="sticky top-0 z-30 border-b border-[#ececf2] bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95">
+        <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2">
+              <Image src={icon} alt="" width={26} height={26} />
+              <span className="text-[17px] font-extrabold tracking-tight">
+                Click Up
+              </span>
+            </Link>
+            <div className="hidden items-center gap-1 text-sm font-medium text-[#4a4a5c] md:flex dark:text-neutral-300">
+              <a href="#views" className={NAV_LINK}>
+                Views
+              </a>
+              <a href="#features" className={NAV_LINK}>
+                Features
+              </a>
+              <a
+                href={REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={NAV_LINK}
+              >
+                GitHub
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-800"
+              className="rounded-lg px-3 py-2 text-sm font-semibold hover:bg-[#f4f4f8] dark:hover:bg-neutral-800"
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500"
+              className="rounded-lg bg-[#7b68ee] px-4 py-2 text-sm font-semibold text-white hover:bg-[#6a57e3]"
             >
               Sign up
             </Link>
@@ -176,141 +113,96 @@ function Page() {
       </header>
 
       <main>
-        <section className="relative overflow-hidden">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(60%_60%_at_50%_0%,rgba(99,102,241,0.22),transparent_70%)] dark:bg-[radial-gradient(60%_60%_at_50%_0%,rgba(124,58,237,0.35),transparent_70%)]"
-          />
-          <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pt-14 text-center sm:px-6 sm:pt-20">
-            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1 text-xs font-semibold tracking-wide text-indigo-700 sm:text-sm dark:border-indigo-400/30 dark:bg-indigo-500/10 dark:text-indigo-200">
-              <CalendarClock className="size-4" />
-              Open-source work management
-            </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl">
-              One place for all your work,
-              <span className="bg-linear-to-r from-indigo-600 via-violet-600 to-fuchsia-500 bg-clip-text text-transparent dark:from-indigo-300 dark:via-violet-300 dark:to-fuchsia-300">
-                {" "}
-                without the chaos.
-              </span>
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-300">
-              Boards, timelines, tasks, dashboards, automations and AI in one
-              workspace. Open a pre-filled demo with a full team in one click.
-              No sign-up needed.
-            </p>
-
-            <div className="mt-9 flex w-full flex-col items-center gap-3">
-              <div className="w-full max-w-sm sm:max-w-md">
-                <SignupGuestBtn
-                  stretch
-                  type="colored"
-                  label="Try the live demo"
-                  extraClasses="!py-4 !text-lg !font-bold !normal-case shadow-xl shadow-indigo-500/30"
-                />
-              </div>
-              <p className="flex items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400">
-                or
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center px-1.5 py-2 font-semibold text-indigo-600 hover:underline dark:text-indigo-300"
-                >
-                  Sign up
-                </Link>
-                /
-                <Link
-                  href="/login"
-                  className="inline-flex items-center px-1.5 py-2 font-semibold text-indigo-600 hover:underline dark:text-indigo-300"
-                >
-                  Log in
-                  <ChevronRight className="size-4" />
-                </Link>
-              </p>
+        <section className="mx-auto max-w-4xl px-4 pt-16 text-center sm:px-6 sm:pt-24">
+          <h1 className="text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.035em] sm:text-7xl">
+            All your team&rsquo;s work,
+            <br className="hidden sm:block" /> in one app.
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#55556a] sm:text-xl dark:text-neutral-400">
+            Boards, timelines, sprints, docs and dashboards that share the same
+            tasks. The demo opens a workspace with 80 tasks and six teammates
+            already in it.
+          </p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="w-full sm:w-auto">
+              <SignupGuestBtn
+                stretch
+                type="colored"
+                label="Open the demo workspace"
+                extraClasses={PRIMARY_BTN}
+              />
             </div>
+            <Link
+              href="/signup"
+              className="w-full rounded-lg border border-[#d9d9e3] px-7 py-3.5 text-base font-semibold hover:border-[#1f1f2e] sm:w-auto dark:border-neutral-700 dark:hover:border-neutral-300"
+            >
+              Create an account
+            </Link>
           </div>
-
-          <div className="relative mx-auto mt-10 max-w-6xl px-4 sm:mt-14 sm:px-6">
-            <Shot
-              name="board"
-              alt="Click Up board view with statuses, assignees and priorities"
-              priority
-            />
-          </div>
+          <p className="mt-4 text-sm text-[#7a7a8c] dark:text-neutral-500">
+            No sign-up needed for the demo.
+          </p>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <h2 className="mx-auto max-w-2xl text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Every view your team needs
-          </h2>
-          <div className="mt-14 flex flex-col gap-16 sm:gap-24">
-            {SHOWCASE.map((s, i) => (
+        <section
+          id="views"
+          className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-16 sm:px-6 sm:pt-20"
+        >
+          <ViewShowcase />
+        </section>
+
+        <section
+          id="features"
+          className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6 sm:py-32"
+        >
+          <div className="max-w-xl">
+            <h2 className="text-3xl font-extrabold tracking-[-0.025em] sm:text-[2.6rem] sm:leading-[1.1]">
+              Everything else a team asks for
+            </h2>
+            <p className="mt-4 text-lg text-[#55556a] dark:text-neutral-400">
+              All of it works in the demo, on the same tasks.
+            </p>
+          </div>
+          <dl className="mt-14 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURES.map(({ title, desc }) => (
               <div
-                key={s.key}
-                className="grid items-center gap-8 lg:grid-cols-5 lg:gap-12"
+                key={title}
+                className="border-t-2 border-[#1f1f2e] pt-4 dark:border-neutral-200"
               >
-                <div className={`lg:col-span-2 ${i % 2 ? "lg:order-2" : ""}`}>
-                  <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                    {s.title}
-                  </h3>
-                  <p className="mt-3 text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {s.desc}
-                  </p>
-                </div>
-                <div className={`lg:col-span-3 ${i % 2 ? "lg:order-1" : ""}`}>
-                  <Shot name={s.key} alt={s.alt} />
-                </div>
+                <dt className="text-base font-bold">{title}</dt>
+                <dd className="mt-2 text-[15px] leading-relaxed text-[#55556a] dark:text-neutral-400">
+                  {desc}
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </section>
 
-        <section className="border-y border-neutral-200 bg-neutral-50 px-4 py-20 sm:px-6 sm:py-28 dark:border-neutral-800 dark:bg-neutral-900/50">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
-              And a lot more under the hood
-            </h2>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURES.map(({ Icon, title, desc }) => (
-                <div
-                  key={title}
-                  className="rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900"
-                >
-                  <div className="mb-4 flex size-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">
-                    <Icon className="size-5" />
-                  </div>
-                  <h3 className="font-bold">{title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    {desc}
-                  </p>
-                </div>
-              ))}
+        <section className="bg-[#7b68ee] px-4 py-20 text-white sm:px-6 sm:py-24">
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+            <div className="max-w-xl">
+              <h2 className="text-3xl font-extrabold tracking-[-0.025em] sm:text-[2.6rem] sm:leading-[1.1]">
+                Click around a real workspace
+              </h2>
+              <p className="mt-3 text-lg text-white/85">
+                Move cards, run an automation, plan a sprint. Nothing to set up.
+              </p>
             </div>
-          </div>
-        </section>
-
-        <section className="px-4 py-20 sm:px-6">
-          <div className="relative mx-auto flex max-w-3xl flex-col items-center overflow-hidden rounded-3xl bg-linear-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-14 text-center shadow-xl">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-              See it with real data
-            </h2>
-            <p className="mt-3 max-w-md text-indigo-100">
-              The demo workspace comes with 80 tasks, 6 teammates and working
-              automations.
-            </p>
-            <div className="mt-8 w-full max-w-xs">
+            <div className="w-full shrink-0 md:w-auto">
               <SignupGuestBtn
                 stretch
                 type="primary"
-                label="Try the live demo"
-                extraClasses="!bg-white !text-indigo-700 hover:!bg-indigo-50 !normal-case"
+                label="Open the demo workspace"
+                extraClasses="!bg-white !text-[#1f1f2e] hover:!bg-[#f4f2ff] !normal-case !rounded-lg !px-7 !py-3.5 !shadow-none"
               />
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-neutral-200 px-4 py-8 sm:px-6 dark:border-neutral-800">
+      <footer className="px-4 py-8 sm:px-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <div className="flex items-center gap-2 text-sm text-[#7a7a8c] dark:text-neutral-400">
             <Image src={icon} alt="" width={20} height={20} />
             Click Up, a portfolio project. Not affiliated with ClickUp.
           </div>
@@ -318,7 +210,7 @@ function Page() {
             href={REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold hover:bg-[#f4f4f8] dark:hover:bg-neutral-800"
           >
             <GithubMark className="size-5" />
             View on GitHub
