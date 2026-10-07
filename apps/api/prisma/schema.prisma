@@ -241,6 +241,9 @@ model WorkspaceMember {
   userId      String
   workspaceId String
   role        MemberRole @default(member)
+  /// Workload view capacity per day in tasks / sprint points (null = the view's default).
+  capacityTasks  Int?
+  capacityPoints Int?
   createdAt   DateTime   @default(now())
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)

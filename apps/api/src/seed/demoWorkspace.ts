@@ -126,6 +126,7 @@ const SPRINT_14_DONE_AT: Record<string, number> = {
   "welcome-emails": -1.8, "bulk-edit": -1.2, "i18n-strings": -0.3,
 };
 
+// Due dates bunch up today and tomorrow so the Workload view shows Maya overloaded (see demoWorkload.ts).
 const SPRINT_BOARD: DemoList = {
   key: "sprint",
   name: "Sprint 14",
@@ -135,18 +136,18 @@ const SPRINT_BOARD: DemoList = {
     st.key === "sprint.active" ? { ...st, wipLimit: 3 } : st.key === "sprint.custom" ? { ...st, wipLimit: 3 } : st,
   ),
   tasks: [
-    sprint("sso", "Add Google SSO to the login page", "active", "high", 2, -3),
-    sprint("onboarding-checklist", "Build onboarding checklist for new workspaces", "open", "normal", 5, 3),
+    sprint("sso", "Add Google SSO to the login page", "active", "high", 0, -3),
+    sprint("onboarding-checklist", "Build onboarding checklist for new workspaces", "open", "normal", 1, -1),
     sprint("api-rate-limit", "Rate-limit the public API per workspace", "custom", "urgent", 0, -2),
-    sprint("csv-export", "Export tasks to CSV", "open", "normal", 9, 7),
-    sprint("dark-mode-charts", "Dark mode support for dashboard charts", "active", "low", 4, 1),
+    sprint("csv-export", "Export tasks to CSV", "open", "normal", 0, -2),
+    sprint("dark-mode-charts", "Dark mode support for dashboard charts", "active", "low", 1, 0),
     sprint("billing-webhooks", "Handle Stripe billing webhooks idempotently", "custom", "high", -1, -4),
     sprint("search-index", "Full-text search across tasks and docs", "open", "high", 14, 10),
     sprint("notification-prefs", "Notification preferences page", "open", "normal"),
     sprint("recurring-tasks", "Recurring tasks: daily, weekly, monthly", "open", "low", 21, 16),
     sprint("board-virtualization", "Virtualize the board for lists with 1k+ tasks", "active", "urgent", 1, -2),
     sprint("audit-log", "Audit log for workspace admin actions", "open", "normal", 12),
-    sprint("mobile-nav", "Responsive navigation for small screens", "custom", "normal", 3, 0),
+    sprint("mobile-nav", "Responsive navigation for small screens", "custom", "normal", 1, 0),
     sprint("release-notes", "Write release notes for v2.4", "open", "low", 0),
     sprint("flaky-e2e", "Fix flaky checkout E2E test", "active", "high", -2),
     sprint("design-tokens", "Migrate buttons to the new design tokens", "done", "normal", -6, -9),
@@ -156,7 +157,7 @@ const SPRINT_BOARD: DemoList = {
     sprint("welcome-emails", "Welcome email sequence for trial users", "done", "normal", -3, -5),
     sprint("bulk-edit", "Bulk edit priority and status in table view", "done", "high", -7, -11),
     sprint("invite-modal", "Redesign the invite teammate modal", "open", "none"),
-    sprint("shortcuts-sheet", "Keyboard shortcuts cheat sheet", "open", "none"),
+    sprint("shortcuts-sheet", "Keyboard shortcuts cheat sheet", "open", "none", 2),
     sprint("retro", "Sprint 14 retrospective", "open", "normal", 6),
     sprint("i18n-strings", "Extract UI strings for translation", "done", "none"),
   ].map((t) => {

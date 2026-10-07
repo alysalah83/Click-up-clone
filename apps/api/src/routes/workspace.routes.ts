@@ -4,6 +4,7 @@ import {
   createInviteSchema,
   createWorkspaceSchema,
   idParamsSchema,
+  updateMemberCapacitySchema,
   updateMemberRoleSchema,
   workspaceMemberParamsSchema,
   updateWorkspaceSchema,
@@ -21,6 +22,7 @@ import {
   createInvite,
   getWorkspaceMembers,
   removeMember,
+  updateMemberCapacity,
   updateMemberRole,
 } from "../controllers/member.controller.js";
 import { authMiddleware } from "../lib/middlewares/auth.middleware.js";
@@ -41,6 +43,11 @@ router.patch(
   "/:id/members/:userId",
   validate({ params: workspaceMemberParamsSchema, body: updateMemberRoleSchema }),
   updateMemberRole,
+);
+router.patch(
+  "/:id/members/:userId/capacity",
+  validate({ params: workspaceMemberParamsSchema, body: updateMemberCapacitySchema }),
+  updateMemberCapacity,
 );
 router.delete("/:id/members/:userId", validate({ params: workspaceMemberParamsSchema }), removeMember);
 router.post("/:id/invites", validate({ params: idParamsSchema, body: createInviteSchema }), createInvite);

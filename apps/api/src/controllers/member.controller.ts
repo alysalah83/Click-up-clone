@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { CreateInviteInput, UpdateMemberRoleInput } from "@clickup/shared";
+import type { CreateInviteInput, UpdateMemberCapacityInput, UpdateMemberRoleInput } from "@clickup/shared";
 import { catchAsync } from "../lib/utils/catchAsync.js";
 import * as memberService from "../services/member.service.js";
 
@@ -19,6 +19,13 @@ export const updateMemberRole = catchAsync(async (req: Request, res: Response) =
   res
     .status(200)
     .json(await memberService.updateMemberRole(req.userId, id, userId, req.body as UpdateMemberRoleInput));
+});
+
+export const updateMemberCapacity = catchAsync(async (req: Request, res: Response) => {
+  const { id, userId } = req.params as MemberParams;
+  res
+    .status(200)
+    .json(await memberService.updateMemberCapacity(req.userId, id, userId, req.body as UpdateMemberCapacityInput));
 });
 
 export const removeMember = catchAsync(async (req: Request, res: Response) => {
