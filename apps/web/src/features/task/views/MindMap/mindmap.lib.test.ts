@@ -9,7 +9,9 @@ import {
   collapsibleIds,
   edgePath,
   fitView,
+  initialView,
   layoutTree,
+  READABLE_ZOOM,
   resetView,
   statusNodeId,
   zoomAt,
@@ -170,5 +172,15 @@ describe("zoom and pan", () => {
     expect(big.y).toBeCloseTo((600 - 250) / 2);
     expect(fitView({ w: 100, h: 100 }, { w: 1000, h: 800 }).k).toBe(1);
     expect(resetView(300, { w: 1000, h: 800 })).toEqual({ k: 1, x: 40, y: 100 });
+  });
+
+  it("starts fitted when readable, else at a readable zoom anchored on the root", () => {
+    expect(initialView({ w: 600, h: 400 }, 200, { w: 1000, h: 800 })).toEqual(fitView({ w: 600, h: 400 }, { w: 1000, h: 800 }));
+    const tall = initialView({ w: 1500, h: 4000 }, 2000, { w: 1000, h: 800 });
+    expect(tall.k).toBe(READABLE_ZOOM);
+    expect(tall.x).toBe(40);
+    expect(tall.y).toBeCloseTo(400 - 2000 * READABLE_ZOOM);
+    // Narrow but tall: centered horizontally.
+    expect(initialView({ w: 500, h: 4000 }, 2000, { w: 1000, h: 800 }).x).toBeCloseTo((1000 - 500 * READABLE_ZOOM) / 2);
   });
 });

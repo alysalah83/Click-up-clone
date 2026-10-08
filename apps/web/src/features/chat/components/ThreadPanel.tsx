@@ -19,11 +19,13 @@ interface ThreadPanelProps {
 function ThreadPanel({ channel, parent, onClose }: ThreadPanelProps) {
   const { data: replies, isPending } = useReplies(parent.id);
   const send = useSendReply(channel.id, parent.id);
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const count = replies?.length ?? 0;
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    // Scroll only the reply list (scrollIntoView would also scroll the app shell).
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [count]);
 
   const common = { viewerId: channel.viewerId, members: channel.members, workspaceId: channel.workspaceId };
@@ -47,7 +49,7 @@ function ThreadPanel({ channel, parent, onClose }: ThreadPanelProps) {
           <X className="size-4" />
         </button>
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto pb-3">
+      <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto pb-3">
         <MessageItem message={parent} showHeader {...common} />
         <div className="my-2 flex items-center gap-3 px-4 text-xs text-neutral-500 sm:px-6">
           <span>
@@ -69,7 +71,6 @@ function ThreadPanel({ channel, parent, onClose }: ThreadPanelProps) {
             {...common}
           />
         ))}
-        <div ref={endRef} />
       </div>
       <div className="border-t border-neutral-200 p-3 dark:border-neutral-800">
         <ChatComposer
