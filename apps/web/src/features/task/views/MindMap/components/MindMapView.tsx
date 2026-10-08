@@ -30,6 +30,7 @@ import {
   edgePath,
   fitView,
   layoutTree,
+  initialView,
   resetView,
   zoomAt,
   type MindLayout,
@@ -279,8 +280,10 @@ function MindMapCanvas({ listId }: { listId: string }) {
   useLayoutEffect(() => {
     if (!ready || fitted.current) return;
     fitted.current = true;
-    fit(false);
-  }, [ready, fit]);
+    const { width, height, nodes } = layoutRef.current;
+    const root = nodes.find((n) => n.node.id === ROOT_ID);
+    apply(initialView({ w: width, h: height }, root ? root.y + root.h / 2 : height / 2, viewportSize()));
+  }, [ready, apply]);
 
   // Wheel / trackpad pinch: zoom around the cursor (non-passive so the page does not scroll).
   useEffect(() => {

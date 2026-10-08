@@ -260,3 +260,23 @@ export function fitView(content: Size, viewport: Size, padding = 40): View {
 export function resetView(rootCenterY: number, viewport: Size, padding = 40): View {
   return { k: 1, x: padding, y: viewport.h / 2 - rootCenterY };
 }
+
+/** Below this the first view would make cards unreadable, so it stops fitting. */
+export const READABLE_ZOOM = 0.8;
+
+/**
+ * First view of the map: fit everything when that stays readable; otherwise keep a readable zoom
+ * with the root a little in from the left and vertically centered, so the first levels are legible
+ * (the Fit button still shows the whole map).
+ */
+export function initialView(content: Size, rootCenterY: number, viewport: Size, padding = 40): View {
+  const fitted = fitView(content, viewport, padding);
+  if (fitted.k >= READABLE_ZOOM) return fitted;
+  const k = READABLE_ZOOM;
+  const fitsWide = content.w * k <= viewport.w - padding * 2;
+  return {
+    k,
+    x: fitsWide ? (viewport.w - content.w * k) / 2 : padding,
+    y: viewport.h / 2 - rootCenterY * k,
+  };
+}

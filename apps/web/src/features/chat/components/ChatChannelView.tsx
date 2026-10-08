@@ -23,7 +23,7 @@ import {
   useSendMessage,
   useUpdateChannel,
 } from "../hooks/useChat";
-import { buildRows, newestServerId } from "../lib";
+import { buildRows, newestServerId, type MessageRow } from "../lib";
 import type { ChatChannel, ChatMessage } from "../types";
 import ChatComposer from "./ChatComposer";
 import MessageItem from "./MessageItem";
@@ -174,6 +174,17 @@ function ChannelBody({ channel }: { channel: ChatChannel }) {
     () => buildRows(messages, { lastReadAt, viewerId: channel.viewerId }),
     [messages, lastReadAt, channel.viewerId],
   );
+  const dayGroups = useMemo(() => {
+    const groups: { key: string; label: string | null; rows: MessageRow[] }[] = [];
+    for (const row of rows) {
+      if (row.type === "day") groups.push({ key: row.key, label: row.label, rows: [] });
+      else {
+        if (groups.length === 0) groups.push({ key: "day-start", label: null, rows: [] });
+        groups.at(-1)!.rows.push(row);
+      }
+    }
+    return groups;
+  }, [rows]);
   const newest = newestServerId(messages);
   const last = messages.at(-1);
   const oldestId = messages[0]?.id;
@@ -194,10 +205,12 @@ function ChannelBody({ channel }: { channel: ChatChannel }) {
     initialized.current = true;
     const target =
       (focusId && document.getElementById(`chat-msg-${focusId}`)) || document.getElementById("chat-new-line");
-    if (target) {
-      target.scrollIntoView({ block: focusId ? "center" : "start" });
-      const el = scrollRef.current;
-      if (el) atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < PIN_SLACK;
+    const el = scrollRef.current;
+    if (target && el) {
+      // Scroll only the list (scrollIntoView would also scroll the app shell).
+      const offset = target.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop;
+      el.scrollTop = focusId ? offset - (el.clientHeight - target.offsetHeight) / 2 : offset - 40;
+      atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < PIN_SLACK;
     } else scrollToBottom();
   }, [data, focusId, scrollToBottom]);
 
@@ -293,16 +306,24 @@ function ChannelBody({ channel }: { channel: ChatChannel }) {
                   </p>
                 </div>
               )}
-              {rows.map((row) =>
-                row.type === "day" ? (
-                  <div key={row.key} className="sticky top-0 z-[5] my-2 flex items-center gap-3 px-4 sm:px-6" role="separator">
-                    <span className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
-                    <span className="rounded-full border border-neutral-200 bg-white px-3 py-0.5 text-[11px] font-semibold text-neutral-600 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
-                      {row.label}
-                    </span>
-                    <span className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
-                  </div>
-                ) : row.type === "new" ? (
+              {dayGroups.map((group) => (
+                // One section per day so its sticky pill only sticks while that day is on screen.
+                <div key={group.key} className="relative">
+                  {group.label && (
+                    <>
+                      <span
+                        aria-hidden
+                        className="absolute inset-x-4 top-[19px] h-px bg-neutral-200 sm:inset-x-6 dark:bg-neutral-800"
+                      />
+                      <div role="separator" aria-label={group.label} className="pointer-events-none sticky top-0 z-[5] my-2 flex justify-center">
+                        <span className="dark:bg-neutral-925 rounded-full border border-neutral-200 bg-white px-3 py-0.5 text-[11px] font-semibold text-neutral-600 shadow-sm dark:border-neutral-700 dark:text-neutral-300">
+                          {group.label}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {group.rows.map((row) =>
+                row.type === "day" ? null : row.type === "new" ? (
                   <div key={row.key} id="chat-new-line" className="my-1 flex items-center gap-2 px-4 sm:px-6" role="separator">
                     <span className="h-px flex-1 bg-rose-400/70" />
                     <span className="text-[11px] font-bold tracking-wide text-rose-500 uppercase">New</span>
@@ -319,7 +340,9 @@ function ChannelBody({ channel }: { channel: ChatChannel }) {
                     highlighted={highlightId === row.message.id}
                   />
                 ),
-              )}
+                  )}
+                </div>
+              ))}
             </>
           )}
         </div>

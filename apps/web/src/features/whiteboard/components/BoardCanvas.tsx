@@ -11,7 +11,11 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
 } from "@excalidraw/excalidraw/types";
-import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
+import type {
+  ExcalidrawElement,
+  ExcalidrawTextElement,
+  NonDeletedExcalidrawElement,
+} from "@excalidraw/excalidraw/element/types";
 import type { ExcalidrawElementSkeleton } from "@excalidraw/excalidraw/data/transform";
 import MiniSpinner from "@/shared/ui/MiniSpinner";
 import { useCreateTaskFromNote, useUpdateWhiteboard } from "../hooks/useWhiteboards";
@@ -39,6 +43,72 @@ const Excalidraw = dynamic(() => import("@excalidraw/excalidraw").then((mod) => 
 });
 
 const SAVE_DELAY_MS = 1000;
+/** Excalidraw's padding between a sticky note's edge and its bound text. */
+const BOUND_TEXT_PADDING = 5;
+
+/**
+ * Text is measured with a fallback font until Excalidraw's hand-drawn fonts arrive (from a CDN),
+ * so seeded notes come out too narrow and clip ("Template gallery fo"). Once the scene's fonts
+ * are loaded, re-wrap every text from its original text and refit it to its note (growing the
+ * note if it needs more lines). Changed elements get a new version, so the fix is saved.
+ */
+async function refreshTextAfterFonts(api: ExcalidrawImperativeAPI) {
+  const { FONT_FAMILY, restoreElements, newElementWith, CaptureUpdateAction } = await import(
+    "@excalidraw/excalidraw"
+  );
+  const familyName = new Map<number, string>(Object.entries(FONT_FAMILY).map(([name, id]) => [id, name]));
+  const texts = (api.getSceneElements() as readonly ExcalidrawElement[]).filter((e): e is ExcalidrawTextElement => e.type === "text");
+  if (texts.length === 0) return false;
+  const chars = Array.from(new Set(texts.map((t) => t.originalText).join(""))).join("");
+  const families = new Set(texts.map((t) => familyName.get(t.fontFamily)).filter(Boolean));
+  try {
+    await Promise.all([...families].map((name) => document.fonts.load(`20px "${name}"`, chars)));
+    await document.fonts.ready;
+  } catch {
+    return false;
+  }
+  // Let Excalidraw's own font-loaded handler clear its measurement caches first.
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
+  const current = api.getSceneElementsIncludingDeleted();
+  const byId = new Map(current.map((e) => [e.id, e]));
+  const restored = restoreElements(
+    current.map((e) => (e.type === "text" && !e.isDeleted ? { ...e, text: e.originalText } : e)),
+    null,
+    { refreshDimensions: true, repairBindings: true },
+  );
+  const updates = new Map<string, Partial<ExcalidrawElement>>();
+  const near = (a: number, b: number) => Math.abs(a - b) < 0.5;
+  for (const r of restored) {
+    const el = byId.get(r.id);
+    if (!el || el.isDeleted || el.type !== "text" || r.type !== "text") continue;
+    let { x, y } = r;
+    const { width, height, text } = r;
+    const container = el.containerId ? byId.get(el.containerId) : undefined;
+    if (container && container.type === "rectangle") {
+      const needed = height + BOUND_TEXT_PADDING * 2;
+      const containerHeight = Math.max(container.height, needed);
+      if (containerHeight !== container.height) updates.set(container.id, { height: containerHeight });
+      const innerW = container.width - BOUND_TEXT_PADDING * 2;
+      const innerH = containerHeight - BOUND_TEXT_PADDING * 2;
+      const left = container.x + BOUND_TEXT_PADDING;
+      const top = container.y + BOUND_TEXT_PADDING;
+      x = el.textAlign === "left" ? left : el.textAlign === "right" ? left + innerW - width : left + (innerW - width) / 2;
+      y = el.verticalAlign === "top" ? top : el.verticalAlign === "bottom" ? top + innerH - height : top + (innerH - height) / 2;
+    }
+    if (text === el.text && near(width, el.width) && near(height, el.height) && near(x, el.x) && near(y, el.y)) continue;
+    updates.set(el.id, { text, width, height, x, y });
+  }
+  if (updates.size === 0) return false;
+  api.updateScene({
+    elements: current.map((e) => {
+      const patch = updates.get(e.id);
+      return patch ? newElementWith(e, patch as never) : e;
+    }),
+    captureUpdate: CaptureUpdateAction.NEVER,
+  });
+  return true;
+}
 
 export type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -180,10 +250,16 @@ function BoardCanvas({ board, onSaveState }: { board: Whiteboard; onSaveState: (
         // Wait until the stored scene is on the canvas, so an early empty change never saves.
         if (start.count > 0 && elements.length === 0) return;
         savedVersion.current = version;
-        if (start.count > 0)
-          requestAnimationFrame(() =>
-            apiRef.current?.scrollToContent(undefined, { fitToViewport: true, viewportZoomFactor: 0.9, maxZoom: 1 }),
-          );
+        if (start.count > 0) {
+          const fit = () =>
+            apiRef.current?.scrollToContent(undefined, { fitToViewport: true, viewportZoomFactor: 0.9, maxZoom: 1 });
+          requestAnimationFrame(fit);
+          const api = apiRef.current;
+          if (api)
+            void refreshTextAfterFonts(api).then((changed) => {
+              if (changed && start.convertedFromSkeleton) fit();
+            });
+        }
         if (start.convertedFromSkeleton) queueSave();
         return;
       }
