@@ -2,7 +2,10 @@
 // the README demo GIF (assets/demo.gif) and the Open Graph image (src/app/opengraph-image.png)
 // from the live guest demo.
 //
-//   node apps/web/scripts/capture-screenshots.mjs [baseUrl] [--only=landing,readme,gif,og]
+//   node apps/web/scripts/capture-screenshots.mjs [baseUrl] [--only=landing,readme,gif,og,portfolio] [--shots=01,04]
+//
+// --only=portfolio writes the full-resolution set in docs/screenshots/portfolio/ (not part of the default run);
+// --shots limits it to names starting with the given prefixes.
 //
 // Needs `pnpm --filter @clickup/web exec playwright install chromium` once.
 import { createRequire } from "node:module";
@@ -261,8 +264,186 @@ async function og(browser) {
   console.log("wrote src/app/opengraph-image.png and twitter-image.png");
 }
 
+const PORTFOLIO = path.join(ROOT, "docs/screenshots/portfolio");
+const shotsArg = process.argv.find((a) => a.startsWith("--shots="));
+const SHOT_FILTER = shotsArg ? new Set(shotsArg.slice(8).split(",")) : null;
+
+/** Waits for API calls, skeletons and chart animations to finish, then hides toasts. */
+async function ready(page, ms = 1500) {
+  await settle(page, 300);
+  await page
+    .waitForFunction(() => !document.querySelector(".animate-pulse, [aria-busy='true']"), null, { timeout: 20_000 })
+    .catch(() => console.warn("  still loading after 20 s:", page.url()));
+  await page.waitForLoadState("networkidle").catch(() => {});
+  await page.addStyleTag({ content: "[data-sonner-toaster]{display:none!important}" }).catch(() => {});
+  await page.waitForTimeout(ms);
+}
+
+/** Clicks the collapse button in the sidebar header (next to "Home") to give wide views more room. */
+async function collapseSidebar(page) {
+  await page.evaluate(() => document.elementFromPoint(377, 40)?.closest("button")?.click());
+  await page.waitForTimeout(500);
+}
+
+/** Full-resolution PNG (3840x2160: 1920x1080 at 2x) for the portfolio set. */
+async function savePortfolio(page, name) {
+  const file = path.join(PORTFOLIO, `${name}.png`);
+  await sharp(await page.screenshot()).png({ compressionLevel: 9, effort: 10 }).toFile(file);
+  console.log("wrote", path.relative(ROOT, file));
+}
+
+/** Each shot sets up its own state on a fresh page that starts on the Sprint 14 board. */
+const PORTFOLIO_SHOTS = {
+  "01-board-sprint": async (page) => {
+    await ready(page);
+  },
+  "02-task-panel": async (page) => {
+    await openTask(page);
+    await ready(page);
+  },
+  "03-timeline-dependencies": async (page, board) => {
+    await go(page, view(board, "timeline"));
+    await ready(page);
+    // The view opens with today near the left edge; step back a week so the earlier bars aren't cut off.
+    await page.getByText(/^task$/i).first().evaluate((el) => {
+      let node = el;
+      while (node && !(node.scrollWidth > node.clientWidth + 40)) node = node.parentElement;
+      if (node) node.scrollLeft = Math.max(0, node.scrollLeft - 280);
+    });
+    await ready(page, 800);
+  },
+  "04-table-custom-fields": async (page, board) => {
+    await go(page, view(board, "table"));
+    await collapseSidebar(page);
+    await ready(page);
+    // Row checkboxes only render on hover: hover a row, then click the checkbox on the same line.
+    for (const name of ["Handle Stripe billing webhooks idempotently", "Virtualize the board for lists with 1k+ tasks"]) {
+      const cell = page.getByText(name, { exact: true }).first();
+      await cell.hover();
+      const y = (await cell.boundingBox()).y;
+      for (const box of await page.getByRole("checkbox").all()) {
+        const b = await box.boundingBox();
+        if (b && Math.abs(b.y + b.height / 2 - (y + 10)) < 20) {
+          await box.click();
+          break;
+        }
+      }
+    }
+    // Scroll the table so the Progress column ends at the right edge: task names stay, custom fields show.
+    await page.getByText("Progress", { exact: true }).first().evaluate((el) => {
+      const section = el.closest("section");
+      section.scrollLeft += el.getBoundingClientRect().right + 60 - section.getBoundingClientRect().right;
+      // Hovering rows can scroll the page down; put the header row back in view.
+      window.scrollTo(0, 0);
+      for (const node of document.querySelectorAll("*")) if (node.scrollTop > 0) node.scrollTop = 0;
+    });
+    await page.mouse.move(5, 5);
+    await ready(page, 800);
+  },
+  "05-workload-overload": async (page, board) => {
+    await go(page, view(board, "workload"));
+    await page.getByRole("button", { name: "Week", exact: true }).click();
+    await page.getByRole("button", { name: "Points", exact: true }).click();
+    await ready(page);
+    if (!(await page.getByLabel("Overloaded").count())) {
+      console.warn("  no overload in week/points; using day mode");
+      await page.getByRole("button", { name: "Day", exact: true }).click();
+      await ready(page);
+    }
+  },
+  "06-dashboard": async (page) => {
+    await go(page, `${BASE}/home/dashboard`);
+    await ready(page, 2500);
+  },
+  "07-sprint-report": async (page, board) => {
+    await go(page, view(board, "sprint"));
+    await ready(page, 2500);
+  },
+  "08-chat-thread": async (page) => {
+    await goToLink(page, "/home/chat/");
+    await ready(page);
+    // A seeded message that already has replies, so the thread panel has a conversation in it.
+    await page.getByRole("button", { name: /^\d+ repl(y|ies)\b/ }).last().click();
+    await page.getByRole("button", { name: "Close thread" }).waitFor();
+    await page.mouse.move(1800, 700); // empty part of the thread panel, so no hover toolbar shows
+    await ready(page);
+  },
+  "09-docs-nested": async (page) => {
+    await go(page, `${BASE}/home/docs`);
+    await ready(page, 500);
+    const doc = page.locator('a[href*="/home/docs/"]', { hasText: /Product roadmap/ }).first();
+    const href = (await doc.count()) ? await doc.getAttribute("href") : await page.locator('a[href*="/home/docs/"]').first().getAttribute("href");
+    await go(page, new URL(href, BASE).href);
+    for (const btn of await page.getByRole("button", { name: "Expand", exact: true }).all()) await btn.click().catch(() => {});
+    await ready(page);
+  },
+  "10-mind-map": async (page, board) => {
+    await go(page, view(board, "mindmap"));
+    await ready(page);
+    // Nodes can sit outside the viewport before fitting, so toggles are clicked through the DOM.
+    // "Collapse all" folds the statuses and tasks; reopen the statuses, then one task down to its subtasks.
+    await page.getByRole("button", { name: "Collapse all" }).click();
+    await page.waitForTimeout(400);
+    for (const btn of await page.$$('button[aria-label="Expand"]')) await btn.evaluate((el) => el.click());
+    await page.waitForTimeout(400);
+    const task = page.getByRole("button", { name: "Add Google SSO to the login page" }).first();
+    const t = await task.boundingBox();
+    for (const btn of await page.$$('button[aria-label="Expand"]')) {
+      const b = await btn.boundingBox();
+      if (b && b.x > t.x && b.y >= t.y - 4 && b.y <= t.y + t.height) {
+        await btn.evaluate((el) => el.click());
+        break;
+      }
+    }
+    await page.waitForTimeout(400);
+    // Its subtasks sit right of the task column; open those too.
+    for (const btn of await page.$$('button[aria-label="Expand"]')) {
+      const b = await btn.boundingBox();
+      if (b && b.x > t.x + t.width + 40) await btn.evaluate((el) => el.click());
+    }
+    // All 24 tasks don't fit at a readable size; 100% centres on the root, beside the open SSO branch.
+    await page.getByTitle("Reset to 100% (0)").evaluate((el) => el.click());
+    for (let i = 0; i < 2; i++) {
+      await page.waitForTimeout(300);
+      await page.getByRole("button", { name: "Zoom out" }).evaluate((el) => el.click());
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.mouse.move(1900, 1070);
+    await ready(page);
+  },
+};
+
+const LIGHT_SHOTS = { "11-board-light": "01-board-sprint", "12-task-panel-light": "02-task-panel", "13-timeline-light": "03-timeline-dependencies" };
+
+async function portfolio(browser) {
+  mkdirSync(PORTFOLIO, { recursive: true });
+  const want = (name) => !SHOT_FILTER || [...SHOT_FILTER].some((s) => name.startsWith(s));
+  const run = async (theme, name, setup) => {
+    if (!want(name)) return;
+    const page = await newPage(browser, { theme, width: 1920, height: 1080 });
+    const board = await guestLogin(page);
+    await setup(page, board);
+    await savePortfolio(page, name);
+    await page.context().close();
+  };
+  for (const [name, setup] of Object.entries(PORTFOLIO_SHOTS)) await run("dark", name, setup);
+  for (const [name, source] of Object.entries(LIGHT_SHOTS)) await run("light", name, PORTFOLIO_SHOTS[source]);
+
+  if (want("14-phone-board") || want("15-phone-calendar")) {
+    const phone = await newPage(browser, { width: 390, height: 844, mobile: true });
+    const board = await guestLogin(phone);
+    await ready(phone);
+    if (want("14-phone-board")) await savePortfolio(phone, "14-phone-board");
+    await go(phone, view(board, "calendar"));
+    await ready(phone);
+    if (want("15-phone-calendar")) await savePortfolio(phone, "15-phone-calendar");
+    await phone.context().close();
+  }
+}
+
 const browser = await chromium.launch();
 try {
+  if (ONLY.has("portfolio")) await portfolio(browser);
   if (ONLY.has("landing")) await landing(browser);
   if (ONLY.has("readme")) await readme(browser);
   if (ONLY.has("gif")) await gif(browser);
