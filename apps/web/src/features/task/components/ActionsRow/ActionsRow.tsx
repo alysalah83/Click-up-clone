@@ -45,7 +45,7 @@ function ActionsRow() {
           className="flex cursor-pointer items-center rounded-md border border-neutral-200 bg-neutral-50/40 px-2 py-1 text-sm font-medium text-neutral-900 transition duration-300 hover:bg-neutral-300 active:bg-neutral-300 dark:border-neutral-600 dark:bg-neutral-900/10 dark:text-neutral-100 dark:hover:bg-neutral-700 dark:active:bg-neutral-700"
         >
           <span className="tabular-nums">{checkedTaskCount}</span>
-          <span className="ml-1"> Task selected</span>
+          <span className="ml-1"> {checkedTaskCount === 1 ? "task" : "tasks"} selected</span>
           <CloseIcon className="ml-2 size-4 fill-neutral-900 text-neutral-900 dark:fill-neutral-100 dark:text-neutral-100" />
         </div>
         <div className="flex items-center">

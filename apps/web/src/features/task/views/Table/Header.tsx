@@ -7,6 +7,8 @@ import {
   slotBorderClasses,
   containerGridClasses,
   slotPadding,
+  stickyCheckClasses,
+  stickyNameClasses,
 } from "./table.styles";
 import SortRowField from "../../components/Sort/SortRowField";
 import { useCustomFields } from "@/features/customFields/hooks";
@@ -25,42 +27,42 @@ function Header() {
 
   return (
     <header
-      className={`${containerGridClasses} bg-neutral-100/80 text-xs font-semibold tracking-wide text-neutral-500 uppercase dark:bg-neutral-800/50 dark:text-neutral-500`}
+      className={`${containerGridClasses} bg-neutral-100 text-xs font-semibold tracking-wide text-neutral-500 uppercase dark:bg-neutral-900 dark:text-neutral-500`}
     >
-      <div className="col-span-1 flex items-center justify-center border-r border-neutral-300 dark:border-neutral-700">
+      <div className={`${stickyCheckClasses} flex items-center justify-center border-r border-neutral-300 dark:border-neutral-700`}>
         <CheckBox checked={isAllChecked} onCheckedChange={handleCheckAll} />
       </div>
       <div
-        className={`col-span-4 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`${stickyNameClasses} flex items-center ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         Name
       </div>
-      <div className={`col-span-2 flex items-center ${slotBorderClasses} ${slotPadding}`}>
+      <div className={`flex items-center ${slotBorderClasses} ${slotPadding}`}>
         Assignee
       </div>
       <div
-        className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`flex items-center gap-2 whitespace-nowrap ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Status</span>
         <SortRowField sortField="status" />
       </div>
       <div
-        className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`flex items-center gap-2 whitespace-nowrap ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Due date</span>
         <SortRowField sortField="dueDate" />
       </div>
       <div
-        className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`flex items-center gap-2 whitespace-nowrap ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Priority</span>
         <SortRowField sortField="priority" />
       </div>
-      <div className={`col-span-2 flex items-center ${slotBorderClasses} ${slotPadding}`} title="Sprint points">
+      <div className={`flex items-center ${slotBorderClasses} ${slotPadding}`} title="Sprint points">
         Points
       </div>
       <div
-        className={`col-span-3 flex items-center gap-2 ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
+        className={`flex items-center gap-2 whitespace-nowrap ${slotBorderClasses} ${slotPadding} ${headerSlotHoverClasses}`}
       >
         <span>Created at</span>
         <SortRowField sortField="createdAt" />

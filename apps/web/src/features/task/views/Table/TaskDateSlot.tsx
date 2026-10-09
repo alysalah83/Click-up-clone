@@ -17,13 +17,13 @@ interface TaskDateSlotProps {
 function TaskDateSlot({ endDate, startDate }: TaskDateSlotProps) {
   return (
     <div
-      className={`col-span-3 cursor-pointer ${slotHoverClasses} ${slotBorderClasses}`}
+      className={`cursor-pointer ${slotHoverClasses} ${slotBorderClasses}`}
     >
       <Menu>
         <MenuTrigger containerClasses="h-full">
-          <div className={`flex items-center justify-center ${slotPadding}`}>
-            <span className="font-semibold tabular-nums">
-              {getFormattedRangeDate({ startDate, endDate }, true)}
+          <div className={`flex h-full items-center ${slotPadding}`}>
+            <span className="font-semibold whitespace-nowrap tabular-nums">
+              {getFormattedRangeDate({ startDate, endDate })}
             </span>
           </div>
         </MenuTrigger>

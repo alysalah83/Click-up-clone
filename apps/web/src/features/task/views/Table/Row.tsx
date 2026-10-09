@@ -43,17 +43,17 @@ function Row({ task, sortNum, fields = [] }: { task: Task; sortNum: number; fiel
       }}
       onPointerEnter={handleTaskRowHovered}
       onPointerLeave={handleTaskRowNotHovered}
-      className={`${containerGridClasses} border-b border-neutral-200 ${isTaskTemp ? "pointer-events-none opacity-60" : ""} dark:border-neutral-800 ${isTaskChecked ? "bg-neutral-200 dark:bg-neutral-500/30" : "bg-white hover:bg-indigo-50/60 active:bg-indigo-50 dark:bg-neutral-900/50 dark:hover:bg-neutral-500/20 dark:active:bg-neutral-500/20"} text-sm font-medium text-neutral-600 transition duration-200 dark:text-neutral-300`}
+      className={`${containerGridClasses} border-b border-neutral-200 ${isTaskTemp ? "pointer-events-none opacity-60" : ""} dark:border-neutral-800 ${isTaskChecked ? "bg-neutral-200 dark:bg-neutral-750" : "dark:bg-neutral-925 bg-white hover:bg-indigo-50 active:bg-indigo-50 dark:hover:bg-neutral-800 dark:active:bg-neutral-800"} text-sm font-medium text-neutral-600 transition duration-200 dark:text-neutral-300`}
     >
       <CheckBoxSlot isTaskRowHovered={isTaskRowHovered} sortNum={sortNum} />
       <TaskNameSlot />
-      <div className={`col-span-2 flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
+      <div className={`flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
         <AssigneesButton task={task} size="sm" />
       </div>
       <TaskStatusSlot status={status} />
       <TaskDateSlot startDate={startDate} endDate={endDate} />
       <TableSlotPriority priority={priority} />
-      <div className={`col-span-2 flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
+      <div className={`flex items-center px-2 py-1 ${slotBorderClasses} ${slotHoverClasses}`}>
         <PointsPicker taskId={id} points={task.points} className="h-full w-full" />
       </div>
       <TaskCreatedAtSlot createdAt={createdAt} />
