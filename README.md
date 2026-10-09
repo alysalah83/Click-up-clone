@@ -14,47 +14,47 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
 
 <table>
   <tr>
-    <td align="center" width="50%"><img src="assets/screenshots/board.png" alt="Board view" /><br><strong>Board</strong>: drag across custom statuses, filters, group by, saved views</td>
-    <td align="center" width="50%"><img src="assets/screenshots/task-panel.png" alt="Task panel" /><br><strong>Task panel</strong>: rich text, subtasks, checklists, tags, comments, activity, AI</td>
+    <td align="center" width="50%"><img src="docs/screenshots/portfolio/01-board-sprint.png" alt="Board view" /><br><strong>Board</strong>: Sprint 14 with custom statuses, points and a WIP limit warning</td>
+    <td align="center" width="50%"><img src="docs/screenshots/portfolio/02-task-panel.png" alt="Task panel" /><br><strong>Task panel</strong>: rich text, subtasks, checklists, tags, comments, activity, AI</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/timeline.png" alt="Timeline view" /><br><strong>Timeline</strong>: Gantt with drag-to-reschedule and dependencies</td>
-    <td align="center"><img src="assets/screenshots/dashboard.png" alt="Dashboard" /><br><strong>Dashboard</strong>: workload, overdue, burndown, time tracked</td>
+    <td align="center"><img src="docs/screenshots/portfolio/03-timeline-dependencies.png" alt="Timeline view" /><br><strong>Timeline</strong>: Gantt with drag-to-reschedule and dependencies</td>
+    <td align="center"><img src="docs/screenshots/portfolio/06-dashboard.png" alt="Dashboard" /><br><strong>Dashboard</strong>: workload, overdue, burndown, time tracked</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/table.png" alt="Table view" /><br><strong>Table</strong>: custom fields (dropdown, people, progress, formula) and bulk edit</td>
+    <td align="center"><img src="docs/screenshots/portfolio/04-table-custom-fields.png" alt="Table view" /><br><strong>Table</strong>: custom fields (dropdown, people, progress, formula) and bulk edit</td>
     <td align="center"><img src="assets/screenshots/calendar.png" alt="Calendar view" /><br><strong>Calendar</strong>: month and week, drag to reschedule</td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/my-work.png" alt="My Work" /><br><strong>My Work</strong>: overdue, today, upcoming</td>
-    <td align="center"><img src="assets/screenshots/docs.png" alt="Docs" /><br><strong>Docs</strong>: nested pages per space</td>
+    <td align="center"><img src="docs/screenshots/portfolio/09-docs-nested.png" alt="Docs" /><br><strong>Docs</strong>: nested pages per space</td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/inbox.png" alt="Inbox" /><br><strong>Inbox</strong>: mentions, assignments, status changes</td>
     <td align="center"><img src="assets/screenshots/teams.png" alt="Teams" /><br><strong>Teams</strong>: members, roles, invite links</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/workload.png" alt="Workload view" /><br><strong>Workload</strong>: capacity per person, overloads in red, drag to reassign</td>
-    <td align="center"><img src="assets/screenshots/mindmap.png" alt="Mind Map view" /><br><strong>Mind Map</strong>: zoomable task tree, add a node to create a subtask</td>
+    <td align="center"><img src="docs/screenshots/portfolio/05-workload-overload.png" alt="Workload view" /><br><strong>Workload</strong>: points per person per day, overloads in red, drag to reassign</td>
+    <td align="center"><img src="docs/screenshots/portfolio/10-mind-map.png" alt="Mind Map view" /><br><strong>Mind Map</strong>: list → statuses → tasks → subtasks, add a node to create a subtask</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/sprint.png" alt="Sprint report" /><br><strong>Sprints</strong>: points, carry-over, burndown and velocity</td>
+    <td align="center"><img src="docs/screenshots/portfolio/07-sprint-report.png" alt="Sprint report" /><br><strong>Sprints</strong>: points, carry-over, burndown and velocity</td>
     <td align="center"><img src="assets/screenshots/goals.png" alt="Goals" /><br><strong>Goals</strong>: OKR targets that move as tasks complete</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/chat.png" alt="Chat channel" /><br><strong>Chat</strong>: channels per space, @mentions, threads, message to task</td>
+    <td align="center"><img src="docs/screenshots/portfolio/08-chat-thread.png" alt="Chat channel" /><br><strong>Chat</strong>: channels per space, @mentions, threads, message to task</td>
     <td align="center"><img src="assets/screenshots/whiteboard.png" alt="Whiteboard" /><br><strong>Whiteboards</strong>: saved per space, sticky note to task</td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/form.png" alt="Form builder" /><br><strong>Forms</strong>: public form links whose submissions create tasks</td>
-    <td align="center"><img src="assets/screenshots/board-light.png" alt="Light theme" /><br><strong>Light theme</strong></td>
+    <td align="center"><img src="docs/screenshots/portfolio/11-board-light.png" alt="Light theme" /><br><strong>Light theme</strong>: every screen ships in light and dark</td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="assets/screenshots/mobile-board.png" alt="Board on a phone" width="240" />
+  <img src="docs/screenshots/portfolio/14-phone-board.png" alt="Board on a phone" width="240" />
   &nbsp;&nbsp;
-  <img src="assets/screenshots/mobile-calendar.png" alt="Calendar on a phone" width="240" />
+  <img src="docs/screenshots/portfolio/15-phone-calendar.png" alt="Calendar on a phone" width="240" />
   <br><strong>Phone layout</strong>: sidebar drawer, snap-scroll board, compact calendar
 </p>
 
@@ -139,7 +139,7 @@ pnpm --filter @clickup/web test:e2e            # Playwright starts the API + web
 
 ## Screenshots and demo GIF
 
-`node apps/web/scripts/capture-screenshots.mjs` re-captures the landing images, these screenshots, the demo GIF and the Open Graph card from the live guest demo (Playwright + sharp).
+`node apps/web/scripts/capture-screenshots.mjs` re-captures the landing images, the older screenshots in `assets/screenshots/`, the demo GIF and the Open Graph card from the live guest demo (Playwright + sharp). `--only=portfolio` captures the full-resolution set in [docs/screenshots/portfolio](docs/screenshots/portfolio/README.md) (1920×1080 at 2×, dark plus three light versions, two phone shots) that the screenshots above use.
 
 ## Roadmap
 
