@@ -14,16 +14,19 @@ function TableTasksLayout() {
   const { listId } = useTasksQueryKey();
   const { fields } = useCustomFields(listId);
   return (
-    <section className="w-full overflow-x-auto">
+    <section className="w-full min-w-0">
       <ViewToolbar />
-      <div style={tableGridStyle(fields?.length ?? 0)}>
-        <CheckTaskProvider>
-          <Header />
-          <Body />
-          <ActionsRow />
-        </CheckTaskProvider>
+      {/* Only the grid scrolls sideways; the toolbar stays put. */}
+      <div className="overflow-x-auto" data-table-scroller>
+        <div style={tableGridStyle(fields?.length ?? 0)}>
+          <CheckTaskProvider>
+            <Header />
+            <Body />
+            <ActionsRow />
+          </CheckTaskProvider>
 
-        <TableAddTaskRow styleFor="table" />
+          <TableAddTaskRow styleFor="table" />
+        </div>
       </div>
     </section>
   );
