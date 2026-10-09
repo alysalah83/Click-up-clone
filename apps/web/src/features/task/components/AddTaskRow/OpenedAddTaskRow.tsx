@@ -47,10 +47,10 @@ function OpenedAddTaskRow({
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className={`${styleFor === "table" ? "col-span-19" : "col-span-6"} grid py-1`}
+      className={`${styleFor === "table" ? "col-[2/9] flex items-center justify-between gap-4" : "col-span-6 grid"} py-1`}
     >
       <div
-        className={`${styleFor === "table" ? "col-span-12 col-start-2" : "col-span-1 px-2"} flex items-center gap-1`}
+        className={`${styleFor === "table" ? "min-w-0 flex-1 px-2" : "col-span-1 px-2"} flex items-center gap-1`}
       >
         <Icon
           className={`${COLORS_TOKENS[curStatus.iconColor as ColorsToken].icon} ${sizeClasses[ICON_SIZE + 1]}`}
@@ -70,7 +70,7 @@ function OpenedAddTaskRow({
         />
       </div>
       <div
-        className={`${styleFor === "table" ? "col-span-7 col-start-14 justify-end" : "col-start-2 justify-center"} flex items-center gap-4 pr-4`}
+        className={`${styleFor === "table" ? "shrink-0 justify-end" : "col-start-2 justify-center"} flex items-center gap-4 pr-4`}
       >
         <AddTaskFeatureBtns
           dateRange={dateRange}

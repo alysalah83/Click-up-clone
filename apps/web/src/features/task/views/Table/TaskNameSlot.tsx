@@ -6,6 +6,7 @@ import {
   slotBorderClasses,
   slotHoverClasses,
   slotPadding,
+  stickyNameClasses,
 } from "./table.styles";
 import TaskRenameForm from "@/shared/components/RenameForm";
 import { useTask } from "../../context/TaskProvider";
@@ -34,7 +35,7 @@ function TaskNameSlot() {
 
   return (
     <div
-      className={`col-span-4 flex cursor-default items-center ${slotHoverClasses} ${slotBorderClasses} ${slotPadding}`}
+      className={`${stickyNameClasses} flex min-w-0 cursor-default items-center ${slotHoverClasses} ${slotBorderClasses} ${slotPadding}`}
       onClick={() => {
         if (!isRenameOpen) toggleIsRenameOpen();
       }}

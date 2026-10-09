@@ -19,7 +19,7 @@ function TaskPrioritySlot({ priority }: { priority: Task["priority"] }) {
 
   return (
     <div
-      className={`col-span-3 cursor-pointer ${slotBorderClasses} ${slotHoverClasses} `}
+      className={`cursor-pointer ${slotBorderClasses} ${slotHoverClasses} `}
     >
       <Menu>
         <MenuTrigger>
