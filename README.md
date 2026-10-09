@@ -22,16 +22,16 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
     <td align="center"><img src="docs/screenshots/portfolio/06-dashboard.png" alt="Dashboard" /><br><strong>Dashboard</strong>: workload, overdue, burndown, time tracked</td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/portfolio/04-table-custom-fields.png" alt="Table view" /><br><strong>Table</strong>: custom fields (dropdown, people, progress, formula) and bulk edit</td>
-    <td align="center"><img src="assets/screenshots/calendar.png" alt="Calendar view" /><br><strong>Calendar</strong>: month and week, drag to reschedule</td>
+    <td align="center"><img src="docs/screenshots/portfolio/04-table-custom-fields.png" alt="Table view" /><br><strong>Table</strong>: custom fields (dropdown, people, progress, formula), pinned name column, bulk edit</td>
+    <td align="center"><img src="docs/screenshots/portfolio/17-calendar-month.png" alt="Calendar view" /><br><strong>Calendar</strong>: month and week, drag to reschedule</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/my-work.png" alt="My Work" /><br><strong>My Work</strong>: overdue, today, upcoming</td>
+    <td align="center"><img src="docs/screenshots/portfolio/18-my-work.png" alt="My Work" /><br><strong>My Work</strong>: overdue, today, upcoming</td>
     <td align="center"><img src="docs/screenshots/portfolio/09-docs-nested.png" alt="Docs" /><br><strong>Docs</strong>: nested pages per space</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/inbox.png" alt="Inbox" /><br><strong>Inbox</strong>: mentions, assignments, status changes</td>
-    <td align="center"><img src="assets/screenshots/teams.png" alt="Teams" /><br><strong>Teams</strong>: members, roles, invite links</td>
+    <td align="center"><img src="docs/screenshots/portfolio/19-inbox.png" alt="Inbox" /><br><strong>Inbox</strong>: mentions, assignments, status changes</td>
+    <td align="center"><img src="docs/screenshots/portfolio/21-teams.png" alt="Teams" /><br><strong>Teams</strong>: members, roles, invite links</td>
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/portfolio/05-workload-overload.png" alt="Workload view" /><br><strong>Workload</strong>: points per person per day, overloads in red, drag to reassign</td>
@@ -39,15 +39,27 @@ A full-stack, ClickUp-style work management app: spaces, lists and tasks viewed 
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/portfolio/07-sprint-report.png" alt="Sprint report" /><br><strong>Sprints</strong>: points, carry-over, burndown and velocity</td>
-    <td align="center"><img src="assets/screenshots/goals.png" alt="Goals" /><br><strong>Goals</strong>: OKR targets that move as tasks complete</td>
+    <td align="center"><img src="docs/screenshots/portfolio/20-goals.png" alt="Goals" /><br><strong>Goals</strong>: OKR targets that move as tasks complete</td>
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/portfolio/08-chat-thread.png" alt="Chat channel" /><br><strong>Chat</strong>: channels per space, @mentions, threads, message to task</td>
-    <td align="center"><img src="assets/screenshots/whiteboard.png" alt="Whiteboard" /><br><strong>Whiteboards</strong>: saved per space, sticky note to task</td>
+    <td align="center"><img src="docs/screenshots/portfolio/22-whiteboard.png" alt="Whiteboard" /><br><strong>Whiteboards</strong>: saved per space, sticky note to task</td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/form.png" alt="Form builder" /><br><strong>Forms</strong>: public form links whose submissions create tasks</td>
+    <td align="center"><img src="docs/screenshots/portfolio/23-form-builder.png" alt="Form builder" /><br><strong>Forms</strong>: public form links whose submissions create tasks</td>
     <td align="center"><img src="docs/screenshots/portfolio/11-board-light.png" alt="Light theme" /><br><strong>Light theme</strong>: every screen ships in light and dark</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/portfolio/26-board-swimlanes.png" alt="Board swimlanes" /><br><strong>Swimlanes</strong>: board rows per assignee, WIP limits per column</td>
+    <td align="center"><img src="docs/screenshots/portfolio/25-command-palette.png" alt="Command palette" /><br><strong>Ctrl+K</strong>: jump to any task, list or teammate</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/portfolio/16-list-view.png" alt="List view" /><br><strong>List</strong>: grouped by status, inline edits</td>
+    <td align="center"><img src="docs/screenshots/portfolio/27-automations.png" alt="Automations" /><br><strong>Automations</strong>: trigger → action rules per list</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/portfolio/24-templates.png" alt="Task templates" /><br><strong>Templates</strong>: reusable tasks with subtasks and checklists</td>
+    <td align="center"><img src="docs/screenshots/portfolio/13-timeline-light.png" alt="Timeline in light theme" /><br><strong>Timeline, light theme</strong></td>
   </tr>
 </table>
 

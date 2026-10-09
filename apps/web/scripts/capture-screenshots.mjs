@@ -329,10 +329,10 @@ const PORTFOLIO_SHOTS = {
         }
       }
     }
-    // Scroll the table so the Progress column ends at the right edge: task names stay, custom fields show.
+    // Scroll fully right: the pinned checkbox and name columns stay, all eight custom fields show.
     await page.getByText("Progress", { exact: true }).first().evaluate((el) => {
-      const section = el.closest("section");
-      section.scrollLeft += el.getBoundingClientRect().right + 60 - section.getBoundingClientRect().right;
+      const scroller = el.closest("[data-table-scroller]") ?? el.closest("section");
+      scroller.scrollLeft = scroller.scrollWidth;
       // Hovering rows can scroll the page down; put the header row back in view.
       window.scrollTo(0, 0);
       for (const node of document.querySelectorAll("*")) if (node.scrollTop > 0) node.scrollTop = 0;
@@ -409,6 +409,62 @@ const PORTFOLIO_SHOTS = {
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(1900, 1070);
+    await ready(page);
+  },
+  "16-list-view": async (page, board) => {
+    await go(page, view(board, "list"));
+    await ready(page);
+  },
+  "17-calendar-month": async (page, board) => {
+    await go(page, view(board, "calendar"));
+    await ready(page);
+  },
+  "18-my-work": async (page) => {
+    await go(page, `${BASE}/home/my-work`);
+    await ready(page);
+  },
+  "19-inbox": async (page) => {
+    await go(page, `${BASE}/home/inbox`);
+    await ready(page);
+  },
+  "20-goals": async (page) => {
+    await go(page, `${BASE}/home/goals`);
+    await ready(page);
+  },
+  "21-teams": async (page) => {
+    await go(page, `${BASE}/home/teams`);
+    await ready(page);
+  },
+  "22-whiteboard": async (page) => {
+    // Excalidraw needs a moment to convert the seeded scene and zoom to fit.
+    await goToLink(page, "/home/whiteboards/", 5000);
+    await ready(page, 1500);
+  },
+  "23-form-builder": async (page) => {
+    const bugTracker = await goToList(page, "Bug Tracker");
+    await go(page, view(bugTracker, "form"));
+    await ready(page);
+  },
+  "24-templates": async (page) => {
+    await go(page, `${BASE}/home/templates`);
+    await ready(page);
+  },
+  "25-command-palette": async (page) => {
+    await page.keyboard.press("Control+k");
+    await page.getByRole("dialog").first().waitFor();
+    await page.keyboard.type("sso", { delay: 60 });
+    await ready(page, 1500);
+  },
+  "26-board-swimlanes": async (page) => {
+    // Wait for the list's saved view to load first; it would reset the swimlane choice.
+    await ready(page);
+    await page.locator('select[aria-label="Swimlanes"]').selectOption("assignee");
+    await page.getByText("Unassigned").first().waitFor();
+    await ready(page);
+  },
+  "27-automations": async (page) => {
+    await page.getByRole("button", { name: "Automations" }).first().click();
+    await page.getByRole("dialog").first().waitFor();
     await ready(page);
   },
 };
